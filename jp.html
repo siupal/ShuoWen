@@ -1,0 +1,1458 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>日语学习 · 构词/部首/接辞｜JLPT N5–N1</title>
+<meta name="description" content="基于部首/构词/接辞与场景应用的日语学习工具，支持读音编辑距离形近词、多维检索、SRS 复习，覆盖 JLPT N5–N1。">
+<style>
+:root{
+  --bg:#f8fafc; --fg:#0f172a; --muted:#64748b; --card:#ffffff; --border:#e2e8f0;
+  --primary:#f97316; --accent:#fb7185; --chip:#fff7ed; --chip-fg:#9a3412;
+  --good:#16a34a; --warn:#d97706; --bad:#dc2626; --shadow:0 6px 24px rgba(2,6,23,0.08);
+}
+.dark{
+  --bg:#0b1020; --fg:#e6edf3; --muted:#93a4b5; --card:#0f172a; --border:#1f2937;
+  --primary:#fb923c; --accent:#f472b6; --chip:#1e293b; --chip-fg:#fbceb1; --shadow:0 8px 28px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans JP","Noto Sans","Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";
+  background:var(--bg); color:var(--fg);
+}
+a{color:var(--primary);text-decoration:none}
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg,var(--bg),rgba(0,0,0,0));
+  backdrop-filter:saturate(1.2) blur(6px);
+  padding:10px 14px; border-bottom:1px solid var(--border);
+}
+.header-inner{display:flex; align-items:center; gap:12px; max-width:1400px; margin:0 auto}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+.brand .logo{width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,var(--primary),var(--accent)); box-shadow:var(--shadow)}
+.brand small{color:var(--muted); font-weight:600}
+.searchbar{flex:1; display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--border); padding:8px 10px; border-radius:10px; box-shadow:var(--shadow)}
+.searchbar input{flex:1; border:0; outline:none; background:transparent; color:var(--fg); font-size:14px}
+.btn{border:1px solid var(--border); background:var(--card); color:var(--fg); padding:8px 12px; border-radius:10px; cursor:pointer}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border-color:transparent}
+.btn.ghost{background:transparent}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; background:var(--chip); color:var(--chip-fg); font-weight:600; font-size:12px}
+main{max-width:1400px; margin:14px auto; display:grid; grid-template-columns:280px 1fr 360px; gap:14px; padding:0 14px}
+@media (max-width:1100px){main{grid-template-columns:260px 1fr}}
+@media (max-width:980px){main{grid-template-columns:1fr;}}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)}
+.sidebar{padding:12px}
+.section-title{display:flex; align-items:center; justify-content:space-between; margin:6px 0 12px}
+.section-title h3{margin:0; font-size:15px}
+.filters{display:grid; gap:14px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer; user-select:none}
+.chip.active{border-color:var(--primary); box-shadow:inset 0 0 0 1px var(--primary)}
+hr.sep{border:0; border-top:1px dashed var(--border); margin:4px 0}
+small.help{color:var(--muted)}
+.input{display:flex; align-items:center; gap:8px; background:var(--bg); border:1px dashed var(--border); padding:8px; border-radius:8px}
+.input input, .input select{flex:1; background:transparent; border:0; outline:0; color:var(--fg)}
+.results{padding:6px 10px 16px}
+.stats{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px}
+.grid{display:grid; grid-template-columns:repeat(2, minmax(220px, 1fr)); gap:10px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.word-card{padding:12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:transform .06s ease}
+.word-card:hover{transform:translateY(-2px)}
+.word-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.word{font-weight:800; font-size:18px; letter-spacing:.2px}
+.tags{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.mean{color:var(--muted); margin-top:4px}
+.morph{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.morph span{padding:2px 6px; border-radius:6px; font-size:12px; border:1px solid var(--border)}
+.morph .pre{background:#e0f2fe; color:#0c4a6e; border-color:transparent}
+.morph .root{background:#fef9c3; color:#713f12; border-color:transparent}
+.morph .suf{background:#fce7f3; color:#831843; border-color:transparent}
+.detail{padding:12px}
+.detail .title{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.detail .title h2{margin:0}
+.detail .actions{display:flex; gap:8px; flex-wrap:wrap}
+.detail section{margin-top:12px}
+.detail .def{font-size:15px}
+.detail .ex{color:var(--muted)}
+.flex{display:flex; gap:10px; flex-wrap:wrap}
+.kv{display:grid; grid-template-columns:100px 1fr; gap:8px; align-items:flex-start}
+ul.clean{list-style:none; padding:0; margin:0}
+ul.clean li{padding:4px 0}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid var(--border)}
+.hlt{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#fff799, #ffe78f)}
+.hlt-pre{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#bde9ff,#9ae6ff)}
+.hlt-suf{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#ffd6ef,#ffbfe7)}
+.sim-list, .family-list{display:flex; flex-wrap:wrap; gap:6px}
+.sim-item, .fam-item{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer}
+.footer-tools{position:sticky; bottom:0; padding:10px; display:flex; gap:8px; flex-wrap:wrap; background:linear-gradient(0deg,var(--bg),rgba(0,0,0,0)); border-top:1px dashed var(--border)}
+.srs{position:fixed; right:20px; bottom:20px; z-index:100; display:flex; gap:8px; flex-wrap:wrap}
+.srs .card{padding:14px; width:360px; max-width:90vw}
+.srs .q{font-weight:700; font-size:18px}
+.srs .btns{display:flex; gap:8px; margin-top:8px}
+.srs .btn.again{background:var(--bad); color:#fff}
+.srs .btn.hard{background:var(--warn); color:#fff}
+.srs .btn.good{background:var(--good); color:#fff}
+.srs .btn.easy{background:var(--primary); color:#fff}
+small.dim{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        日语学习 · 构词/部首/接辞
+        <small>JLPT N5 – N1</small>
+      </div>
+    </div>
+    <div class="searchbar">
+      <span>🔎</span>
+      <input id="q" placeholder="搜索：日文词（汉字/假名）/ 读音 / 罗马音 / 中文释义 / 构词要素（如 無/非/再/化/者）" />
+      <button class="btn" id="clearBtn" title="清空">清空</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="darkBtn" title="暗黑模式">🌙/☀️</button>
+      <button class="btn" id="importBtn" title="导入词库(JSON)">导入</button>
+      <button class="btn" id="exportBtn" title="导出当前词库(JSON)">导出</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Sidebar filters -->
+  <aside class="card sidebar" id="sidebar">
+    <div class="section-title">
+      <h3>筛选</h3>
+      <span class="badge">多维检索</span>
+    </div>
+    <div class="filters">
+      <div>
+        <small class="help">JLPT 级别</small>
+        <div class="chips" id="levelChips"></div>
+      </div>
+      <div>
+        <small class="help">词性</small>
+        <div class="chips" id="posChips"></div>
+      </div>
+      <div>
+        <small class="help">主题</small>
+        <div class="chips" id="topicChips"></div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">部首 / 构词要素 / 接辞</small>
+        <div class="input"><input id="morphSearch" placeholder="输入如：学 / 無 / 非 / 再 / 化 / 者 / お / ご"></div>
+        <div class="chips" id="morphChips"></div>
+        <div class="flex">
+          <label class="pill"><input type="checkbox" id="requireAll"> 同时包含所选全部形态</label>
+          <label class="pill"><input type="checkbox" id="onlyRoots"> 仅匹配“词干/汉字部件”</label>
+        </div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">频率（1-5，越高越常见）</small>
+        <div class="input"><input type="range" id="freq" min="1" max="5" value="1"><span id="freqVal">≥1</span></div>
+      </div>
+      <div class="flex">
+        <button class="btn" id="resetBtn">重置筛选</button>
+        <small class="help">支持组合筛选 + 搜索</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Results -->
+  <section class="card results">
+    <div class="stats">
+      <span class="badge">结果 <b id="count"></b> / <span id="total"></span></span>
+      <span class="pill">形近語：かな編集距離</span>
+      <span class="pill">TTS：点击单词右侧🔊</span>
+      <span class="pill">SRS：右下角开始复习</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="footer-tools">
+      <button class="btn primary" id="startSrsBtn">用当前结果开始复习</button>
+      <button class="btn" id="genSceneBtn">用所选词生成日语场景句</button>
+      <small class="help">提示：双击单词加入复习清单；点击构词芯片可反向检索</small>
+    </div>
+  </section>
+
+  <!-- Detail -->
+  <aside class="card detail" id="detail">
+    <div class="title">
+      <div>
+        <h2 id="dWord">选择一个词</h2>
+        <div id="dReading" class="mean"></div>
+        <div class="morph" id="dMorph"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="speakBtn" title="发音">🔊 发音</button>
+        <button class="btn" id="starBtn" title="加入复习">⭐ 收藏</button>
+      </div>
+    </div>
+    <section>
+      <div class="def" id="dDef"></div>
+      <div class="mean" id="dMean"></div>
+    </section>
+    <section>
+      <div class="kv">
+        <div><small class="help">词性</small></div><div id="dPos"></div>
+        <div><small class="help">级别</small></div><div id="dLevel"></div>
+        <div><small class="help">主题</small></div><div id="dTopics"></div>
+        <div><small class="help">频率</small></div><div id="dFreq"></div>
+      </div>
+    </section>
+    <section>
+      <b>例句</b>
+      <ul class="clean" id="dExamples"></ul>
+    </section>
+    <section>
+      <b>形近語（读音相近）</b>
+      <div class="sim-list" id="dSimilar"></div>
+    </section>
+    <section>
+      <b>同构词 / 同接辞</b>
+      <div class="family-list" id="dFamily"></div>
+    </section>
+    <section>
+      <b>记忆提示</b>
+      <div id="dNotes" class="mean"></div>
+    </section>
+  </aside>
+</main>
+
+<!-- SRS Review Panel -->
+<div class="srs" id="srsPanel" style="display:none">
+  <div class="card">
+    <div class="q" id="srsQ">SRS 复习</div>
+    <div class="a" id="srsA" style="display:none; margin-top:8px"></div>
+    <div class="btns">
+      <button class="btn again" id="srsAgain">Again</button>
+      <button class="btn hard" id="srsHard">Hard</button>
+      <button class="btn good" id="srsGood">Good</button>
+      <button class="btn easy" id="srsEasy">Easy</button>
+      <button class="btn" id="srsShow">显示答案</button>
+      <button class="btn ghost" id="srsClose">关闭</button>
+    </div>
+    <div style="margin-top:6px"><small class="dim" id="srsInfo"></small></div>
+  </div>
+</div>
+
+<script>
+/** ==========================================
+ *  构词要素（接头/接尾/常见汉字部件）
+ *  ========================================== */
+const MORPHEMES = {
+  // prefixes 接头辞
+  "お":{type:"prefix", zh:"敬语前缀", ja:"尊敬の接頭辞"},
+  "ご":{type:"prefix", zh:"敬语前缀", ja:"尊敬の接頭辞"},
+  "超":{type:"prefix", zh:"超；极", ja:"超；非常に"},
+  "再":{type:"prefix", zh:"再；重新", ja:"再；もう一度"},
+  "非":{type:"prefix", zh:"非；不", ja:"非；正規ではない"},
+  "無":{type:"prefix", zh:"无；没有", ja:"無；ない"},
+  "未":{type:"prefix", zh:"未；尚未", ja:"未；まだ"},
+  "不":{type:"prefix", zh:"不；否定", ja:"不；否定"},
+  "誤":{type:"prefix", zh:"误；错", ja:"誤；まちがい"},
+  "同":{type:"prefix", zh:"同；一起", ja:"同；おなじ"},
+  "新":{type:"prefix", zh:"新；新", ja:"新；あたらしい"},
+  "旧":{type:"prefix", zh:"旧；旧", ja:"旧；ふるい"},
+  "元":{type:"prefix", zh:"前任；原", ja:"元；以前の"},
+  "全":{type:"prefix", zh:"全；整体", ja:"全；すべて"},
+  "逆":{type:"prefix", zh:"逆；相反", ja:"逆；ぎゃく"},
+  "対":{type:"prefix", zh:"对；相对/对抗", ja:"対；たいする"},
+  "連":{type:"prefix", zh:"连；连续/连接", ja:"連；つらなる"},
+  "多":{type:"prefix", zh:"多；多样", ja:"多；おおい"},
+  "少":{type:"prefix", zh:"少；较少", ja:"少；すくない"},
+  "高":{type:"prefix", zh:"高；高", ja:"高；たかい"},
+  "低":{type:"prefix", zh:"低；低", ja:"低；ひくい"},
+  // suffixes 接尾辞
+  "者":{type:"suffix", zh:"…者（人）", ja:"…する人"},
+  "家":{type:"suffix", zh:"…家（专家/从业者）", ja:"専門家"},
+  "化":{type:"suffix", zh:"…化（使…化）", ja:"…化（する/される）"},
+  "性":{type:"suffix", zh:"…性（性质、可能）", ja:"…性"},
+  "的":{type:"suffix", zh:"…的（…的/…式）", ja:"…的"},
+  "力":{type:"suffix", zh:"…力（能力/力量）", ja:"…力"},
+  "感":{type:"suffix", zh:"…感（感觉）", ja:"…感"},
+  "中":{type:"suffix", zh:"…中（期间）", ja:"…中"},
+  "前":{type:"suffix", zh:"…前", ja:"…前"},
+  "後":{type:"suffix", zh:"…后", ja:"…後"},
+  "目":{type:"suffix", zh:"…目（序数）", ja:"…目"},
+  "風":{type:"suffix", zh:"…风；风格", ja:"…風"},
+  "系":{type:"suffix", zh:"…系（体系/类型）", ja:"…系"},
+  "度":{type:"suffix", zh:"…度（程度/次数）", ja:"…度"},
+  "点":{type:"suffix", zh:"…点（要点）", ja:"…点"},
+  "する":{type:"suffix", zh:"动词化（名词+する）", ja:"サ変動詞化"},
+  "る":{type:"suffix", zh:"一段动词结尾", ja:"一段終止"},
+  "う":{type:"suffix", zh:"五段动词结尾", ja:"五段終止"},
+  "さん":{type:"suffix", zh:"敬称（先生/女士）", ja:"敬称"},
+  // common kanji roots 常见词干/部件（按“root”处理以便高亮）
+  "学":{type:"root", zh:"学；学习", ja:"学ぶ"},
+  "校":{type:"root", zh:"校；学校", ja:"学校"},
+  "生":{type:"root", zh:"生；生命/学生", ja:"生"},
+  "先":{type:"root", zh:"先；前", ja:"先"},
+  "語":{type:"root", zh:"语；语言", ja:"言語"},
+  "日":{type:"root", zh:"日；太阳/日", ja:"日"},
+  "本":{type:"root", zh:"本；根本/日本", ja:"本"},
+  "人":{type:"root", zh:"人；人", ja:"人"},
+  "友":{type:"root", zh:"友；朋友", ja:"友"},
+  "食":{type:"root", zh:"食；吃", ja:"食べる"},
+  "飲":{type:"root", zh:"饮；喝", ja:"飲む"},
+  "行":{type:"root", zh:"行；走/进行", ja:"行く/行う"},
+  "来":{type:"root", zh:"来；来", ja:"来る"},
+  "見":{type:"root", zh:"见；看", ja:"見る"},
+  "言":{type:"root", zh:"言；说", ja:"言う"},
+  "使":{type:"root", zh:"使；使用", ja:"使う"},
+  "用":{type:"root", zh:"用；用途", ja:"用いる"},
+  "便":{type:"root", zh:"便；便利", ja:"便利"},
+  "利":{type:"root", zh:"利；利益/有利", ja:"利"},
+  "重":{type:"root", zh:"重；重要/沉重", ja:"重"},
+  "要":{type:"root", zh:"要；需要/要点", ja:"要"},
+  "原":{type:"root", zh:"原；起源", ja:"原"},
+  "因":{type:"root", zh:"因；原因", ja:"因"},
+  "結":{type:"root", zh:"结；连结", ja:"結ぶ"},
+  "果":{type:"root", zh:"果；结果", ja:"果"},
+  "関":{type:"root", zh:"关；关系", ja:"関"},
+  "係":{type:"root", zh:"係；联系/系", ja:"係"},
+  "経":{type:"root", zh:"经；经由/经历", ja:"経"},
+  "験":{type:"root", zh:"验；经验/试验", ja:"験"},
+  "影":{type:"root", zh:"影；影子/影响", ja:"影"},
+  "響":{type:"root", zh:"响；反响", ja:"響"},
+  "効":{type:"root", zh:"效；有效", ja:"効"},
+  "国":{type:"root", zh:"国；国家", ja:"国"},
+  "際":{type:"root", zh:"际；边际/国际", ja:"際"},
+  "文":{type:"root", zh:"文；文化/文章", ja:"文"},
+  "化(root)":{type:"root", zh:"化；变化", ja:"化ける"},
+  "社":{type:"root", zh:"社；社会/公司", ja:"社"},
+  "会":{type:"root", zh:"会；会议/社会", ja:"会"},
+  "科":{type:"root", zh:"科；学科/科学", ja:"科"},
+  "技":{type:"root", zh:"技；技术", ja:"技"},
+  "術":{type:"root", zh:"术；技巧/术", ja:"術"},
+  "環":{type:"root", zh:"环；环境/环", ja:"環"},
+  "境":{type:"root", zh:"境；环境/境界", ja:"境"},
+  "情":{type:"root", zh:"情；感情/情况", ja:"情"},
+  "報":{type:"root", zh:"报；报告/信息", ja:"報"},
+  "安":{type:"root", zh:"安；安全/安心", ja:"安"},
+  "全(root)":{type:"root", zh:"全；全部", ja:"全"},
+  "危":{type:"root", zh:"危；危险", ja:"危"},
+  "険":{type:"root", zh:"险；险", ja:"険"},
+  "自":{type:"root", zh:"自；自由/自己", ja:"自"},
+  "然":{type:"root", zh:"然；自然/当然", ja:"然"},
+  "信":{type:"root", zh:"信；相信/信用", ja:"信"},
+  "頼":{type:"root", zh:"赖；依赖/信赖", ja:"頼"},
+  "柔":{type:"root", zh:"柔；柔软", ja:"柔"},
+  "軟":{type:"root", zh:"软；柔软", ja:"軟"},
+  "明":{type:"root", zh:"明；明白/明亮", ja:"明"},
+  "確":{type:"root", zh:"确；准确/明确", ja:"確"},
+  "適":{type:"root", zh:"适；适当", ja:"適"},
+  "切":{type:"root", zh:"切；切割/恰当", ja:"切"},
+  "単":{type:"root", zh:"单；单纯", ja:"単"},
+  "純":{type:"root", zh:"纯；纯粹", ja:"純"},
+  "複":{type:"root", zh:"复；复杂/重复", ja:"複"},
+  "雑":{type:"root", zh:"杂；杂", ja:"雑"},
+  "公":{type:"root", zh:"公；公开/公共", ja:"公"},
+  "式":{type:"root", zh:"式；方式/公式", ja:"式"},
+  "開":{type:"root", zh:"开；开放", ja:"開"},
+  "完":{type:"root", zh:"完；完成", ja:"完"},
+  "同(root)":{type:"root", zh:"同；相同", ja:"同"},
+  "意":{type:"root", zh:"意；意思/意义", ja:"意"},
+  "続":{type:"root", zh:"续；连续", ja:"続"},
+  "策":{type:"root", zh:"策；对策/策略", ja:"策"},
+  "元(root)":{type:"root", zh:"元；起源/元气", ja:"元"},
+  "気":{type:"root", zh:"气；空气/情绪", ja:"気"},
+  "新(root)":{type:"root", zh:"新；新", ja:"新"},
+  "製":{type:"root", zh:"制；制造", ja:"製"},
+  "品":{type:"root", zh:"品；产品/品质", ja:"品"},
+  "旧(root)":{type:"root", zh:"旧；旧", ja:"旧"},
+  "型":{type:"root", zh:"型；型号/类型", ja:"型"},
+  "体":{type:"root", zh:"体；形体/身体", ja:"体"},
+  "金":{type:"root", zh:"金；金钱/金属", ja:"金"},
+  "茶":{type:"root", zh:"茶；茶", ja:"茶"},
+  "飯":{type:"root", zh:"饭；米饭/饭", ja:"飯"},
+  "予":{type:"root", zh:"预；预先/预约", ja:"予"},
+  "約":{type:"root", zh:"约；约定/大约", ja:"約"},
+  "参":{type:"root", zh:"参；参加/参照", ja:"参"},
+  "加":{type:"root", zh:"加；加/参加", ja:"加"},
+  "賛":{type:"root", zh:"赞；赞成/称赞", ja:"賛"},
+  "反":{type:"root", zh:"反；反对/相反", ja:"反"},
+  "注":{type:"root", zh:"注；注意/注入", ja:"注"},
+  "理":{type:"root", zh:"理；道理/整理", ja:"理"},
+  "解":{type:"root", zh:"解；理解/解答", ja:"解"},
+  "比":{type:"root", zh:"比；比较", ja:"比"},
+  "較":{type:"root", zh:"较；比较/较", ja:"較"},
+  "選":{type:"root", zh:"选；选择", ja:"選"},
+  "択":{type:"root", zh:"择；选择", ja:"択"},
+  "決":{type:"root", zh:"决；决定", ja:"決"},
+  "定":{type:"root", zh:"定；决定/固定", ja:"定"},
+  "改":{type:"root", zh:"改；改善/修改", ja:"改"},
+  "善":{type:"root", zh:"善；良好/改善", ja:"善"},
+  "発":{type:"root", zh:"发；发现/发表/发展", ja:"発"},
+  "展":{type:"root", zh:"展；发展/展开", ja:"展"},
+  "競":{type:"root", zh:"竞；竞争", ja:"競"},
+  "争":{type:"root", zh:"争；争夺", ja:"争"},
+  "成":{type:"root", zh:"成；成功/达成", ja:"成"},
+  "功":{type:"root", zh:"功；成功/功绩", ja:"功"},
+  "失":{type:"root", zh:"失；失去/失败", ja:"失"},
+  "敗":{type:"root", zh:"败；失败", ja:"敗"},
+  "責":{type:"root", zh:"责；责任", ja:"責"},
+  "任":{type:"root", zh:"任；责任/任务", ja:"任"},
+  "提":{type:"root", zh:"提；提出/提供", ja:"提"},
+  "案":{type:"root", zh:"案；方案/提案", ja:"案"},
+  "連(root)":{type:"root", zh:"连；连接/联系", ja:"連"},
+  "絡":{type:"root", zh:"络；联络/网络", ja:"絡"},
+  "研":{type:"root", zh:"研；研究/研磨", ja:"研"},
+  "究":{type:"root", zh:"究；研究/探究", ja:"究"},
+  "表":{type:"root", zh:"表；表达/表面", ja:"表"},
+  "現":{type:"root", zh:"现；出现/表达", ja:"現"},
+  "判":{type:"root", zh:"判；判断/判定", ja:"判"},
+  "断":{type:"root", zh:"断；判断/中断", ja:"断"},
+  "想":{type:"root", zh:"想；想象", ja:"想"},
+  "像":{type:"root", zh:"像；形象/想象", ja:"像"},
+  "集":{type:"root", zh:"集；集中/集合", ja:"集"},
+  "在":{type:"root", zh:"在；存在/在", ja:"在"},
+  "達":{type:"root", zh:"达；到达/达成", ja:"達"},
+  "和":{type:"root", zh:"和；和谐/和", ja:"和"},
+  "違":{type:"root", zh:"违；不同/违和", ja:"違"},
+  "遠":{type:"root", zh:"远；远离/客气", ja:"遠"},
+  "慮":{type:"root", zh:"虑；考虑/顾虑", ja:"慮"},
+  "電":{type:"root", zh:"电；电", ja:"電"},
+  "車":{type:"root", zh:"车；车", ja:"車"},
+  "駅":{type:"root", zh:"站；车站", ja:"駅"},
+  "医":{type:"root", zh:"医；医疗", ja:"医"},
+  "師":{type:"root", zh:"师；教师/师", ja:"師"},
+  "面":{type:"root", zh:"面；方面/面试", ja:"面"},
+  "接":{type:"root", zh:"接；接触/面接", ja:"接"},
+  "契":{type:"root", zh:"契；契约/合同", ja:"契"},
+  "販":{type:"root", zh:"贩；贩卖/销售", ja:"販"},
+  "売":{type:"root", zh:"卖；贩卖/销售", ja:"売"},
+  "宣":{type:"root", zh:"宣；宣布/宣传", ja:"宣"},
+  "伝":{type:"root", zh:"传；传达/宣传", ja:"伝"}
+};
+
+/** ==========================================
+ *  JLPT 示例词库（可导入扩展）
+ *  字段：
+ *  word(日文), reading(かな), romaji, pos, level[], frequency(1-5),
+ *  definition_ja, meaning_zh,
+ *  examples[], roots:[{m: morph, t: 'prefix'|'root'|'suffix'}],
+ *  topics[], syn[], ant[], notes
+ *  ========================================== */
+const WORDS = [
+  // 基础 N5/N4
+  {word:"学生",reading:"がくせい",romaji:"gakusei",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"学校で学ぶ人。",meaning_zh:"学生",
+    examples:["彼は大学の学生だ。"],
+    roots:[{m:"学",t:"root"},{m:"生",t:"root"}],
+    topics:["教育","日常"],syn:["生徒"],ant:[],notes:"学(学习)+生(学生) → 学生"},
+  {word:"先生",reading:"せんせい",romaji:"sensei",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"教える職にある人への敬称。",meaning_zh:"老师；先生",
+    examples:["先生に質問してもいいですか。"],
+    roots:[{m:"先",t:"root"},{m:"生",t:"root"},{"m":"さん","t":"suffix"}],
+    topics:["教育","人"],syn:["教師"],ant:[],notes:"先(在前)+生 → 先に生まれた=老师（敬称）"},
+  {word:"学校",reading:"がっこう",romaji:"gakkou",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"教育を行う機関。",meaning_zh:"学校",
+    examples:["学校は八時に始まる。"],
+    roots:[{m:"学",t:"root"},{m:"校",t:"root"}],
+    topics:["教育","地点"],syn:[],ant:[],notes:"学+校=教育场所"},
+  {word:"日本語",reading:"にほんご",romaji:"nihongo",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"日本の言語。",meaning_zh:"日语",
+    examples:["日本語を勉強しています。"],
+    roots:[{m:"日",t:"root"},{m:"本",t:"root"},{m:"語",t:"root"}],
+    topics:["语言","教育"],syn:[],ant:[],notes:"日本+語(语言)"},
+  {word:"勉強する",reading:"べんきょうする",romaji:"benkyou suru",pos:"動詞/サ変",level:["N5","N4"],frequency:5,
+    definition_ja:"学習する。",meaning_zh:"学习",
+    examples:["毎日一時間勉強する。"],
+    roots:[{m:"勉",t:"root"},{m:"強",t:"root"},{m:"する",t:"suffix"}],
+    topics:["教育","日常"],syn:["学習する"],ant:[],notes:"勉(勉励)+強(强) → +する 动词化"},
+  {word:"仕事",reading:"しごと",romaji:"shigoto",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"労働。職務。",meaning_zh:"工作",
+    examples:["仕事が忙しい。"],
+    roots:[{m:"仕",t:"root"},{m:"事",t:"root"}],
+    topics:["职场","日常"],syn:["勤務"],ant:[],notes:"仕(做)+事 → 工作"},
+  {word:"会社",reading:"かいしゃ",romaji:"kaisha",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"営利を目的とする組織。",meaning_zh:"公司",
+    examples:["大きい会社で働く。"],
+    roots:[{m:"会",t:"root"},{m:"社",t:"root"}],
+    topics:["职场","经济"],syn:[],ant:[],notes:"社会=社+会；公司亦由此构词"},
+  {word:"お金",reading:"おかね",romaji:"okane",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"貨幣。",meaning_zh:"钱；金钱",
+    examples:["お金を貯める。"],
+    roots:[{m:"お",t:"prefix"},{m:"金",t:"root"}],
+    topics:["日常","经济"],syn:["金"],ant:[],notes:"お(礼貌前缀)+金"},
+  {word:"ご飯",reading:"ごはん",romaji:"gohan",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"炊いた米。食事。",meaning_zh:"米饭；饭",
+    examples:["ご飯を作る。"],
+    roots:[{m:"ご",t:"prefix"},{m:"飯",t:"root"}],
+    topics:["饮食"],syn:["食事"],ant:[],notes:"ご(礼貌前缀)+飯"},
+  {word:"お茶",reading:"おちゃ",romaji:"ocha",pos:"名詞",level:["N5"],frequency:5,
+    definition_ja:"茶。",meaning_zh:"茶",
+    examples:["お茶を飲みますか。"],
+    roots:[{m:"お",t:"prefix"},{m:"茶",t:"root"}],
+    topics:["饮食","文化"],syn:[],ant:[],notes:"お+茶；敬语常见搭配"},
+
+  {word:"行く",reading:"いく",romaji:"iku",pos:"動詞/五段",level:["N5"],frequency:5,
+    definition_ja:"目的地に向かって移動する。",meaning_zh:"去；前往",
+    examples:["学校へ行く。"],
+    roots:[{m:"行",t:"root"},{m:"う",t:"suffix"}],
+    topics:["日常"],syn:[],ant:["来る"],notes:"行(去)+五段结尾"},
+  {word:"来る",reading:"くる",romaji:"kuru",pos:"動詞/不規則",level:["N5"],frequency:5,
+    definition_ja:"こちらへ移動する。",meaning_zh:"来；来到",
+    examples:["友達が家に来る。"],
+    roots:[{m:"来",t:"root"}],
+    topics:["日常"],syn:[],ant:["行く"],notes:"不规则动词"},
+  {word:"見る",reading:"みる",romaji:"miru",pos:"動詞/一段",level:["N5"],frequency:5,
+    definition_ja:"視覚でとらえる。",meaning_zh:"看；观看",
+    examples:["映画を見る。"],
+    roots:[{m:"見",t:"root"},{m:"る",t:"suffix"}],
+    topics:["日常","文化"],syn:["観る"],ant:[],notes:"一段动词：词干+る"},
+  {word:"言う",reading:"いう",romaji:"iu",pos:"動詞/五段",level:["N5"],frequency:5,
+    definition_ja:"言葉で表す。",meaning_zh:"说；讲",
+    examples:["正直に言う。"],
+    roots:[{m:"言",t:"root"},{m:"う",t:"suffix"}],
+    topics:["交流"],syn:["述べる"],ant:[],notes:"言(言语)+五段结尾"},
+  {word:"食べる",reading:"たべる",romaji:"taberu",pos:"動詞/一段",level:["N5"],frequency:5,
+    definition_ja:"食物を口に入れて味わい、飲み込む。",meaning_zh:"吃",
+    examples:["野菜を食べる。"],
+    roots:[{m:"食",t:"root"},{m:"る",t:"suffix"}],
+    topics:["饮食"],syn:["口にする"],ant:["飲む"],notes:"食(吃)+る"},
+  {word:"飲む",reading:"のむ",romaji:"nomu",pos:"動詞/五段",level:["N5"],frequency:5,
+    definition_ja:"液体を口に含んで飲み下す。",meaning_zh:"喝；饮",
+    examples:["水を飲む。"],
+    roots:[{m:"飲",t:"root"},{m:"う",t:"suffix"}],
+    topics:["饮食"],syn:[],ant:["食べる"],notes:"飲(饮)+五段结尾"},
+  {word:"高い",reading:"たかい",romaji:"takai",pos:"形容詞",level:["N5"],frequency:5,
+    definition_ja:"程度・価格が上である。",meaning_zh:"高的；贵的",
+    examples:["この店は値段が高い。"],
+    roots:[{m:"高",t:"root"}],
+    topics:["日常"],syn:["高価な"],ant:["低い","安い"],notes:"常见对义词：低い/安い"},
+  {word:"安い",reading:"やすい",romaji:"yasui",pos:"形容詞",level:["N5"],frequency:5,
+    definition_ja:"価格が低い。",meaning_zh:"便宜的",
+    examples:["安いチケットを探す。"],
+    roots:[{m:"安",t:"root"}],
+    topics:["日常"],syn:["低価"],ant:["高い"],notes:"安(安/低价)"},
+  {word:"好き",reading:"すき",romaji:"suki",pos:"形容動詞",level:["N5"],frequency:5,
+    definition_ja:"気に入ること。",meaning_zh:"喜欢",
+    examples:["音楽が好きだ。"],
+    roots:[{m:"好",t:"root"}],
+    topics:["感情","日常"],syn:["愛好"],ant:["嫌い"],notes:"な形容词用法：〜が好きだ"},
+  {word:"嫌い",reading:"きらい",romaji:"kirai",pos:"形容動詞",level:["N5"],frequency:4,
+    definition_ja:"好まないこと。",meaning_zh:"讨厌",
+    examples:["納豆は少し嫌いだ。"],
+    roots:[{m:"嫌",t:"root"}],
+    topics:["感情"],syn:[],ant:["好き"],notes:"反义：好き"},
+
+  // 构词：便/利/重/要/性/的/化 等
+  {word:"便利",reading:"べんり",romaji:"benri",pos:"名詞/形容動詞",level:["N4"],frequency:5,
+    definition_ja:"使い勝手がよいさま。",meaning_zh:"方便；便利",
+    examples:["このアプリはとても便利だ。"],
+    roots:[{m:"便",t:"root"},{m:"利",t:"root"}],
+    topics:["IT","日常"],syn:["有用"],ant:["不便"],notes:"便(方便)+利(有利)"},
+  {word:"不便",reading:"ふべん",romaji:"fuben",pos:"名詞/形容動詞",level:["N4"],frequency:4,
+    definition_ja:"便利でないこと。",meaning_zh:"不便",
+    examples:["駅から遠くて不便だ。"],
+    roots:[{m:"不",t:"prefix"},{m:"便",t:"root"}],
+    topics:["日常"],syn:[],ant:["便利"],notes:"接头辞 不- 表否定"},
+  {word:"重要",reading:"じゅうよう",romaji:"juuyou",pos:"名詞/形容動詞",level:["N3"],frequency:5,
+    definition_ja:"大切なこと。",meaning_zh:"重要",
+    examples:["安全は最も重要だ。"],
+    roots:[{m:"重",t:"root"},{m:"要",t:"root"}],
+    topics:["通用"],syn:["大切"],ant:["些細"],notes:"重+要 ⇒ 重要"},
+  {word:"重要性",reading:"じゅうようせい",romaji:"juuyousei",pos:"名詞",level:["N2"],frequency:4,
+    definition_ja:"重要である度合い。",meaning_zh:"重要性",
+    examples:["教育の重要性を強調する。"],
+    roots:[{m:"重",t:"root"},{m:"要",t:"root"},{m:"性",t:"suffix"}],
+    topics:["教育","通用"],syn:[],ant:[],notes:"〜性：性质/程度名词化"},
+  {word:"必要",reading:"ひつよう",romaji:"hitsuyou",pos:"名詞/形容動詞",level:["N4"],frequency:5,
+    definition_ja:"なくてはならないこと。",meaning_zh:"必要",
+    examples:["身分証明書が必要だ。"],
+    roots:[{m:"必",t:"root"},{m:"要",t:"root"}],
+    topics:["通用"],syn:["要る"],ant:["不要"],notes:"必(必须)+要"},
+  {word:"可能性",reading:"かのうせい",romaji:"kanousei",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"実現する見込み。",meaning_zh:"可能性",
+    examples:["成功の可能性が高い。"],
+    roots:[{m:"可",t:"root"},{m:"能",t:"root"},{m:"性",t:"suffix"}],
+    topics:["通用"],syn:["見込み"],ant:["不可能"],notes:"〜性：property/possibility"},
+  {word:"効果的",reading:"こうかてき",romaji:"koukateki",pos:"形容動詞",level:["N2"],frequency:4,
+    definition_ja:"効果が上がるさま。",meaning_zh:"有效的；有成效的",
+    examples:["効果的な方法を探す。"],
+    roots:[{m:"効",t:"root"},{m:"果",t:"root"},{m:"的",t:"suffix"}],
+    topics:["学术","工作"],syn:["有効な"],ant:["無効な"],notes:"〜的：形容动词化 → 具体的/抽象的 等"},
+
+  // 科研/社会
+  {word:"研究",reading:"けんきゅう",romaji:"kenkyuu",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"学問的に探究すること。",meaning_zh:"研究",
+    examples:["新素材の研究を進める。"],
+    roots:[{m:"研",t:"root"},{m:"究",t:"root"}],
+    topics:["学术"],syn:["探究"],ant:[],notes:"研+究"},
+  {word:"研究者",reading:"けんきゅうしゃ",romaji:"kenkyuusha",pos:"名詞",level:["N2"],frequency:4,
+    definition_ja:"研究を職業とする人。",meaning_zh:"研究者；科研人员",
+    examples:["彼はAIの研究者だ。"],
+    roots:[{m:"研",t:"root"},{m:"究",t:"root"},{m:"者",t:"suffix"}],
+    topics:["学术","人"],syn:["学者"],ant:[],notes:"〜者：做人之后缀"},
+  {word:"社会",reading:"しゃかい",romaji:"shakai",pos:"名詞",level:["N4"],frequency:5,
+    definition_ja:"人間の集団がつくる仕組み。",meaning_zh:"社会",
+    examples:["社会問題に関心がある。"],
+    roots:[{m:"社",t:"root"},{m:"会",t:"root"}],
+    topics:["社会"],syn:[],ant:[],notes:"社+会"},
+  {word:"経済",reading:"けいざい",romaji:"keizai",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"財やサービスの生産・分配・消費の体系。",meaning_zh:"经济",
+    examples:["世界経済が回復する。"],
+    roots:[{m:"経",t:"root"},{m:"済",t:"root"}],
+    topics:["经济"],syn:[],ant:[],notes:"经+济"},
+  {word:"科学",reading:"かがく",romaji:"kagaku",pos:"名詞",level:["N4"],frequency:5,
+    definition_ja:"客観的・体系的な知識。",meaning_zh:"科学",
+    examples:["科学的思考が必要だ。"],
+    roots:[{m:"科",t:"root"},{m:"学",t:"root"}],
+    topics:["学术"],syn:[],ant:[],notes:"科+学"},
+  {word:"技術",reading:"ぎじゅつ",romaji:"gijutsu",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"目的を達するための技能や方法。",meaning_zh:"技术",
+    examples:["新しい技術を導入する。"],
+    roots:[{m:"技",t:"root"},{m:"術",t:"root"}],
+    topics:["科技","工作"],syn:["テクノロジー"],ant:[],notes:"技+術"},
+  {word:"環境",reading:"かんきょう",romaji:"kankyou",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"周囲の状況。自然や社会も含む。",meaning_zh:"环境",
+    examples:["環境問題に取り組む。"],
+    roots:[{m:"環",t:"root"},{m:"境",t:"root"}],
+    topics:["环境","社会"],syn:[],ant:[],notes:"环+境"},
+  {word:"情報",reading:"じょうほう",romaji:"jouhou",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"知識やニュースなどのデータ。",meaning_zh:"信息",
+    examples:["正確な情報を共有する。"],
+    roots:[{m:"情",t:"root"},{m:"報",t:"root"}],
+    topics:["IT","社会"],syn:[],ant:[],notes:"情+報"},
+
+  {word:"国際",reading:"こくさい",romaji:"kokusai",pos:"名詞/形容動詞",level:["N3"],frequency:5,
+    definition_ja:"国家相互に関わること。",meaning_zh:"国际",
+    examples:["国際会議に参加する。"],
+    roots:[{m:"国",t:"root"},{m:"際",t:"root"}],
+    topics:["国际","社会"],syn:[],ant:[],notes:"国+際"},
+  {word:"国際化",reading:"こくさいか",romaji:"kokusai-ka",pos:"名詞/サ変",level:["N2"],frequency:4,
+    definition_ja:"国際的になること。",meaning_zh:"国际化",
+    examples:["企業の国際化が進む。"],
+    roots:[{m:"国",t:"root"},{m:"際",t:"root"},{m:"化",t:"suffix"}],
+    topics:["国际","经济"],syn:[],ant:[],notes:"〜化：…化/使…化"},
+  {word:"情報化",reading:"じょうほうか",romaji:"jouhou-ka",pos:"名詞/サ変",level:["N2"],frequency:3,
+    definition_ja:"社会や組織が情報中心になること。",meaning_zh:"信息化",
+    examples:["行政の情報化を推進する。"],
+    roots:[{m:"情",t:"root"},{m:"報",t:"root"},{m:"化",t:"suffix"}],
+    topics:["IT","社会"],syn:[],ant:[],notes:"情+報 + 化"},
+
+  // 负向/否定接头
+  {word:"安全",reading:"あんぜん",romaji:"anzen",pos:"名詞/形容動詞",level:["N4"],frequency:5,
+    definition_ja:"危険がないこと。",meaning_zh:"安全",
+    examples:["安全対策を徹底する。"],
+    roots:[{m:"安",t:"root"},{m:"全(root)",t:"root"}],
+    topics:["通用"],syn:["無事故"],ant:["危険"],notes:"安+全"},
+  {word:"危険",reading:"きけん",romaji:"kiken",pos:"名詞/形容動詞",level:["N4"],frequency:4,
+    definition_ja:"害が及ぶおそれがあること。",meaning_zh:"危险",
+    examples:["危険区域に入らないでください。"],
+    roots:[{m:"危",t:"root"},{m:"険",t:"root"}],
+    topics:["通用"],syn:[],ant:["安全"],notes:"危+険"},
+  {word:"無関係",reading:"むかんけい",romaji:"mukankei",pos:"名詞/形容動詞",level:["N2"],frequency:3,
+    definition_ja:"関係がないこと。",meaning_zh:"无关；无关系",
+    examples:["この件とは無関係だ。"],
+    roots:[{m:"無",t:"prefix"},{m:"関",t:"root"},{m:"係",t:"root"}],
+    topics:["通用"],syn:["関係ない"],ant:["関係"],notes:"無- 表“没有”"},
+  {word:"非公開",reading:"ひこうかい",romaji:"hikoukai",pos:"名詞/形容動詞",level:["N2"],frequency:3,
+    definition_ja:"一般に公開しないこと。",meaning_zh:"非公开",
+    examples:["資料は非公開である。"],
+    roots:[{m:"非",t:"prefix"},{m:"公",t:"root"},{m:"開",t:"root"}],
+    topics:["职场","法律"],syn:["未公開"],ant:["公開"],notes:"非-：非/不"},
+  {word:"非公式",reading:"ひこうしき",romaji:"hikoushiki",pos:"名詞/形容動詞",level:["N2"],frequency:3,
+    definition_ja:"正式でないこと。",meaning_zh:"非正式；非官方",
+    examples:["非公式の会談が行われた。"],
+    roots:[{m:"非",t:"prefix"},{m:"公",t:"root"},{m:"式",t:"root"}],
+    topics:["国际","政治"],syn:["インフォーマル"],ant:["公式"],notes:"非- + 公 + 式"},
+  {word:"不明",reading:"ふめい",romaji:"fumei",pos:"名詞/形容動詞",level:["N3"],frequency:4,
+    definition_ja:"はっきりしないこと。",meaning_zh:"不明；不清楚",
+    examples:["原因は不明だ。"],
+    roots:[{m:"不",t:"prefix"},{m:"明",t:"root"}],
+    topics:["通用"],syn:["曖昧"],ant:["明確"],notes:"不- 否定"},
+  {word:"不正確",reading:"ふせいかく",romaji:"fuseikaku",pos:"名詞/形容動詞",level:["N2"],frequency:3,
+    definition_ja:"正確でないこと。",meaning_zh:"不准确",
+    examples:["データが不正確だ。"],
+    roots:[{m:"不",t:"prefix"},{m:"正",t:"root"},{m:"確",t:"root"}],
+    topics:["学术","IT"],syn:[],ant:["正確"],notes:"不- + 正 + 確"},
+  {word:"不適切",reading:"ふてきせつ",romaji:"futekisetsu",pos:"名詞/形容動詞",level:["N2"],frequency:3,
+    definition_ja:"適切でないこと。",meaning_zh:"不恰当",
+    examples:["不適切な表現を避ける。"],
+    roots:[{m:"不",t:"prefix"},{m:"適",t:"root"},{m:"切",t:"root"}],
+    topics:["写作","交流"],syn:["不適当"],ant:["適切"],notes:"不- + 適 + 切"},
+
+  // ～的/～性/～化 家族
+  {word:"具体的",reading:"ぐたいてき",romaji:"gutaiteki",pos:"形容動詞",level:["N2"],frequency:5,
+    definition_ja:"はっきりと形があるさま。",meaning_zh:"具体的",
+    examples:["具体的な例を挙げる。"],
+    roots:[{m:"具",t:"root"},{m:"体",t:"root"},{m:"的",t:"suffix"}],
+    topics:["学术","写作"],syn:["明確な"],ant:["抽象的"],notes:"具+体+的"},
+  {word:"抽象的",reading:"ちゅうしょうてき",romaji:"chuushouteki",pos:"形容動詞",level:["N2"],frequency:4,
+    definition_ja:"具体性を欠くさま。",meaning_zh:"抽象的",
+    examples:["説明が抽象的すぎる。"],
+    roots:[{m:"抽",t:"root"},{m:"象",t:"root"},{m:"的",t:"suffix"}],
+    topics:["学术"],syn:[],ant:["具体的"],notes:"抽+象+的"},
+  {word:"学術的",reading:"がくじゅつてき",romaji:"gakujutsuteki",pos:"形容動詞",level:["N2"],frequency:3,
+    definition_ja:"学術に関するさま。",meaning_zh:"学术的",
+    examples:["学術的な基準で評価する。"],
+    roots:[{m:"学",t:"root"},{m:"術",t:"root"},{m:"的",t:"suffix"}],
+    topics:["学术"],syn:[],ant:[],notes:"学+術+的"},
+
+  // ～力/～感/～者
+  {word:"影響力",reading:"えいきょうりょく",romaji:"eikyouryoku",pos:"名詞",level:["N2"],frequency:4,
+    definition_ja:"人や社会に与える働きかけの強さ。",meaning_zh:"影响力",
+    examples:["SNSの影響力が大きい。"],
+    roots:[{m:"影",t:"root"},{m:"響",t:"root"},{m:"力",t:"suffix"}],
+    topics:["社会","媒体"],syn:[],ant:[],notes:"影+響 + 力"},
+  {word:"安心感",reading:"あんしんかん",romaji:"anshinkan",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"安心できる感じ。",meaning_zh:"安心感",
+    examples:["家族といると安心感がある。"],
+    roots:[{m:"安",t:"root"},{m:"心",t:"root"},{m:"感",t:"suffix"}],
+    topics:["感情"],syn:[],ant:[],notes:"安+心 + 感"},
+  {word:"危機感",reading:"ききかん",romaji:"kikikan",pos:"名詞",level:["N2"],frequency:3,
+    definition_ja:"危険を感じ取る心。",meaning_zh:"危机感",
+    examples:["人口減少に危機感を持つ。"],
+    roots:[{m:"危",t:"root"},{m:"機",t:"root"},{m:"感",t:"suffix"}],
+    topics:["社会"],syn:[],ant:[],notes:"危+機 + 感"},
+  {word:"達成感",reading:"たっせいかん",romaji:"tasseikan",pos:"名詞",level:["N3"],frequency:3,
+    definition_ja:"目標を達したときの満足感。",meaning_zh:"成就感",
+    examples:["プロジェクトが終わって達成感がある。"],
+    roots:[{m:"達",t:"root"},{m:"成",t:"root"},{m:"感",t:"suffix"}],
+    topics:["职场","心理"],syn:[],ant:[],notes:"達+成 + 感"},
+  {word:"存在感",reading:"そんざいかん",romaji:"sonzaikan",pos:"名詞",level:["N2"],frequency:3,
+    definition_ja:"目立ち、強く印象づける度合い。",meaning_zh:"存在感",
+    examples:["彼はチームで存在感がある。"],
+    roots:[{m:"存",t:"root"},{m:"在",t:"root"},{m:"感",t:"suffix"}],
+    topics:["通用"],syn:[],ant:[],notes:"存+在+感"},
+
+  {word:"表現力",reading:"ひょうげんりょく",romaji:"hyougen-ryoku",pos:"名詞",level:["N2"],frequency:3,
+    definition_ja:"表現する能力。",meaning_zh:"表现力；表达力",
+    examples:["彼女は表現力が豊かだ。"],
+    roots:[{m:"表",t:"root"},{m:"現",t:"root"},{m:"力",t:"suffix"}],
+    topics:["语言","艺术"],syn:[],ant:[],notes:"表+現 + 力"},
+  {word:"判断力",reading:"はんだんりょく",romaji:"handan-ryoku",pos:"名詞",level:["N2"],frequency:3,
+    definition_ja:"適切に判断できる力。",meaning_zh:"判断力",
+    examples:["緊急時には判断力が問われる。"],
+    roots:[{m:"判",t:"root"},{m:"断",t:"root"},{m:"力",t:"suffix"}],
+    topics:["职场"],syn:[],ant:[],notes:"判+断 + 力"},
+  {word:"集中力",reading:"しゅうちゅうりょく",romaji:"shuuchuu-ryoku",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"注意を一点に集める力。",meaning_zh:"专注力",
+    examples:["試験前は集中力を高めたい。"],
+    roots:[{m:"集",t:"root"},{m:"中",t:"suffix"},{m:"力",t:"suffix"}],
+    topics:["学习","心理"],syn:[],ant:[],notes:"集+中 + 力"},
+  {word:"想像力",reading:"そうぞうりょく",romaji:"souzou-ryoku",pos:"名詞",level:["N3"],frequency:3,
+    definition_ja:"イメージする力。",meaning_zh:"想象力",
+    examples:["物語は想像力を育てる。"],
+    roots:[{m:"想",t:"root"},{m:"像",t:"root"},{m:"力",t:"suffix"}],
+    topics:["艺术","心理"],syn:[],ant:[],notes:"想+像 + 力"},
+
+  // 业务/沟通
+  {word:"説明",reading:"せつめい",romaji:"setsumei",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"分かるように述べること。",meaning_zh:"说明；解释",
+    examples:["手順を説明する。"],
+    roots:[{m:"説",t:"root"},{m:"明",t:"root"}],
+    topics:["交流","职场"],syn:["解説"],ant:[],notes:"説+明"},
+  {word:"理解",reading:"りかい",romaji:"rikai",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"意味や仕組みを分かること。",meaning_zh:"理解",
+    examples:["相手の気持ちを理解する。"],
+    roots:[{m:"理",t:"root"},{m:"解",t:"root"}],
+    topics:["交流"],syn:["把握"],ant:["誤解"],notes:"理+解"},
+  {word:"比較",reading:"ひかく",romaji:"hikaku",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"二つ以上のものの違いを調べること。",meaning_zh:"比较",
+    examples:["新旧モデルを比較する。"],
+    roots:[{m:"比",t:"root"},{m:"較",t:"root"}],
+    topics:["学术","职场"],syn:[],ant:[],notes:"比+較"},
+  {word:"選択",reading:"せんたく",romaji:"sentaku",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"多くの中から選ぶこと。",meaning_zh:"选择",
+    examples:["最適な方法を選択する。"],
+    roots:[{m:"選",t:"root"},{m:"択",t:"root"}],
+    topics:["通用"],syn:["チョイス"],ant:[],notes:"選+択"},
+  {word:"決定",reading:"けってい",romaji:"kettei",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"決めること。",meaning_zh:"决定",
+    examples:["方針を決定する。"],
+    roots:[{m:"決",t:"root"},{m:"定",t:"root"}],
+    topics:["职场"],syn:["決断"],ant:["保留"],notes:"決+定"},
+  {word:"改善",reading:"かいぜん",romaji:"kaizen",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"よりよく改めること。",meaning_zh:"改善；改进",
+    examples:["品質を改善する。"],
+    roots:[{m:"改",t:"root"},{m:"善",t:"root"}],
+    topics:["职场","质量"],syn:["改良"],ant:["悪化"],notes:"改+善"},
+  {word:"発展",reading:"はってん",romaji:"hatten",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"物事がのび広がること。",meaning_zh:"发展",
+    examples:["都市が発展する。"],
+    roots:[{m:"発",t:"root"},{m:"展",t:"root"}],
+    topics:["社会","经济"],syn:["進展"],ant:["停滞"],notes:"発+展"},
+  {word:"競争",reading:"きょうそう",romaji:"kyousou",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"互いに勝ちを目指して争うこと。",meaning_zh:"竞争",
+    examples:["市場競争が激しい。"],
+    roots:[{m:"競",t:"root"},{m:"争",t:"root"}],
+    topics:["经济"],syn:["コンペ"],ant:["協力"],notes:"競+争"},
+  {word:"成功",reading:"せいこう",romaji:"seikou",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"目的を達すること。",meaning_zh:"成功",
+    examples:["計画が成功した。"],
+    roots:[{m:"成",t:"root"},{m:"功",t:"root"}],
+    topics:["通用"],syn:[],ant:["失敗"],notes:"成+功"},
+  {word:"失敗",reading:"しっぱい",romaji:"shippai",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"思う通りにいかないこと。",meaning_zh:"失败",
+    examples:["小さな失敗から学ぶ。"],
+    roots:[{m:"失",t:"root"},{m:"敗",t:"root"}],
+    topics:["通用"],syn:[],ant:["成功"],notes:"失+敗"},
+  {word:"責任",reading:"せきにん",romaji:"sekinin",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"引き受けなければならない務め。",meaning_zh:"责任",
+    examples:["責任を果たす。"],
+    roots:[{m:"責",t:"root"},{m:"任",t:"root"}],
+    topics:["职场","法律"],syn:["義務"],ant:[],notes:"責+任"},
+  {word:"提案",reading:"ていあん",romaji:"teian",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"案を提出すること。",meaning_zh:"提案；方案",
+    examples:["新しい提案をまとめる。"],
+    roots:[{m:"提",t:"root"},{m:"案",t:"root"}],
+    topics:["职场"],syn:["提言"],ant:[],notes:"提+案"},
+  {word:"連絡",reading:"れんらく",romaji:"renraku",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"情報を伝え合うこと。",meaning_zh:"联络；联系",
+    examples:["メールで連絡します。"],
+    roots:[{m:"連(root)",t:"root"},{m:"絡",t:"root"}],
+    topics:["交流"],syn:["コンタクト"],ant:[],notes:"連+絡"},
+  {word:"予約",reading:"よやく",romaji:"yoyaku",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"前もって約束すること。",meaning_zh:"预约",
+    examples:["明日の予約を取る。"],
+    roots:[{m:"予",t:"root"},{m:"約",t:"root"}],
+    topics:["旅行","日常"],syn:["ブッキング"],ant:[],notes:"予+約"},
+
+  // 参与/立场
+  {word:"参加",reading:"さんか",romaji:"sanka",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"その場に加わること。",meaning_zh:"参加",
+    examples:["会議に参加する。"],
+    roots:[{m:"参",t:"root"},{m:"加",t:"root"}],
+    topics:["职场","校园"],syn:["出席"],ant:["欠席"],notes:"参+加"},
+  {word:"参加者",reading:"さんかしゃ",romaji:"sankasha",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"参加する人。",meaning_zh:"参与者；参加者",
+    examples:["参加者は百名を超えた。"],
+    roots:[{m:"参",t:"root"},{m:"加",t:"root"},{m:"者",t:"suffix"}],
+    topics:["职场","校园"],syn:[],ant:[],notes:"〜者 后缀（人）"},
+  {word:"賛成",reading:"さんせい",romaji:"sansei",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"同意すること。",meaning_zh:"赞成",
+    examples:["私は提案に賛成だ。"],
+    roots:[{m:"賛",t:"root"},{m:"成",t:"root"}],
+    topics:["交流","政治"],syn:["同意"],ant:["反対"],notes:"賛+成"},
+  {word:"反対",reading:"はんたい",romaji:"hantai",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"意見が対立すること。",meaning_zh:"反对",
+    examples:["この案に反対する。"],
+    roots:[{m:"反",t:"root"},{m:"対",t:"prefix"}],
+    topics:["交流","政治"],syn:["異議"],ant:["賛成"],notes:"反+対"},
+  {word:"注意",reading:"ちゅうい",romaji:"chuui",pos:"名詞/サ変",level:["N4"],frequency:5,
+    definition_ja:"気をつけること。",meaning_zh:"注意",
+    examples:["安全に注意してください。"],
+    roots:[{m:"注",t:"root"},{m:"意",t:"root"}],
+    topics:["通用"],syn:["警戒"],ant:[],notes:"注+意"},
+
+  // 经验/态度
+  {word:"経験",reading:"けいけん",romaji:"keiken",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"実際に見聞きし、行うこと。",meaning_zh:"经验",
+    examples:["海外での経験が役に立つ。"],
+    roots:[{m:"経",t:"root"},{m:"験",t:"root"}],
+    topics:["职场","教育"],syn:[],ant:[],notes:"经+验"},
+  {word:"遠慮",reading:"えんりょ",romaji:"enryo",pos:"名詞/サ変",level:["N3"],frequency:3,
+    definition_ja:"控えめにすること。",meaning_zh:"客气；保留",
+    examples:["ご遠慮なくどうぞ。"],
+    roots:[{m:"遠",t:"root"},{m:"慮",t:"root"}],
+    topics:["礼貌","交流"],syn:["配慮"],ant:[],notes:"常见表达：ご遠慮なく"},
+  {word:"適切",reading:"てきせつ",romaji:"tekisetsu",pos:"名詞/形容動詞",level:["N3"],frequency:4,
+    definition_ja:"状況にぴったり合うさま。",meaning_zh:"适切；恰当",
+    examples:["適切な言葉を選ぶ。"],
+    roots:[{m:"適",t:"root"},{m:"切",t:"root"}],
+    topics:["写作","交流"],syn:["適当"],ant:["不適切"],notes:"適(恰当)+切"},
+  {word:"明確",reading:"めいかく",romaji:"meikaku",pos:"名詞/形容動詞",level:["N3"],frequency:4,
+    definition_ja:"はっきりしているさま。",meaning_zh:"明确",
+    examples:["目的を明確にする。"],
+    roots:[{m:"明",t:"root"},{m:"確",t:"root"}],
+    topics:["写作","职场"],syn:["具体的"],ant:["不明"],notes:"明+確"},
+  {word:"正確",reading:"せいかく",romaji:"seikaku",pos:"名詞/形容動詞",level:["N3"],frequency:4,
+    definition_ja:"間違いがないさま。",meaning_zh:"准确；精确",
+    examples:["正確なデータを入力する。"],
+    roots:[{m:"正",t:"root"},{m:"確",t:"root"}],
+    topics:["学术","IT"],syn:["精密"],ant:["不正確"],notes:"正+確"},
+  {word:"単純",reading:"たんじゅん",romaji:"tanjun",pos:"名詞/形容動詞",level:["N3"],frequency:4,
+    definition_ja:"構造が複雑でないこと。",meaning_zh:"单纯；简单",
+    examples:["単純なミスを減らす。"],
+    roots:[{m:"単",t:"root"},{m:"純",t:"root"}],
+    topics:["通用"],syn:["シンプル"],ant:["複雑"],notes:"単+純"},
+  {word:"複雑",reading:"ふくざつ",romaji:"fukuzatsu",pos:"名詞/形容動詞",level:["N3"],frequency:4,
+    definition_ja:"入り組んで簡単でないさま。",meaning_zh:"复杂",
+    examples:["複雑な問題を分解する。"],
+    roots:[{m:"複",t:"root"},{m:"雑",t:"root"}],
+    topics:["学术"],syn:["入り組む"],ant:["単純"],notes:"複+雑"},
+
+  // 再/超/未/誤/同/連/逆/対
+  {word:"再利用",reading:"さいりよう",romaji:"sairiyou",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"もう一度利用すること。",meaning_zh:"再利用；重复使用",
+    examples:["資源の再利用を促進する。"],
+    roots:[{m:"再",t:"prefix"},{m:"利",t:"root"},{m:"用",t:"root"}],
+    topics:["环境","经济"],syn:["リユース"],ant:[],notes:"再-（再次）+ 利用"},
+  {word:"再生",reading:"さいせい",romaji:"saisei",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"生き返る/復活/再び生み出すこと。",meaning_zh:"再生；重生；播放",
+    examples:["動画を再生する。"],
+    roots:[{m:"再",t:"prefix"},{m:"生",t:"root"}],
+    topics:["IT","环境"],syn:["復活"],ant:[],notes:"再- + 生"},
+  {word:"未完成",reading:"みかんせい",romaji:"mikansei",pos:"名詞/形容動詞",level:["N2"],frequency:3,
+    definition_ja:"まだ完成していないこと。",meaning_zh:"未完成",
+    examples:["計画は未完成の段階だ。"],
+    roots:[{m:"未",t:"prefix"},{m:"完",t:"root"},{m:"成",t:"root"}],
+    topics:["职场"],syn:[],ant:["完成"],notes:"未-（尚未）"},
+  {word:"誤解",reading:"ごかい",romaji:"gokai",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"まちがって理解すること。",meaning_zh:"误解",
+    examples:["発言が誤解を招いた。"],
+    roots:[{m:"誤",t:"prefix"},{m:"解",t:"root"}],
+    topics:["交流"],syn:["ミスリード"],ant:["理解"],notes:"誤-（错误）"},
+  {word:"同意",reading:"どうい",romaji:"doui",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"同じ意見であること。",meaning_zh:"同意",
+    examples:["利用規約に同意する。"],
+    roots:[{m:"同(root)",t:"root"},{m:"意",t:"root"}],
+    topics:["法律","职场"],syn:["賛成"],ant:["不同意"],notes:"同+意"},
+  {word:"連続",reading:"れんぞく",romaji:"renzoku",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"切れ目なく続くこと。",meaning_zh:"连续",
+    examples:["三日連続で雨が降った。"],
+    roots:[{m:"連(root)",t:"root"},{m:"続",t:"root"}],
+    topics:["通用"],syn:["継続"],ant:["断続"],notes:"連+続"},
+  {word:"逆効果",reading:"ぎゃくこうか",romaji:"gyakukouka",pos:"名詞",level:["N2"],frequency:3,
+    definition_ja:"期待と反対の結果になること。",meaning_zh:"适得其反；反效果",
+    examples:["注意しすぎると逆効果だ。"],
+    roots:[{m:"逆",t:"prefix"},{m:"効",t:"root"},{m:"果",t:"root"}],
+    topics:["心理","通用"],syn:[],ant:[],notes:"逆- + 効果"},
+  {word:"対策",reading:"たいさく",romaji:"taisaku",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"問題に対して取る手段。",meaning_zh:"对策；措施",
+    examples:["地震対策を強化する。"],
+    roots:[{m:"対",t:"prefix"},{m:"策",t:"root"}],
+    topics:["社会","安全"],syn:["措置"],ant:[],notes:"対- + 策"},
+
+  // 商品/新旧/整体
+  {word:"元気",reading:"げんき",romaji:"genki",pos:"名詞/形容動詞",level:["N5"],frequency:5,
+    definition_ja:"健康で活力があること。",meaning_zh:"精神；有活力",
+    examples:["今日は元気だ。"],
+    roots:[{m:"元(root)",t:"root"},{m:"気",t:"root"}],
+    topics:["健康","日常"],syn:["活力"],ant:["不調"],notes:"元+気"},
+  {word:"新製品",reading:"しんせいひん",romaji:"shin-seihin",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"新しく作られた商品。",meaning_zh:"新产品",
+    examples:["新製品を発表する。"],
+    roots:[{m:"新(root)",t:"root"},{m:"製",t:"root"},{m:"品",t:"root"}],
+    topics:["商业"],syn:["ニューアイテム"],ant:["旧型"],notes:"新+製+品"},
+  {word:"旧型",reading:"きゅうがた",romaji:"kyuugata",pos:"名詞/形容動詞",level:["N3"],frequency:3,
+    definition_ja:"古い型。",meaning_zh:"旧款；旧型",
+    examples:["旧型の機器を更新する。"],
+    roots:[{m:"旧(root)",t:"root"},{m:"型",t:"root"}],
+    topics:["商业","IT"],syn:[],ant:["新型"],notes:"旧+型"},
+  {word:"全体",reading:"ぜんたい",romaji:"zentai",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"ある物の全部。",meaning_zh:"整体；全体",
+    examples:["全体の流れを把握する。"],
+    roots:[{m:"全(root)",t:"root"},{m:"体",t:"root"}],
+    topics:["通用"],syn:["総体"],ant:["一部"],notes:"全+体"},
+
+  // 语言/学习/使用/用户
+  {word:"学習",reading:"がくしゅう",romaji:"gakushuu",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"学んで身につけること。",meaning_zh:"学习；学得",
+    examples:["機械学習の勉強をする。"],
+    roots:[{m:"学",t:"root"},{m:"習",t:"root"}],
+    topics:["教育","IT"],syn:["勉強"],ant:[],notes:"学+習"},
+  {word:"使用",reading:"しよう",romaji:"shiyou",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"使うこと。",meaning_zh:"使用",
+    examples:["データを使用する。"],
+    roots:[{m:"使",t:"root"},{m:"用",t:"root"}],
+    topics:["IT","职场"],syn:["利用"],ant:[],notes:"使+用"},
+  {word:"使用者",reading:"しようしゃ",romaji:"shiyousha",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"使用する人。",meaning_zh:"使用者；使用人",
+    examples:["使用者のニーズを調査する。"],
+    roots:[{m:"使",t:"root"},{m:"用",t:"root"},{m:"者",t:"suffix"}],
+    topics:["IT","商业"],syn:["ユーザー"],ant:[],notes:"〜者 人"},
+  {word:"利用",reading:"りよう",romaji:"riyō",pos:"名詞/サ変",level:["N3"],frequency:5,
+    definition_ja:"役立つように使うこと。",meaning_zh:"利用",
+    examples:["図書館を利用する。"],
+    roots:[{m:"利",t:"root"},{m:"用",t:"root"}],
+    topics:["日常","IT"],syn:["活用"],ant:[],notes:"利+用"},
+  {word:"利用者",reading:"りようしゃ",romaji:"riyousha",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"利用する人。",meaning_zh:"用户；利用者",
+    examples:["利用者数が増えている。"],
+    roots:[{m:"利",t:"root"},{m:"用",t:"root"},{m:"者",t:"suffix"}],
+    topics:["IT","商业"],syn:["ユーザー"],ant:[],notes:"〜者 人"},
+  {word:"作者",reading:"さくしゃ",romaji:"sakusha",pos:"名詞",level:["N3"],frequency:3,
+    definition_ja:"作品を作った人。",meaning_zh:"作者",
+    examples:["作者にインタビューする。"],
+    roots:[{m:"作",t:"root"},{m:"者",t:"suffix"}],
+    topics:["文化"],syn:["著者"],ant:[],notes:"作+者"},
+
+  // 职场高频
+  {word:"勤務",reading:"きんむ",romaji:"kinmu",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"勤めて働くこと。",meaning_zh:"任职；上班",
+    examples:["在宅勤務が増えた。"],
+    roots:[{m:"勤",t:"root"},{m:"務",t:"root"}],
+    topics:["职场"],syn:["就業"],ant:[],notes:"勤+務"},
+  {word:"残業",reading:"ざんぎょう",romaji:"zangyou",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"所定時間を超えて働くこと。",meaning_zh:"加班",
+    examples:["今週は残業が多い。"],
+    roots:[{m:"残",t:"root"},{m:"業",t:"root"}],
+    topics:["职场"],syn:["オーバータイム"],ant:[],notes:"残+業"},
+  {word:"給料",reading:"きゅうりょう",romaji:"kyuuryou",pos:"名詞",level:["N3"],frequency:4,
+    definition_ja:"労働の対価として支払われるお金。",meaning_zh:"薪水；工资",
+    examples:["給料が上がった。"],
+    roots:[{m:"給",t:"root"},{m:"料",t:"root"}],
+    topics:["职场","经济"],syn:["賃金"],ant:[],notes:"給+料"},
+  {word:"出張",reading:"しゅっちょう",romaji:"shucchou",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"仕事で他の土地へ行くこと。",meaning_zh:"出差",
+    examples:["大阪へ出張する。"],
+    roots:[{m:"出",t:"root"},{m:"張",t:"root"}],
+    topics:["职场","旅行"],syn:[],ant:[],notes:"出+張"},
+  {word:"会議",reading:"かいぎ",romaji:"kaigi",pos:"名詞",level:["N3"],frequency:5,
+    definition_ja:"議題について話し合う集まり。",meaning_zh:"会议",
+    examples:["午後に会議がある。"],
+    roots:[{m:"会",t:"root"},{m:"議",t:"root"}],
+    topics:["职场"],syn:["ミーティング"],ant:[],notes:"会+議"},
+  {word:"提出",reading:"ていしゅつ",romaji:"teishutsu",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"書類などを出すこと。",meaning_zh:"提交",
+    examples:["レポートを提出する。"],
+    roots:[{m:"提",t:"root"},{m:"出",t:"root"}],
+    topics:["职场","学术"],syn:["提出"],ant:[],notes:"提+出"},
+  {word:"報告",reading:"ほうこく",romaji:"houkoku",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"状況や結果を知らせること。",meaning_zh:"报告",
+    examples:["進捗を報告する。"],
+    roots:[{m:"報",t:"root"},{m:"告",t:"root"}],
+    topics:["职场"],syn:["レポート"],ant:[],notes:"報+告"},
+  {word:"面接",reading:"めんせつ",romaji:"mensetsu",pos:"名詞/サ変",level:["N2"],frequency:4,
+    definition_ja:"対面して質問・応答を行うこと。",meaning_zh:"面试",
+    examples:["明日は面接がある。"],
+    roots:[{m:"面",t:"root"},{m:"接",t:"root"}],
+    topics:["职场"],syn:["インタビュー"],ant:[],notes:"面+接"},
+  {word:"取引",reading:"とりひき",romaji:"torihiki",pos:"名詞/サ変",level:["N2"],frequency:4,
+    definition_ja:"売買や契約などの行為。",meaning_zh:"交易；往来",
+    examples:["海外企業と取引する。"],
+    roots:[{m:"取",t:"root"},{m:"引",t:"root"}],
+    topics:["商业"],syn:["ディール"],ant:[],notes:"取+引"},
+  {word:"契約",reading:"けいやく",romaji:"keiyaku",pos:"名詞/サ変",level:["N2"],frequency:4,
+    definition_ja:"当事者間で取り決める約束。",meaning_zh:"契约；合同",
+    examples:["契約を締結する。"],
+    roots:[{m:"契",t:"root"},{m:"約",t:"root"}],
+    topics:["法律","商业"],syn:["合意"],ant:[],notes:"契+約"},
+  {word:"販売",reading:"はんばい",romaji:"hanbai",pos:"名詞/サ変",level:["N3"],frequency:4,
+    definition_ja:"商品を売ること。",meaning_zh:"销售；贩卖",
+    examples:["オンライン販売が伸びる。"],
+    roots:[{m:"販",t:"root"},{m:"売",t:"root"}],
+    topics:["商业"],syn:["セールス"],ant:[],notes:"販+売"},
+  {word:"宣伝",reading:"せんでん",romaji:"senden",pos:"名詞/サ変",level:["N2"],frequency:3,
+    definition_ja:"広く知らせる活動。",meaning_zh:"宣传；推广",
+    examples:["新商品の宣伝を行う。"],
+    roots:[{m:"宣",t:"root"},{m:"伝",t:"root"}],
+    topics:["商业","媒体"],syn:["プロモーション"],ant:[],notes:"宣+伝"}
+];
+
+/** 索引与状态 **/
+const ALL_LEVELS = ["N5","N4","N3","N2","N1"];
+const ALL_POS = [...new Set(WORDS.map(w=>w.pos.split(/[.,/ ]+/)[0]).filter(Boolean))];
+const ALL_TOPICS = [...new Set(WORDS.flatMap(w=>w.topics||[]))].sort();
+const ALL_MORPHS = [...new Set(WORDS.flatMap(w=>w.roots?.map(r=>r.m)||[]))].sort();
+
+const LEVEL_FILTER = new Set();
+const POS_FILTER = new Set();
+const TOPIC_FILTER = new Set();
+const MORPH_FILTER = new Set();
+let ONLY_ROOTS=false, REQUIRE_ALL=false, FREQ_MIN=1;
+let QUERY="";
+
+const state = {
+  words:[...WORDS],
+  idx:{ byMorph:new Map(), byWord:new Map() },
+  selected:null,
+  srsQueue:[]
+};
+
+function buildIndex(){
+  state.idx.byMorph.clear();
+  state.idx.byWord.clear();
+  for(const w of state.words){
+    state.idx.byWord.set((w.word||"").toLowerCase(), w);
+    (w.roots||[]).forEach(r=>{
+      if(!state.idx.byMorph.has(r.m)) state.idx.byMorph.set(r.m, new Set());
+      state.idx.byMorph.get(r.m).add(w);
+    });
+  }
+}
+buildIndex();
+
+/** DOM helpers **/
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+$("#total").textContent = state.words.length;
+
+function chip(text, active=false){
+  const d=document.createElement('span'); d.className='chip'+(active?' active':''); d.textContent=text; return d;
+}
+function fillChips(){
+  const lvl=$("#levelChips"); lvl.innerHTML='';
+  ALL_LEVELS.forEach(l=>{ const c=chip(l); c.onclick=()=>{toggleSet(LEVEL_FILTER,l); render();}; lvl.appendChild(c); });
+  const pc=$("#posChips"); pc.innerHTML='';
+  ALL_POS.forEach(p=>{ const c=chip(p); c.onclick=()=>{toggleSet(POS_FILTER,p); render();}; pc.appendChild(c); });
+  const tc=$("#topicChips"); tc.innerHTML='';
+  ALL_TOPICS.forEach(t=>{ const c=chip(t); c.onclick=()=>{toggleSet(TOPIC_FILTER,t); render();}; tc.appendChild(c); });
+
+  const mc=$("#morphChips"); mc.innerHTML='';
+  const hot = ["学","語","者","家","化","性","的","力","感","中","前","後","無","非","不","再","超","未","誤","同","新","旧","元","全","対","連","逆","国","際","情","報","技","術","環","境","安","全(root)","危","険","便","利","重","要","経","験","表","現","集","中"].filter(m=>ALL_MORPHS.includes(m));
+  hot.forEach(m=>{ const c=chip(m); c.onclick=()=>{toggleSet(MORPH_FILTER,m); render();}; mc.appendChild(c); });
+}
+fillChips();
+function toggleSet(set,key){ set.has(key)? set.delete(key): set.add(key); }
+
+/** 控件事件 **/
+$("#requireAll").onchange = e=>{REQUIRE_ALL=e.target.checked; render();}
+$("#onlyRoots").onchange = e=>{ONLY_ROOTS=e.target.checked; render();}
+$("#freq").oninput = e=>{FREQ_MIN=+e.target.value; $("#freqVal").textContent='≥'+FREQ_MIN; render();}
+$("#resetBtn").onclick = ()=>{
+  LEVEL_FILTER.clear(); POS_FILTER.clear(); TOPIC_FILTER.clear(); MORPH_FILTER.clear();
+  ONLY_ROOTS=false; REQUIRE_ALL=false; FREQ_MIN=1; QUERY='';
+  $("#onlyRoots").checked=false; $("#requireAll").checked=false;
+  $("#freq").value=1; $("#freqVal").textContent='≥1';
+  $("#q").value=''; $("#morphSearch").value='';
+  render();
+};
+$("#q").addEventListener('input', debounce(e=>{ QUERY=e.target.value.trim(); render(); }, 150));
+$("#clearBtn").onclick = ()=>{ $("#q").value=''; QUERY=''; render(); };
+$("#morphSearch").addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const v=e.target.value.trim();
+    if(v){ MORPH_FILTER.add(v.replace(/\s+/g,'').toLowerCase()?v:''); e.target.value=''; render(); }
+  }
+});
+$("#darkBtn").onclick = ()=>{ document.body.classList.toggle('dark'); localStorage.setItem('jp_dark', document.body.classList.contains('dark')?'1':'0'); }
+if(localStorage.getItem('jp_dark')==='1') document.body.classList.add('dark');
+
+/** 检索逻辑 **/
+function searchAndFilter(){
+  let arr = state.words.filter(w=>{
+    if((w.frequency||1) < FREQ_MIN) return false;
+    if(LEVEL_FILTER.size && !w.level?.some(l=>LEVEL_FILTER.has(l))) return false;
+    if(POS_FILTER.size && !POS_FILTER.has(w.pos.split(/[.,/ ]+/)[0])) return false;
+    if(TOPIC_FILTER.size && !w.topics?.some(t=>TOPIC_FILTER.has(t))) return false;
+    if(MORPH_FILTER.size){
+      const morphs = (w.roots||[]).filter(r=>ONLY_ROOTS? r.t==='root' : true).map(r=>r.m);
+      if(REQUIRE_ALL){
+        for(const m of MORPH_FILTER) if(!morphs.includes(m)) return false;
+      }else{
+        let ok=false; for(const m of MORPH_FILTER){ if(morphs.includes(m)){ ok=true; break; } }
+        if(!ok) return false;
+      }
+    }
+    if(QUERY){
+      const q = QUERY.toLowerCase();
+      const hay = [
+        w.word, w.reading, w.romaji, w.meaning_zh,
+        w.definition_ja, w.pos, ...(w.level||[]), ...(w.topics||[]),
+        ...((w.syn||[])), ...((w.ant||[])), ...((w.roots||[]).map(r=>r.m))
+      ].join(' | ').toLowerCase();
+      if(!fuzzyIncludes(hay, q)) return false;
+    }
+    return true;
+  });
+  return arr;
+}
+function fuzzyIncludes(text,q){
+  if(text.includes(q)) return true;
+  const parts=q.split(/\s+/).filter(Boolean);
+  return parts.every(p=>text.includes(p));
+}
+
+/** 渲染结果网格 **/
+const grid=$("#grid");
+function render(){
+  const list = searchAndFilter();
+  $("#count").textContent = list.length;
+  grid.innerHTML='';
+  list.forEach(w=>{
+    const card=document.createElement('div');
+    card.className='word-card';
+    card.innerHTML = `
+      <div class="word-head">
+        <div class="word">${hlMorphemeInWord(w)}</div>
+        <div class="tags">
+          ${(w.level||[]).map(l=>`<span class="badge">${l}</span>`).join('')}
+          <span class="pill">${w.pos}</span>
+          <span class="pill">F${w.frequency||1}</span>
+        </div>
+      </div>
+      <div class="mean">${escapeHtml(w.reading||'')} · ${escapeHtml(w.meaning_zh||'')}</div>
+      <div class="morph">${(w.roots||[]).map(r=>morphTag(r)).join('')}</div>
+    `;
+    card.onclick = ()=>{ selectWord(w.word); };
+    card.ondblclick = ()=>{ addToSrs(w.word); flash(card); };
+    grid.appendChild(card);
+  });
+  if(list.length && !state.selected){ selectWord(list[0].word); }
+  if(state.selected && !list.includes(state.selected)){
+    if(list[0]) selectWord(list[0].word); else clearDetail();
+  }
+  syncActiveChips();
+}
+function flash(el){ el.style.outline='2px solid var(--primary)'; setTimeout(()=>el.style.outline='', 350); }
+function morphTag(r){
+  const meta = MORPHEMES[r.m]||{type:r.t};
+  const cls = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+  const title = `${r.m} · ${meta.type||r.t} · ${(meta.zh||'')}${meta.ja?(' / '+meta.ja):''}`;
+  return `<span class="${cls}" title="${escapeHtml(title)}">${escapeHtml(r.m)}</span>`;
+}
+function hlMorphemeInWord(w){
+  let html = escapeHtml(w.word||'');
+  const parts = (w.roots||[]).map(r=>r.m).sort((a,b)=>b.length-a.length);
+  for(const m of parts){
+    const idx = html.toLowerCase().indexOf(m.toLowerCase());
+    if(idx>=0){
+      const pre = html.slice(0, idx);
+      const mid = html.slice(idx, idx+m.length);
+      const suf = html.slice(idx+m.length);
+      const t = MORPHEMES[m]?.type || 'root';
+      const spanCls = t==='prefix'?'hlt-pre':(t==='suffix'?'hlt-suf':'hlt');
+      html = `${pre}<span class="${spanCls}">${mid}</span>${suf}`;
+    }
+  }
+  return html;
+}
+function syncActiveChips(){
+  $$("#levelChips .chip").forEach(c=>c.classList.toggle('active', LEVEL_FILTER.has(c.textContent)));
+  $$("#posChips .chip").forEach(c=>c.classList.toggle('active', POS_FILTER.has(c.textContent)));
+  $$("#topicChips .chip").forEach(c=>c.classList.toggle('active', TOPIC_FILTER.has(c.textContent)));
+  $$("#morphChips .chip").forEach(c=>c.classList.toggle('active', MORPH_FILTER.has(c.textContent)));
+}
+render();
+
+/** 详情面板 **/
+function selectWord(word){
+  const w = state.idx.byWord.get((word||"").toLowerCase());
+  state.selected = w;
+  $("#dWord").innerHTML = hlMorphemeInWord(w);
+  $("#dReading").textContent = `${w.reading||''}${w.romaji?(' · '+w.romaji):''}`;
+  $("#dMorph").innerHTML = (w.roots||[]).map(r=>{
+    const el=document.createElement('span');
+    el.className = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+    el.textContent = r.m;
+    const meta = MORPHEMES[r.m]||{};
+    el.title = `${r.m} · ${(meta.type||r.t)} · ${(meta.zh||'')}${meta.ja?(' / '+meta.ja):''}`;
+    el.style.cursor='pointer';
+    el.onclick=()=>{ MORPH_FILTER.add(r.m); render(); };
+    return el.outerHTML;
+  }).join('');
+  $("#dDef").textContent = w.definition_ja || '';
+  $("#dMean").textContent = w.meaning_zh || '';
+  $("#dPos").textContent = w.pos || '';
+  $("#dLevel").innerHTML = (w.level||[]).map(l=>`<span class="badge">${l}</span>`).join(' ');
+  $("#dTopics").innerHTML = (w.topics||[]).map(t=>`<span class="pill">${t}</span>`).join(' ');
+  $("#dFreq").innerHTML = 'F'+(w.frequency||1);
+  $("#dExamples").innerHTML = (w.examples||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('') || '<li><small class="dim">暂无例句</small></li>';
+  const sim = similarWords(w, 10).filter(s=>s.word!==w.word);
+  $("#dSimilar").innerHTML = sim.map(s=>`<span class="sim-item" title="読み：${escapeHtml(s.reading)}／距離：${s.dist}">${escapeHtml(s.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dSimilar .sim-item").forEach(el=>{ el.onclick=()=>selectWord(el.textContent); });
+  const fam = familyWords(w);
+  $("#dFamily").innerHTML = fam.map(x=>`<span class="fam-item">${escapeHtml(x.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dFamily .fam-item").forEach(el=>{ el.onclick=()=>selectWord(el.textContent); });
+  $("#dNotes").textContent = w.notes||'';
+}
+function clearDetail(){
+  $("#dWord").textContent='选择一个词'; $("#dReading").textContent='';
+  $("#dMorph").innerHTML=''; $("#dDef").textContent=''; $("#dMean").textContent='';
+  $("#dPos").textContent=''; $("#dLevel").innerHTML=''; $("#dTopics").innerHTML=''; $("#dFreq").innerHTML='';
+  $("#dExamples").innerHTML=''; $("#dSimilar").innerHTML=''; $("#dFamily").innerHTML=''; $("#dNotes").textContent='';
+}
+$("#speakBtn").onclick = ()=>{
+  if(!state.selected) return;
+  const u = new SpeechSynthesisUtterance(state.selected.reading || state.selected.word);
+  u.lang = 'ja-JP'; speechSynthesis.speak(u);
+};
+$("#starBtn").onclick = ()=>{
+  if(!state.selected) return;
+  addToSrs(state.selected.word);
+  alert('已加入复习队列：'+state.selected.word);
+};
+
+/** 形近語（基于“读音假名”的编辑距离） **/
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)dp[i][0]=i;
+  for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      const cost = a[i-1]===b[j-1]?0:1;
+      dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+  }
+  return dp[m][n];
+}
+function baseReading(w){ return (w.reading || w.word || '').replace(/\s+/g,'').toLowerCase(); }
+function similarWords(w, topN=10){
+  const target = baseReading(w);
+  const arr = state.words.map(x=>{
+    const r = baseReading(x);
+    const d = levenshtein(target, r);
+    const n = Math.max(target.length, r.length)||1;
+    const score = 1 - d/n;
+    return {word:x.word, reading:x.reading||'', dist:d, score};
+  }).sort((a,b)=>a.dist-b.dist || b.score-a.score);
+  return arr.slice(0, topN);
+}
+function familyWords(w){
+  const keys = (w.roots||[]).map(r=>r.m);
+  const set = new Set();
+  for(const k of keys){
+    const bucket = state.idx.byMorph.get(k);
+    if(!bucket) continue;
+    for(const x of bucket){ if(x.word!==w.word) set.add(x); }
+  }
+  return [...set].slice(0,24);
+}
+
+/** Debounce **/
+function debounce(fn, delay){ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args),delay); }; }
+
+/** Utils **/
+function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+/** 导入/导出 **/
+$("#importBtn").onclick = ()=> $("#fileInput").click();
+$("#fileInput").onchange = async (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const txt = await file.text();
+  try{
+    const data = JSON.parse(txt);
+    if(!Array.isArray(data)) throw new Error('JSON 须为数组');
+    data.forEach(x=>{
+      if(!x.word) throw new Error('每个条目须包含 word 字段');
+      x.level = x.level || ["N3"];
+      x.roots = x.roots || [];
+      x.frequency = x.frequency || 3;
+    });
+    state.words = mergeWords(state.words, data);
+    buildIndex(); $("#total").textContent = state.words.length; render();
+    alert('导入成功，共 '+data.length+' 条；当前词库 '+state.words.length+' 条。');
+  }catch(err){
+    alert('导入失败：'+err.message);
+  }finally{
+    e.target.value='';
+  }
+};
+$("#exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state.words, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='jp-wordbank.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+function mergeWords(base, incoming){
+  const map = new Map(base.map(w=>[w.word.toLowerCase(), w]));
+  for(const w of incoming){
+    const k = w.word.toLowerCase();
+    if(map.has(k)){
+      const old = map.get(k);
+      map.set(k, {
+        ...old, ...w,
+        level: uniq([...(old.level||[]), ...(w.level||[])]),
+        topics: uniq([...(old.topics||[]), ...(w.topics||[])]),
+        syn: uniq([...(old.syn||[]), ...(w.syn||[])]),
+        ant: uniq([...(old.ant||[]), ...(w.ant||[])]),
+        roots: uniqMorph([...(old.roots||[]), ...(w.roots||[])]),
+        examples: uniq([...(old.examples||[]), ...(w.examples||[])])
+      });
+    }else{
+      map.set(k, w);
+    }
+  }
+  return [...map.values()];
+}
+function uniq(arr){ return Array.from(new Set((arr||[]).filter(Boolean))); }
+function uniqMorph(arr){
+  const seen=new Set(); const out=[];
+  for(const r of (arr||[])){
+    const k=r.m+'|'+(r.t||'');
+    if(!seen.has(k)){ out.push(r); seen.add(k); }
+  }
+  return out;
+}
+
+/** 场景句生成（模板） **/
+$("#genSceneBtn").onclick = ()=>{
+  const list = searchAndFilter().slice(0,8);
+  if(!list.length){ alert('请先筛选一些单词'); return; }
+  const scene = generateScene(list);
+  alert("場面文：\n\n"+scene.join("\n"));
+};
+function pickByTopic(words, topic, fallback){
+  const arr = words.filter(w=>w.topics?.includes(topic));
+  if(arr.length) return arr[Math.floor(Math.random()*arr.length)];
+  return fallback || words[Math.floor(Math.random()*words.length)];
+}
+function W(w){ return w?.word || ""; }
+function generateScene(words){
+  const edu1 = pickByTopic(words, '教育');
+  const edu2 = pickByTopic(words, '学术', edu1);
+  const job1 = pickByTopic(words, '职场');
+  const job2 = pickByTopic(words, '商业', job1);
+  const soc1 = pickByTopic(words, '社会');
+  const it1 = pickByTopic(words, 'IT');
+  const env1 = pickByTopic(words, '环境');
+  const lines = [];
+  lines.push(`キャンパス: ${W(edu1)}を進め、${W(edu2)}の結果を${W(pickByTopic(words,'交流'))||'発表'}する。`);
+  lines.push(`オフィス: ${W(job1)}の${W(pickByTopic(words,'职场'))||'会議'}で${W(pickByTopic(words,'写作'))||'明確'}な方針を${W(pickByTopic(words,'职场'))||'決定'}する。`);
+  lines.push(`社会: ${W(soc1)}の課題に対して${W(pickByTopic(words,'安全'))||'対策'}を取り、${W(env1)}へ${W(pickByTopic(words,'环境'))||'配慮'}する。`);
+  lines.push(`IT: ${W(it1)}を活用して${W(pickByTopic(words,'教育'))||'学習'}を${W(pickByTopic(words,'学术'))||'改善'}する。`);
+  return lines.map(s=>s.replace(/\s+/g,' ').trim());
+}
+
+/** SRS（简化 SM-2） **/
+const SRS_KEY='jp_srs_v1';
+function loadSrs(){ try{return JSON.parse(localStorage.getItem(SRS_KEY)||'{}');}catch{return {};} }
+function saveSrs(db){ localStorage.setItem(SRS_KEY, JSON.stringify(db)); }
+function addToSrs(word){
+  const db = loadSrs();
+  if(!db[word]) db[word]={EF:2.5, interval:0, reps:0, due:Date.now()};
+  saveSrs(db);
+}
+function getDueWordsFrom(list){
+  const db=loadSrs(); const now=Date.now(); const arr=[];
+  for(const w of list){ const rec=db[w.word]||{due:0}; if(rec.due<=now) arr.push(w); }
+  return arr;
+}
+$("#startSrsBtn").onclick = ()=>{
+  const list = searchAndFilter();
+  if(!list.length){ alert('当前无可复习单词'); return; }
+  state.srsQueue = getDueWordsFrom(list);
+  if(!state.srsQueue.length){ alert('当前筛选的词都不应复习（尚未到期）。'); return; }
+  $("#srsPanel").style.display='flex'; nextSrs();
+};
+$("#srsClose").onclick = ()=>$("#srsPanel").style.display='none';
+$("#srsShow").onclick = ()=>{ $("#srsA").style.display='block'; };
+$("#srsAgain").onclick = ()=>srsRate(0);
+$("#srsHard").onclick = ()=>srsRate(3);
+$("#srsGood").onclick = ()=>srsRate(4);
+$("#srsEasy").onclick = ()=>srsRate(5);
+let currentSrs=null;
+function nextSrs(){
+  if(!state.srsQueue.length){
+    $("#srsQ").textContent='🎉 今日复习完成'; $("#srsA").style.display='none'; $("#srsInfo").textContent=''; return;
+  }
+  currentSrs = state.srsQueue.shift();
+  $("#srsQ").textContent = (currentSrs.definition_ja||'')+' / '+(currentSrs.meaning_zh||'');
+  $("#srsA").innerHTML = `<b>${hlMorphemeInWord(currentSrs)}</b><div class="mean">${escapeHtml(currentSrs.reading||'')} · ${escapeHtml(currentSrs.pos)} · ${(currentSrs.level||[]).join(', ')}</div>`;
+  $("#srsA").style.display='none';
+  $("#srsInfo").textContent = `剩余：${state.srsQueue.length}`;
+}
+function srsRate(q){
+  if(!currentSrs) return;
+  const word=currentSrs.word;
+  const db = loadSrs();
+  const rec = db[word] || {EF:2.5, interval:0, reps:0, due:Date.now()};
+  if(q<3){
+    rec.reps=0; rec.interval=1; rec.due=Date.now()+1*24*3600*1000;
+  }else{
+    rec.reps+=1;
+    let EF = rec.EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02));
+    if(EF<1.3) EF=1.3;
+    rec.EF=EF;
+    if(rec.reps===1) rec.interval=1;
+    else if(rec.reps===2) rec.interval=3;
+    else rec.interval=Math.round(rec.interval*rec.EF);
+    rec.due = Date.now()+rec.interval*24*3600*1000;
+  }
+  db[word]=rec; saveSrs(db); nextSrs();
+}
+</script>
+</body>
+</html>

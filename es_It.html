@@ -1,0 +1,1394 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>意大利语 & 西班牙语学习 · 构词/接辞/词根｜CEFR A1–C2</title>
+<meta name="description" content="基于构词（前缀/词根/后缀）与场景应用的意大利语/西班牙语学习工具，支持形近词编辑距离、多维检索、SRS 复习、TTS 发音。">
+<style>
+:root{
+  --bg:#f8fafc; --fg:#0f172a; --muted:#64748b; --card:#ffffff; --border:#e2e8f0;
+  --primary:#22c55e; --accent:#14b8a6; --chip:#ecfeff; --chip-fg:#0f766e;
+  --good:#16a34a; --warn:#d97706; --bad:#dc2626; --shadow:0 6px 24px rgba(2,6,23,0.08);
+}
+.dark{
+  --bg:#0b1020; --fg:#e6edf3; --muted:#93a4b5; --card:#0f172a; --border:#1f2937;
+  --primary:#34d399; --accent:#2dd4bf; --chip:#0b2530; --chip-fg:#96f2ff; --shadow:0 8px 28px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans","Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
+a{color:var(--primary);text-decoration:none}
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg,var(--bg),rgba(0,0,0,0));
+  backdrop-filter:saturate(1.2) blur(6px);
+  padding:10px 14px; border-bottom:1px solid var(--border);
+}
+.header-inner{display:flex; align-items:center; gap:12px; max-width:1400px; margin:0 auto}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+.brand .logo{width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,var(--primary),var(--accent)); box-shadow:var(--shadow)}
+.brand small{color:var(--muted); font-weight:600}
+.searchbar{flex:1; display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--border); padding:8px 10px; border-radius:10px; box-shadow:var(--shadow)}
+.searchbar input{flex:1; border:0; outline:none; background:transparent; color:var(--fg); font-size:14px}
+.btn{border:1px solid var(--border); background:var(--card); color:var(--fg); padding:8px 12px; border-radius:10px; cursor:pointer}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border-color:transparent}
+.btn.ghost{background:transparent}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; background:var(--chip); color:var(--chip-fg); font-weight:600; font-size:12px}
+main{max-width:1400px; margin:14px auto; display:grid; grid-template-columns:280px 1fr 360px; gap:14px; padding:0 14px}
+@media (max-width:1100px){main{grid-template-columns:260px 1fr}}
+@media (max-width:980px){main{grid-template-columns:1fr;}}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)}
+.sidebar{padding:12px}
+.section-title{display:flex; align-items:center; justify-content:space-between; margin:6px 0 12px}
+.section-title h3{margin:0; font-size:15px}
+.filters{display:grid; gap:14px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer; user-select:none}
+.chip.active{border-color:var(--primary); box-shadow:inset 0 0 0 1px var(--primary)}
+hr.sep{border:0; border-top:1px dashed var(--border); margin:4px 0}
+small.help{color:var(--muted)}
+.input{display:flex; align-items:center; gap:8px; background:var(--bg); border:1px dashed var(--border); padding:8px; border-radius:8px}
+.input input, .input select{flex:1; background:transparent; border:0; outline:0; color:var(--fg)}
+.results{padding:6px 10px 16px}
+.stats{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px}
+.grid{display:grid; grid-template-columns:repeat(2, minmax(220px, 1fr)); gap:10px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.word-card{padding:12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:transform .06s ease}
+.word-card:hover{transform:translateY(-2px)}
+.word-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.word{font-weight:800; font-size:18px; letter-spacing:.2px}
+.tags{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.mean{color:var(--muted); margin-top:4px}
+.morph{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.morph span{padding:2px 6px; border-radius:6px; font-size:12px; border:1px solid var(--border)}
+.morph .pre{background:#e0f2fe; color:#0c4a6e; border-color:transparent}
+.morph .root{background:#fef9c3; color:#713f12; border-color:transparent}
+.morph .suf{background:#fce7f3; color:#831843; border-color:transparent}
+.detail{padding:12px}
+.detail .title{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.detail .title h2{margin:0}
+.detail .actions{display:flex; gap:8px; flex-wrap:wrap}
+.detail section{margin-top:12px}
+.detail .def{font-size:15px}
+.detail .ex{color:var(--muted)}
+.flex{display:flex; gap:10px; flex-wrap:wrap}
+.kv{display:grid; grid-template-columns:100px 1fr; gap:8px; align-items:flex-start}
+ul.clean{list-style:none; padding:0; margin:0}
+ul.clean li{padding:4px 0}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid var(--border)}
+.hlt{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#fff799, #ffe78f)}
+.hlt-pre{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#bde9ff,#9ae6ff)}
+.hlt-suf{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#ffd6ef,#ffbfe7)}
+.sim-list, .family-list{display:flex; flex-wrap:wrap; gap:6px}
+.sim-item, .fam-item{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer}
+.footer-tools{position:sticky; bottom:0; padding:10px; display:flex; gap:8px; flex-wrap:wrap; background:linear-gradient(0deg,var(--bg),rgba(0,0,0,0)); border-top:1px dashed var(--border)}
+.srs{position:fixed; right:20px; bottom:20px; z-index:100; display:flex; gap:8px; flex-wrap:wrap}
+.srs .card{padding:14px; width:360px; max-width:90vw}
+.srs .q{font-weight:700; font-size:18px}
+.srs .btns{display:flex; gap:8px; margin-top:8px}
+.srs .btn.again{background:var(--bad); color:#fff}
+.srs .btn.hard{background:var(--warn); color:#fff}
+.srs .btn.good{background:var(--good); color:#fff}
+.srs .btn.easy{background:var(--primary); color:#fff}
+small.dim{color:var(--muted)}
+.langsel{display:flex; gap:8px; align-items:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        意大利语 & 西班牙语 · 构词/接辞/词根
+        <small>CEFR A1 – C2</small>
+      </div>
+    </div>
+    <div class="searchbar">
+      <span>🔎</span>
+      <input id="q" placeholder="搜索：单词 / 中文释义 / 目标语定义 / 词根 / 前缀 / 后缀 / 同义词（支持模糊）" />
+      <button class="btn" id="clearBtn" title="清空">清空</button>
+    </div>
+    <div class="actions langsel">
+      <label class="pill">语言
+        <select id="langSelect">
+          <option value="it">Italiano</option>
+          <option value="es">Español</option>
+        </select>
+      </label>
+      <button class="btn" id="darkBtn" title="暗黑模式">🌙/☀️</button>
+      <button class="btn" id="importBtn" title="导入词库(JSON)">导入</button>
+      <button class="btn" id="exportBtn" title="导出当前词库(JSON)">导出</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Sidebar filters -->
+  <aside class="card sidebar" id="sidebar">
+    <div class="section-title">
+      <h3>筛选</h3>
+      <span class="badge">多维检索</span>
+    </div>
+    <div class="filters">
+      <div>
+        <small class="help">CEFR 级别</small>
+        <div class="chips" id="levelChips"></div>
+      </div>
+      <div>
+        <small class="help">词性</small>
+        <div class="chips" id="posChips"></div>
+      </div>
+      <div>
+        <small class="help">主题</small>
+        <div class="chips" id="topicChips"></div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">构词（前缀 / 词根 / 后缀）</small>
+        <div class="input"><input id="morphSearch" placeholder="如：re / pre / tele / bio / -zione / -ción / -mente"></div>
+        <div class="chips" id="morphChips"></div>
+        <div class="flex">
+          <label class="pill"><input type="checkbox" id="requireAll"> 同时包含所选全部形态</label>
+          <label class="pill"><input type="checkbox" id="onlyRoots"> 仅匹配词根/词干</label>
+        </div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">频率（1-5，越高越常见）</small>
+        <div class="input"><input type="range" id="freq" min="1" max="5" value="1"><span id="freqVal">≥1</span></div>
+      </div>
+      <div class="flex">
+        <button class="btn" id="resetBtn">重置筛选</button>
+        <small class="help">可组合筛选 + 搜索；点击芯片反向检索</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Results -->
+  <section class="card results">
+    <div class="stats">
+      <span class="badge">结果 <b id="count"></b> / <span id="total"></span></span>
+      <span class="pill">形近词：编辑距离</span>
+      <span class="pill">TTS：点击单词右侧🔊</span>
+      <span class="pill">SRS：右下角开始复习</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="footer-tools">
+      <button class="btn primary" id="startSrsBtn">用当前结果开始复习</button>
+      <button class="btn" id="genSceneBtn">用所选词生成场景句</button>
+      <small class="help">提示：双击单词加入复习清单；点击词根/后缀可反向检索</small>
+    </div>
+  </section>
+
+  <!-- Detail -->
+  <aside class="card detail" id="detail">
+    <div class="title">
+      <div>
+        <h2 id="dWord">选择一个词</h2>
+        <div class="mean" id="dReading"></div>
+        <div class="morph" id="dMorph"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="speakBtn" title="发音">🔊 发音</button>
+        <button class="btn" id="starBtn" title="加入复习">⭐ 收藏</button>
+      </div>
+    </div>
+    <section>
+      <div class="def" id="dDef"></div>
+      <div class="mean" id="dMean"></div>
+    </section>
+    <section>
+      <div class="kv">
+        <div><small class="help">词性</small></div><div id="dPos"></div>
+        <div><small class="help">级别</small></div><div id="dLevel"></div>
+        <div><small class="help">主题</small></div><div id="dTopics"></div>
+        <div><small class="help">频率</small></div><div id="dFreq"></div>
+      </div>
+    </section>
+    <section>
+      <b>例句</b>
+      <ul class="clean" id="dExamples"></ul>
+    </section>
+    <section>
+      <b>形近词（拼写相近）</b>
+      <div class="sim-list" id="dSimilar"></div>
+    </section>
+    <section>
+      <b>同构词 / 同接辞</b>
+      <div class="family-list" id="dFamily"></div>
+    </section>
+    <section>
+      <b>记忆提示</b>
+      <div id="dNotes" class="mean"></div>
+    </section>
+  </aside>
+</main>
+
+<!-- SRS Review Panel -->
+<div class="srs" id="srsPanel" style="display:none">
+  <div class="card">
+    <div class="q" id="srsQ">SRS 复习</div>
+    <div class="a" id="srsA" style="display:none; margin-top:8px"></div>
+    <div class="btns">
+      <button class="btn again" id="srsAgain">Again</button>
+      <button class="btn hard" id="srsHard">Hard</button>
+      <button class="btn good" id="srsGood">Good</button>
+      <button class="btn easy" id="srsEasy">Easy</button>
+      <button class="btn" id="srsShow">显示答案</button>
+      <button class="btn ghost" id="srsClose">关闭</button>
+    </div>
+    <div style="margin-top:6px"><small class="dim" id="srsInfo"></small></div>
+  </div>
+</div>
+
+<script>
+/** ======================
+ *  语言与数据源
+ *  ====================== */
+const DB = {
+  it: [], // will fill below
+  es: []  // will fill below
+};
+let CURRENT_LANG = 'it';
+
+/** ======================
+ *  构词要素（通用于 it/es）
+ *  ====================== */
+const MORPHEMES = {
+  // prefixes
+  "re":{type:"prefix", zh:"再；重新", note:"it/es"},
+  "ri":{type:"prefix", zh:"再；重新（it 常用）", note:"it"},
+  "pre":{type:"prefix", zh:"预先；在前", note:"it/es"},
+  "anti":{type:"prefix", zh:"反；抗", note:"it/es"},
+  "auto":{type:"prefix", zh:"自；自动", note:"it/es"},
+  "bio":{type:"root", zh:"生命", note:"it/es"},
+  "geo":{type:"root", zh:"地球；土地", note:"it/es"},
+  "tele":{type:"prefix", zh:"远；远距", note:"it/es"},
+  "fono":{type:"root", zh:"声音；话音", note:"it/es"},
+  "foto":{type:"root", zh:"光；照片", note:"it/es"},
+  "graf":{type:"root", zh:"写；画；图", note:"it/es"},
+  "logia":{type:"suffix", zh:"…学；学科", note:"it/es"},
+  "micro":{type:"prefix", zh:"微；小", note:"it/es"},
+  "macro":{type:"prefix", zh:"宏；大", note:"it/es"},
+  "multi":{type:"prefix", zh:"多；多个", note:"it/es"},
+  "mono":{type:"prefix", zh:"单；唯一", note:"it/es"},
+  "iper":{type:"prefix", zh:"过度；超（it）", note:"it"},
+  "ipo":{type:"prefix", zh:"低；下（it）", note:"it"},
+  "hiper":{type:"prefix", zh:"过度；超（es）", note:"es"},
+  "hipo":{type:"prefix", zh:"低；下（es）", note:"es"},
+  "inter":{type:"prefix", zh:"在…之间；相互", note:"it/es"},
+  "tras":{type:"prefix", zh:"横越；穿越（it）", note:"it"},
+  "trans":{type:"prefix", zh:"横越；穿越（es）", note:"es"},
+  "con":{type:"prefix", zh:"共同；一起", note:"it/es"},
+  "dis":{type:"prefix", zh:"不；否定；分离", note:"it/es"},
+  "in":{type:"prefix", zh:"不；否定（变体 im/ir/il）", note:"it/es"},
+  "im":{type:"prefix", zh:"不；否定（前 b/m/p）", note:"it/es"},
+  "ir":{type:"prefix", zh:"不；否定（前 r）", note:"it/es"},
+  "il":{type:"prefix", zh:"不；否定（前 l）", note:"it/es"},
+  // roots (latin/intl)
+  "port":{type:"root", zh:"携带；运", note:"it/es"},
+  "scriv":{type:"root", zh:"写（it）", note:"it"},
+  "scrib":{type:"root", zh:"写（es）", note:"es"},
+  "dic":{type:"root", zh:"说；言", note:"it/es"},
+  "ved":{type:"root", zh:"看见（ved- it）", note:"it"},
+  "vis":{type:"root", zh:"看；视", note:"it/es"},
+  "cred":{type:"root", zh:"信；相信", note:"it/es"},
+  "inform":{type:"root", zh:"信息；通知", note:"it/es"},
+  "comunic":{type:"root", zh:"交流；沟通", note:"it/es"},
+  "organizz":{type:"root", zh:"组织（it）", note:"it"},
+  "organiz":{type:"root", zh:"组织（es）", note:"es"},
+  // suffixes
+  "zione":{type:"suffix", zh:"…tion（名词化 it）", note:"it"},
+  "sione":{type:"suffix", zh:"…sion（名词化 it）", note:"it"},
+  "ción":{type:"suffix", zh:"…ción（名词化 es）", note:"es"},
+  "sión":{type:"suffix", zh:"…sión（名词化 es）", note:"es"},
+  "mente":{type:"suffix", zh:"副词后缀（…地）", note:"it/es"},
+  "ale":{type:"suffix", zh:"形/名后缀（…的/…类）", note:"it"},
+  "ario":{type:"suffix", zh:"形/名后缀（…的/…者）", note:"it/es"},
+  "ista":{type:"suffix", zh:"从事…的人；…主义者", note:"it/es"},
+  "ismo":{type:"suffix", zh:"…主义；…学说", note:"it/es"},
+  "izzare":{type:"suffix", zh:"动词化（it）", note:"it"},
+  "izar":{type:"suffix", zh:"动词化（es）", note:"es"},
+  "izzazione":{type:"suffix", zh:"…化（名词 it）", note:"it"},
+  "ización":{type:"suffix", zh:"…化（名词 es）", note:"es"},
+  "ità":{type:"suffix", zh:"…性；…度（it）", note:"it"},
+  "idad":{type:"suffix", zh:"…性；…度（es）", note:"es"},
+  "ivo":{type:"suffix", zh:"…性的（形 it/es）", note:"it/es"},
+  "oso":{type:"suffix", zh:"…多的/…的（形 it/es）", note:"it/es"},
+  "osa":{type:"suffix", zh:"…多的/…的（形 it/es）", note:"it/es"},
+  "are":{type:"suffix", zh:"动词不定式（it）", note:"it"},
+  "ere":{type:"suffix", zh:"动词不定式（it）", note:"it"},
+  "ire":{type:"suffix", zh:"动词不定式（it）", note:"it"},
+  "ar":{type:"suffix", zh:"动词不定式（es）", note:"es"},
+  "er":{type:"suffix", zh:"动词不定式（es）", note:"es"},
+  "ir":{type:"suffix", zh:"动词不定式（es）", note:"es"}
+};
+
+/** ======================
+ *  词库（精简示例，可导入扩展）
+ *  字段：
+ *  word, pos, level[], frequency(1-5),
+ *  definition_xx(it/es), meaning_zh,
+ *  examples[], roots:[{m, t}], topics[], syn[], ant[], notes
+ *  ====================== */
+
+/* --------- ITALIANO --------- */
+DB.it = [
+  {word:"telefono",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Dispositivo per chiamare a distanza.",meaning_zh:"电话",
+    examples:["Il telefono squilla spesso."],
+    roots:[{m:"tele",t:"prefix"},{m:"fono",t:"root"}],
+    topics:["tech"],syn:["cellulare"],ant:[],notes:"tele(远)+fono(声音) → 电话"},
+  {word:"televisione",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Sistema per trasmettere immagini e suoni.",meaning_zh:"电视",
+    examples:["Guardo la televisione la sera."],
+    roots:[{m:"tele",t:"prefix"},{m:"vis",t:"root"},{m:"sione",t:"suffix"}],
+    topics:["tech","media"],syn:["TV"],ant:[],notes:"tele(远)+vis(看)+sione(名)"},
+  {word:"microfono",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Strumento che trasforma la voce in segnale elettrico.",meaning_zh:"麦克风",
+    examples:["Parla al microfono, per favore."],
+    roots:[{m:"micro",t:"prefix"},{m:"fono",t:"root"}],
+    topics:["tech","audio"],syn:["mic"],ant:[],notes:"micro(小)+fono(声)"},
+  {word:"fotografia",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Immagine ottenuta con una fotocamera.",meaning_zh:"照片；摄影",
+    examples:["Amo la fotografia di strada."],
+    roots:[{m:"foto",t:"root"},{m:"graf",t:"root"},{m:"ia",t:"suffix"}],
+    topics:["arte"],syn:["foto"],ant:[],notes:"foto(光)+graf(写)"},
+  {word:"biologia",pos:"n.",level:["B1"],frequency:3,
+    definition_it:"Scienza che studia la vita.",meaning_zh:"生物学",
+    examples:["La biologia molecolare è affascinante."],
+    roots:[{m:"bio",t:"root"},{m:"logia",t:"suffix"}],
+    topics:["scienza"],syn:[],ant:[],notes:"bio(生)+-logia(学)"},
+  {word:"geografia",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Studio della Terra e dei suoi fenomeni.",meaning_zh:"地理学",
+    examples:["La geografia umana analizza le culture."],
+    roots:[{m:"geo",t:"root"},{m:"graf",t:"root"},{m:"ia",t:"suffix"}],
+    topics:["scienza"],syn:[],ant:[],notes:"geo(地)+graf(写)"},
+  {word:"informazione",pos:"n.",level:["A2","B1"],frequency:5,
+    definition_it:"Dato o notizia comunicata o ricevuta.",meaning_zh:"信息；资讯",
+    examples:["Abbiamo bisogno di più informazioni."],
+    roots:[{m:"inform",t:"root"},{m:"azione",t:"suffix"}],
+    topics:["società","IT"],syn:["notizia"],ant:[],notes:"inform(信息)+-azione(名)"},
+  {word:"comunicazione",pos:"n.",level:["B1"],frequency:5,
+    definition_it:"Scambio di messaggi tra individui o sistemi.",meaning_zh:"沟通；交流",
+    examples:["La comunicazione efficace è fondamentale."],
+    roots:[{m:"comunic",t:"root"},{m:"azione",t:"suffix"}],
+    topics:["società","lavoro"],syn:[],ant:[],notes:"comunic(交流)+-azione"},
+  {word:"organizzare",pos:"v.",level:["B1"],frequency:4,
+    definition_it:"Disporre ordinatamente; preparare.",meaning_zh:"组织；安排",
+    examples:["Dobbiamo organizzare la riunione."],
+    roots:[{m:"organizz",t:"root"},{m:"are",t:"suffix"}],
+    topics:["lavoro"],syn:["preparare"],ant:[],notes:"it 动词 -are"},
+  {word:"organizzazione",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Struttura organizzata; modo di coordinare risorse.",meaning_zh:"组织；组织方式",
+    examples:["L'organizzazione del progetto è chiara."],
+    roots:[{m:"organizz",t:"root"},{m:"azione",t:"suffix"}],
+    topics:["lavoro","gestione"],syn:[],ant:[],notes:"-zione 名词化"},
+
+  // scrivere 系
+  {word:"scrivere",pos:"v.",level:["A2"],frequency:5,
+    definition_it:"Tracciare segni grafici; comporre un testo.",meaning_zh:"写；书写",
+    examples:["Ti scrivo domani."],
+    roots:[{m:"scriv",t:"root"},{m:"ere",t:"suffix"}],
+    topics:["studio"],syn:["redigere"],ant:[],notes:"词干 scriv-"},
+  {word:"descrivere",pos:"v.",level:["B1"],frequency:4,
+    definition_it:"Rappresentare con parole.",meaning_zh:"描述",
+    examples:["Puoi descrivere la scena?"],
+    roots:[{m:"de",t:"prefix"},{m:"scriv",t:"root"},{m:"ere",t:"suffix"}],
+    topics:["studio"],syn:["illustrare"],ant:[],notes:"de(下/完全)+scriv"},
+  {word:"iscrivere",pos:"v.",level:["B1"],frequency:3,
+    definition_it:"Registrare un nome in un elenco.",meaning_zh:"登记；报名",
+    examples:["Si è iscritto al corso."],
+    roots:[{m:"in",t:"prefix"},{m:"scriv",t:"root"},{m:"ere",t:"suffix"}],
+    topics:["studio"],syn:["registrare"],ant:[],notes:"in(进入)+scriv"},
+  {word:"prescrivere",pos:"v.",level:["B1"],frequency:3,
+    definition_it:"Ordinare come norma o terapia.",meaning_zh:"规定；开处方",
+    examples:["Il medico ha prescritto un antibiotico."],
+    roots:[{m:"pre",t:"prefix"},{m:"scriv",t:"root"},{m:"ere",t:"suffix"}],
+    topics:["salute","legge"],syn:["ordinare"],ant:["proscrivere"],notes:"pre(预)+scriv"},
+  {word:"trascrivere",pos:"v.",level:["B2"],frequency:3,
+    definition_it:"Copiare un testo; convertire in altra grafia.",meaning_zh:"抄写；转写",
+    examples:["Trascrivi l'audio in testo."],
+    roots:[{m:"tras",t:"prefix"},{m:"scriv",t:"root"},{m:"ere",t:"suffix"}],
+    topics:["studio","IT"],syn:["copiare"],ant:[],notes:"tras(跨越)+scriv"},
+  {word:"descrizione",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Rappresentazione a parole.",meaning_zh:"描述",
+    examples:["La descrizione è dettagliata."],
+    roots:[{m:"de",t:"prefix"},{m:"scriv",t:"root"},{m:"zione",t:"suffix"}],
+    topics:["studio"],syn:["ritratto"],ant:[],notes:"-zione 名词"},
+  {word:"iscrizione",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Azione di iscrivere; registrazione.",meaning_zh:"报名；登记",
+    examples:["L'iscrizione scade venerdì."],
+    roots:[{m:"in",t:"prefix"},{m:"scriv",t:"root"},{m:"zione",t:"suffix"}],
+    topics:["studio","amministrazione"],syn:["registrazione"],ant:[],notes:"in+scriv+zione"},
+  {word:"trascrizione",pos:"n.",level:["B2"],frequency:3,
+    definition_it:"Risultato del trascrivere.",meaning_zh:"抄本；转写",
+    examples:["Controlla la trascrizione."],
+    roots:[{m:"tras",t:"prefix"},{m:"scriv",t:"root"},{m:"zione",t:"suffix"}],
+    topics:["studio","IT"],syn:[],ant:[],notes:"tras- + scriv + -zione"},
+
+  // portare 系
+  {word:"portare",pos:"v.",level:["A2"],frequency:5,
+    definition_it:"Trasferire con sé; avere addosso.",meaning_zh:"带；携带；穿戴",
+    examples:["Porto sempre l'ombrello."],
+    roots:[{m:"port",t:"root"},{m:"are",t:"suffix"}],
+    topics:["generale"],syn:["trasportare"],ant:[],notes:"词干 port-"},
+  {word:"importare",pos:"v.",level:["B1"],frequency:4,
+    definition_it:"Portare dentro da fuori; avere importanza.",meaning_zh:"进口；要紧",
+    examples:["L'azienda importa caffè."],
+    roots:[{m:"im",t:"prefix"},{m:"port",t:"root"},{m:"are",t:"suffix"}],
+    topics:["economia"],syn:["introdurre"],ant:["esportare"],notes:"im(入)+port"},
+  {word:"esportare",pos:"v.",level:["B1"],frequency:4,
+    definition_it:"Spedire all'estero per la vendita.",meaning_zh:"出口；输出",
+    examples:["Esportiamo vino in Europa."],
+    roots:[{m:"ex",t:"prefix"},{m:"port",t:"root"},{m:"are",t:"suffix"}],
+    topics:["economia"],syn:[],ant:["importare"],notes:"ex(出)+port"},
+  {word:"trasportare",pos:"v.",level:["B1"],frequency:4,
+    definition_it:"Portare da un luogo a un altro.",meaning_zh:"运输；运送",
+    examples:["Trasportiamo merci via treno."],
+    roots:[{m:"tras",t:"prefix"},{m:"port",t:"root"},{m:"are",t:"suffix"}],
+    topics:["logistica"],syn:["spostare"],ant:[],notes:"tras(跨)+port"},
+  {word:"trasporto",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Azione di trasportare; sistema di trasporto.",meaning_zh:"运输；交通",
+    examples:["I trasporti pubblici sono efficienti."],
+    roots:[{m:"tras",t:"prefix"},{m:"port",t:"root"}],
+    topics:["logistica"],syn:["trasferimento"],ant:[],notes:"名词形式"},
+  {word:"supporto",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Sostegno materiale o morale; base su cui si appoggia.",meaning_zh:"支持；支撑；载体",
+    examples:["Grazie per il supporto tecnico."],
+    roots:[{m:"sub",t:"prefix"},{m:"port",t:"root"}],
+    topics:["lavoro","IT"],syn:["sostegno"],ant:["ostacolo"],notes:"sub(下)+port(承)"},
+  {word:"passaporto",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Documento per viaggiare all'estero.",meaning_zh:"护照",
+    examples:["Il passaporto è scaduto."],
+    roots:[{m:"passa",t:"root"},{m:"port",t:"root"}],
+    topics:["viaggio"],syn:[],ant:[],notes:"passa(通行)+port(携)"},
+  
+  // 可逆前缀 in-/im-/ir-/il-/dis-
+  {word:"possibile",pos:"adj.",level:["A2"],frequency:5,
+    definition_it:"Che si può fare o verificare.",meaning_zh:"可能的",
+    examples:["È possibile domani?" ],
+    roots:[{m:"poss",t:"root"}],
+    topics:["generale"],syn:["realizzabile"],ant:["impossibile"],notes:"反义用 im-"},
+  {word:"impossibile",pos:"adj.",level:["A2"],frequency:5,
+    definition_it:"Che non si può fare o verificare.",meaning_zh:"不可能的",
+    examples:["È impossibile finire oggi."],
+    roots:[{m:"im",t:"prefix"},{m:"poss",t:"root"}],
+    topics:["generale"],syn:[],ant:["possibile"],notes:"im- 否定"},
+  {word:"utile",pos:"adj.",level:["A2"],frequency:5,
+    definition_it:"Che serve a uno scopo.",meaning_zh:"有用的",
+    examples:["Questa guida è utile."],
+    roots:[{m:"ut",t:"root"}],
+    topics:["generale"],syn:["vantaggioso"],ant:["inutile"],notes:""},
+  {word:"inutile",pos:"adj.",level:["A2"],frequency:4,
+    definition_it:"Che non serve; vano.",meaning_zh:"无用的",
+    examples:["È inutile discutere ora."],
+    roots:[{m:"in",t:"prefix"},{m:"ut",t:"root"}],
+    topics:["generale"],syn:["vano"],ant:["utile"],notes:"in- 否定"},
+  {word:"legale",pos:"adj.",level:["B1"],frequency:4,
+    definition_it:"Conforme alla legge.",meaning_zh:"合法的；法律的",
+    examples:["È un contratto legale."],
+    roots:[{m:"leg",t:"root"},{m:"ale",t:"suffix"}],
+    topics:["legge"],syn:["lecito"],ant:["illegale"],notes:"-ale 形容后缀"},
+  {word:"illegale",pos:"adj.",level:["B1"],frequency:4,
+    definition_it:"Contrario alla legge.",meaning_zh:"非法的",
+    examples:["Traffico illegale."],
+    roots:[{m:"il",t:"prefix"},{m:"leg",t:"root"},{m:"ale",t:"suffix"}],
+    topics:["legge"],syn:["illecito"],ant:["legale"],notes:"il- 否定（前 l）"},
+  {word:"regolare",pos:"adj.",level:["B1"],frequency:4,
+    definition_it:"Conforme alla regola; periodico.",meaning_zh:"规则的；有规律的",
+    examples:["Controlli regolari sono necessari."],
+    roots:[{m:"regol",t:"root"},{m:"are",t:"suffix"}],
+    topics:["lavoro"],syn:["periodico"],ant:["irregolare"],notes:""},
+  {word:"irregolare",pos:"adj.",level:["B1"],frequency:4,
+    definition_it:"Non conforme alla regola.",meaning_zh:"不规则的；不合规的",
+    examples:["Un verbo irregolare."],
+    roots:[{m:"ir",t:"prefix"},{m:"regol",t:"root"},{m:"are",t:"suffix"}],
+    topics:["studio"],syn:[],ant:["regolare"],notes:"ir- 否定（前 r）"},
+  {word:"visibile",pos:"adj.",level:["A2"],frequency:4,
+    definition_it:"Che si può vedere.",meaning_zh:"可见的",
+    examples:["Un miglioramento visibile."],
+    roots:[{m:"vis",t:"root"}],
+    topics:["scienza"],syn:["percepibile"],ant:["invisibile"],notes:""},
+  {word:"invisibile",pos:"adj.",level:["B1"],frequency:3,
+    definition_it:"Che non si può vedere.",meaning_zh:"不可见的；无形的",
+    examples:["Forze invisibili."],
+    roots:[{m:"in",t:"prefix"},{m:"vis",t:"root"}],
+    topics:["scienza"],syn:[],ant:["visibile"],notes:"in- 否定"},
+  {word:"attivo",pos:"adj.",level:["A2"],frequency:4,
+    definition_it:"Operante; energico.",meaning_zh:"活跃的；主动的",
+    examples:["Un ruolo attivo."],
+    roots:[{m:"att",t:"root"},{m:"ivo",t:"suffix"}],
+    topics:["lavoro"],syn:["dinamico"],ant:["inattivo"],notes:"-ivo 形容词"},
+  {word:"inattivo",pos:"adj.",level:["B1"],frequency:3,
+    definition_it:"Non operante; fermo.",meaning_zh:"不活跃的；闲置的",
+    examples:["Vulcano inattivo."],
+    roots:[{m:"in",t:"prefix"},{m:"att",t:"root"},{m:"ivo",t:"suffix"}],
+    topics:["scienza"],syn:["inerte"],ant:["attivo"],notes:""},
+
+  // avverbi -mente
+  {word:"chiaramente",pos:"adv.",level:["B1"],frequency:4,
+    definition_it:"In modo chiaro.",meaning_zh:"清楚地；显然",
+    examples:["È chiaramente un vantaggio."],
+    roots:[{m:"chiara",t:"root"},{m:"mente",t:"suffix"}],
+    topics:["scrittura"],syn:["ovviamente"],ant:[],notes:"-mente 副词"},
+  {word:"facilmente",pos:"adv.",level:["A2"],frequency:4,
+    definition_it:"Con facilità.",meaning_zh:"容易地",
+    examples:["Si può risolvere facilmente."],
+    roots:[{m:"fac",t:"root"},{m:"mente",t:"suffix"}],
+    topics:["studio"],syn:["agevolmente"],ant:["difficilmente"],notes:""},
+  {word:"probabilmente",pos:"adv.",level:["B1"],frequency:4,
+    definition_it:"Con alta probabilità.",meaning_zh:"很可能；大概",
+    examples:["Probabilmente pioverà."],
+    roots:[{m:"probabil",t:"root"},{m:"mente",t:"suffix"}],
+    topics:["generale"],syn:["forse"],ant:[],notes:""},
+
+  // studio/lavoro/viaggio
+  {word:"università",pos:"n.",level:["A2"],frequency:5,
+    definition_it:"Istituzione di istruzione superiore.",meaning_zh:"大学",
+    examples:["Studio all'università."],
+    roots:[{m:"univers",t:"root"}],
+    topics:["studio"],syn:[],ant:[],notes:""},
+  {word:"studente",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Persona che studia.",meaning_zh:"学生",
+    examples:["Lo studente è diligente."],
+    roots:[{m:"stud",t:"root"}],
+    topics:["studio"],syn:["allievo"],ant:[],notes:""},
+  {word:"studiare",pos:"v.",level:["A1"],frequency:5,
+    definition_it:"Applicarsi allo studio.",meaning_zh:"学习；研究",
+    examples:["Studio l'italiano."],
+    roots:[{m:"stud",t:"root"},{m:"are",t:"suffix"}],
+    topics:["studio"],syn:["imparare"],ant:[],notes:""},
+  {word:"lezione",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Unità di insegnamento.",meaning_zh:"课；课程",
+    examples:["La lezione inizia alle nove."],
+    roots:[{m:"lez",t:"root"},{m:"ione",t:"suffix"}],
+    topics:["studio"],syn:["corso"],ant:[],notes:""},
+  {word:"esame",pos:"n.",level:["A2"],frequency:5,
+    definition_it:"Prova di valutazione.",meaning_zh:"考试",
+    examples:["L'esame è domani."],
+    roots:[{m:"esam",t:"root"}],
+    topics:["studio"],syn:["test"],ant:[],notes:""},
+  {word:"ricerca",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Indagine sistematica per scoprire fatti.",meaning_zh:"研究；调查",
+    examples:["Ricerca scientifica."],
+    roots:[{m:"ricerc",t:"root"}],
+    topics:["scienza","studio"],syn:["indagine"],ant:[],notes:""},
+
+  {word:"lavoro",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Attività retribuita; opera.",meaning_zh:"工作；劳动",
+    examples:["Cerca lavoro in città."],
+    roots:[{m:"lavor",t:"root"}],
+    topics:["lavoro"],syn:["occupazione"],ant:[],notes:""},
+  {word:"azienda",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Impresa economica.",meaning_zh:"公司；企业",
+    examples:["L'azienda assume personale."],
+    roots:[{m:"aziend",t:"root"}],
+    topics:["business"],syn:["impresa"],ant:[],notes:""},
+  {word:"progetto",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Piano di lavoro.",meaning_zh:"项目；方案",
+    examples:["Un progetto internazionale."],
+    roots:[{m:"progett",t:"root"}],
+    topics:["lavoro"],syn:["piano"],ant:[],notes:""},
+  {word:"riunione",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Incontro di lavoro.",meaning_zh:"会议",
+    examples:["C'è una riunione alle tre."],
+    roots:[{m:"ri",t:"prefix"},{m:"un",t:"root"},{m:"ione",t:"suffix"}],
+    topics:["lavoro"],syn:["meeting"],ant:[],notes:"ri- 再/聚"},
+  {word:"contratto",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Accordo giuridico.",meaning_zh:"合同；契约",
+    examples:["Firmiamo il contratto."],
+    roots:[{m:"contratt",t:"root"}],
+    topics:["legge","business"],syn:["accordo"],ant:[],notes:""},
+  {word:"stipendio",pos:"n.",level:["B1"],frequency:4,
+    definition_it:"Retribuzione del lavoro.",meaning_zh:"薪水；工资",
+    examples:["Lo stipendio è mensile."],
+    roots:[{m:"stipend",t:"root"}],
+    topics:["lavoro","economia"],syn:["salario"],ant:[],notes:""},
+
+  {word:"prenotare",pos:"v.",level:["A2"],frequency:4,
+    definition_it:"Riservare in anticipo.",meaning_zh:"预订；预约",
+    examples:["Ho prenotato un tavolo."],
+    roots:[{m:"pre",t:"prefix"},{m:"not",t:"root"},{m:"are",t:"suffix"}],
+    topics:["viaggio","vita"],syn:["riservare"],ant:[],notes:"pre- 预先"},
+  {word:"prenotazione",pos:"n.",level:["A2"],frequency:4,
+    definition_it:"Atto del prenotare.",meaning_zh:"预订；预约",
+    examples:["La prenotazione è confermata."],
+    roots:[{m:"pre",t:"prefix"},{m:"not",t:"root"},{m:"zione",t:"suffix"}],
+    topics:["viaggio","vita"],syn:["riserva"],ant:[],notes:"-zione 名词化"},
+  {word:"biglietto",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Titolo per entrare o viaggiare.",meaning_zh:"票；车票",
+    examples:["Compra il biglietto online."],
+    roots:[{m:"bigliett",t:"root"},{m:"o",t:"suffix"}],
+    topics:["viaggio"],syn:["ticket"],ant:[],notes:""},
+  {word:"viaggio",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Spostamento verso un luogo.",meaning_zh:"旅行",
+    examples:["Buon viaggio!"],
+    roots:[{m:"viagg",t:"root"}],
+    topics:["viaggio"],syn:["tour"],ant:[],notes:""},
+  {word:"stazione",pos:"n.",level:["A1"],frequency:5,
+    definition_it:"Luogo di fermata dei treni.",meaning_zh:"车站；火车站",
+    examples:["Ci vediamo in stazione."],
+    roots:[{m:"staz",t:"root"},{m:"ione",t:"suffix"}],
+    topics:["viaggio"],syn:["fermata"],ant:[],notes:""},
+  {word:"aeroporto",pos:"n.",level:["A2"],frequency:5,
+    definition_it:"Infrastruttura per il traffico aereo.",meaning_zh:"机场",
+    examples:["L'aeroporto è lontano."],
+    roots:[{m:"aero",t:"root"},{m:"port",t:"root"}],
+    topics:["viaggio"],syn:["scalo"],ant:[],notes:"aero(空)+port(运)"}
+];
+
+/* --------- ESPAÑOL --------- */
+DB.es = [
+  {word:"teléfono",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Dispositivo para hablar a distancia.",meaning_zh:"电话",
+    examples:["El teléfono suena a menudo."],
+    roots:[{m:"tele",t:"prefix"},{m:"fono",t:"root"}],
+    topics:["tech"],syn:["móvil"],ant:[],notes:"tele(远)+fono(声)"},
+  {word:"televisión",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Sistema para transmitir imágenes y sonido.",meaning_zh:"电视",
+    examples:["Veo la televisión por la noche."],
+    roots:[{m:"tele",t:"prefix"},{m:"vis",t:"root"},{m:"sión",t:"suffix"}],
+    topics:["tech","media"],syn:["TV"],ant:[],notes:"tele+vis+sión"},
+  {word:"micrófono",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Aparato que convierte la voz en señal eléctrica.",meaning_zh:"麦克风",
+    examples:["Habla al micrófono, por favor."],
+    roots:[{m:"micro",t:"prefix"},{m:"fono",t:"root"}],
+    topics:["tech","audio"],syn:["micro"],ant:[],notes:"micro+fono"},
+  {word:"fotografía",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Imagen obtenida con una cámara.",meaning_zh:"照片；摄影",
+    examples:["Me gusta la fotografía urbana."],
+    roots:[{m:"foto",t:"root"},{m:"graf",t:"root"},{m:"ía",t:"suffix"}],
+    topics:["arte"],syn:["foto"],ant:[],notes:"foto+grafía"},
+  {word:"biología",pos:"n.",level:["B1"],frequency:3,
+    definition_es:"Ciencia que estudia la vida.",meaning_zh:"生物学",
+    examples:["La biología molecular es fascinante."],
+    roots:[{m:"bio",t:"root"},{m:"logia",t:"suffix"}],
+    topics:["ciencia"],syn:[],ant:[],notes:"bio+logía"},
+  {word:"geografía",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Estudio de la Tierra y sus fenómenos.",meaning_zh:"地理学",
+    examples:["La geografía humana analiza las culturas."],
+    roots:[{m:"geo",t:"root"},{m:"graf",t:"root"},{m:"ía",t:"suffix"}],
+    topics:["ciencia"],syn:[],ant:[],notes:"geo+grafía"},
+  {word:"información",pos:"n.",level:["A2","B1"],frequency:5,
+    definition_es:"Dato o noticia comunicada o recibida.",meaning_zh:"信息；资讯",
+    examples:["Necesitamos más información."],
+    roots:[{m:"inform",t:"root"},{m:"ción",t:"suffix"}],
+    topics:["sociedad","IT"],syn:["noticia"],ant:[],notes:"inform+ción"},
+  {word:"comunicación",pos:"n.",level:["B1"],frequency:5,
+    definition_es:"Intercambio de mensajes entre personas o sistemas.",meaning_zh:"沟通；交流",
+    examples:["La comunicación efectiva es clave."],
+    roots:[{m:"comunic",t:"root"},{m:"ación",t:"suffix"}],
+    topics:["sociedad","trabajo"],syn:[],ant:[],notes:"comunic+ación"},
+  {word:"organizar",pos:"v.",level:["B1"],frequency:4,
+    definition_es:"Disponer ordenadamente; preparar.",meaning_zh:"组织；安排",
+    examples:["Tenemos que organizar la reunión."],
+    roots:[{m:"organiz",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["trabajo"],syn:["preparar"],ant:[],notes:"-ar 动词"},
+  {word:"organización",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Estructura organizada; modo de coordinar recursos.",meaning_zh:"组织；组织方式",
+    examples:["La organización del proyecto es clara."],
+    roots:[{m:"organiz",t:"root"},{m:"ación",t:"suffix"}],
+    topics:["trabajo","gestión"],syn:[],ant:[],notes:"-ción 名词化"},
+
+  // escribir 系
+  {word:"escribir",pos:"v.",level:["A2"],frequency:5,
+    definition_es:"Trazar signos; componer un texto.",meaning_zh:"写；书写",
+    examples:["Te escribo mañana."],
+    roots:[{m:"scrib",t:"root"},{m:"ir",t:"suffix"}],
+    topics:["estudio"],syn:["redactar"],ant:[],notes:"词干 escrib-"},
+  {word:"describir",pos:"v.",level:["B1"],frequency:4,
+    definition_es:"Representar con palabras.",meaning_zh:"描述",
+    examples:["¿Puedes describir la escena?"],
+    roots:[{m:"de",t:"prefix"},{m:"scrib",t:"root"},{m:"ir",t:"suffix"}],
+    topics:["estudio"],syn:["ilustrar"],ant:[],notes:"de+scrib"},
+  {word:"inscribir",pos:"v.",level:["B1"],frequency:3,
+    definition_es:"Registrar un nombre en una lista.",meaning_zh:"登记；报名",
+    examples:["Se inscribió en el curso."],
+    roots:[{m:"in",t:"prefix"},{m:"scrib",t:"root"},{m:"ir",t:"suffix"}],
+    topics:["estudio"],syn:["registrar"],ant:[],notes:"in+scrib"},
+  {word:"prescribir",pos:"v.",level:["B1"],frequency:3,
+    definition_es:"Ordenar como norma o terapia.",meaning_zh:"规定；开处方",
+    examples:["El médico prescribió un antibiótico."],
+    roots:[{m:"pre",t:"prefix"},{m:"scrib",t:"root"},{m:"ir",t:"suffix"}],
+    topics:["salud","ley"],syn:["ordenar"],ant:["proscribir"],notes:"pre+scrib"},
+  {word:"transcribir",pos:"v.",level:["B2"],frequency:3,
+    definition_es:"Copiar un texto; convertir a otra grafía.",meaning_zh:"抄写；转写",
+    examples:["Transcribe el audio a texto."],
+    roots:[{m:"trans",t:"prefix"},{m:"scrib",t:"root"},{m:"ir",t:"suffix"}],
+    topics:["estudio","IT"],syn:["copiar"],ant:[],notes:"trans+scrib"},
+  {word:"descripción",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Acción y efecto de describir.",meaning_zh:"描述",
+    examples:["La descripción es detallada."],
+    roots:[{m:"de",t:"prefix"},{m:"scrib",t:"root"},{m:"ción",t:"suffix"}],
+    topics:["estudio"],syn:["retrato"],ant:[],notes:"-ción 名词"},
+  {word:"inscripción",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Acción y efecto de inscribir.",meaning_zh:"报名；登记",
+    examples:["La inscripción cierra el viernes."],
+    roots:[{m:"in",t:"prefix"},{m:"scrib",t:"root"},{m:"ción",t:"suffix"}],
+    topics:["estudio","administración"],syn:["registro"],ant:[],notes:"in+scrib+ción"},
+  {word:"transcripción",pos:"n.",level:["B2"],frequency:3,
+    definition_es:"Acción y efecto de transcribir.",meaning_zh:"抄本；转写",
+    examples:["Revisa la transcripción."],
+    roots:[{m:"trans",t:"prefix"},{m:"scrib",t:"root"},{m:"ción",t:"suffix"}],
+    topics:["estudio","IT"],syn:[],ant:[],notes:"trans+scrib+ción"},
+
+  // portar 系
+  {word:"importar",pos:"v.",level:["B1"],frequency:4,
+    definition_es:"Traer de fuera para vender; ser importante.",meaning_zh:"进口；要紧",
+    examples:["La empresa importa café."],
+    roots:[{m:"im",t:"prefix"},{m:"port",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["economía"],syn:["introducir"],ant:["exportar"],notes:"im(入)+port"},
+  {word:"exportar",pos:"v.",level:["B1"],frequency:4,
+    definition_es:"Enviar fuera para vender.",meaning_zh:"出口；输出",
+    examples:["Exportamos vino a Europa."],
+    roots:[{m:"ex",t:"prefix"},{m:"port",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["economía"],syn:[],ant:["importar"],notes:"ex(出)+port"},
+  {word:"transportar",pos:"v.",level:["B1"],frequency:4,
+    definition_es:"Llevar de un lugar a otro.",meaning_zh:"运输；运送",
+    examples:["Transportan mercancías por tren."],
+    roots:[{m:"trans",t:"prefix"},{m:"port",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["logística"],syn:["trasladar"],ant:[],notes:"trans+port"},
+  {word:"transporte",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Acción de transportar; sistema de transporte.",meaning_zh:"运输；交通",
+    examples:["El transporte público es eficiente."],
+    roots:[{m:"trans",t:"prefix"},{m:"port",t:"root"}],
+    topics:["logística"],syn:["traslado"],ant:[],notes:"名词形式"},
+  {word:"soporte",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Apoyo material o moral; base de sostén.",meaning_zh:"支持；支撑；载体",
+    examples:["Gracias por el soporte técnico."],
+    roots:[{m:"sub",t:"prefix"},{m:"port",t:"root"}],
+    topics:["trabajo","IT"],syn:["apoyo"],ant:["obstáculo"],notes:"sub(下)+port(承)"},
+  {word:"pasaporte",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Documento para viajar al extranjero.",meaning_zh:"护照",
+    examples:["El pasaporte está vencido."],
+    roots:[{m:"pasa",t:"root"},{m:"port",t:"root"}],
+    topics:["viaje"],syn:[],ant:[],notes:"pasa(通行)+port"},
+
+  // 可逆前缀
+  {word:"posible",pos:"adj.",level:["A2"],frequency:5,
+    definition_es:"Que puede hacerse o suceder.",meaning_zh:"可能的",
+    examples:["¿Es posible mañana?"],
+    roots:[{m:"pos",t:"root"}],
+    topics:["general"],syn:["viable"],ant:["imposible"],notes:""},
+  {word:"imposible",pos:"adj.",level:["A2"],frequency:5,
+    definition_es:"Que no puede hacerse o suceder.",meaning_zh:"不可能的",
+    examples:["Es imposible terminar hoy."],
+    roots:[{m:"im",t:"prefix"},{m:"pos",t:"root"}],
+    topics:["general"],syn:[],ant:["posible"],notes:"im- 否定"},
+  {word:"útil",pos:"adj.",level:["A2"],frequency:5,
+    definition_es:"Que sirve para un fin.",meaning_zh:"有用的",
+    examples:["Esta guía es útil."],
+    roots:[{m:"ut",t:"root"}],
+    topics:["general"],syn:["provechoso"],ant:["inútil"],notes:""},
+  {word:"inútil",pos:"adj.",level:["A2"],frequency:4,
+    definition_es:"Que no sirve; vano.",meaning_zh:"无用的",
+    examples:["Es inútil discutir ahora."],
+    roots:[{m:"in",t:"prefix"},{m:"ut",t:"root"}],
+    topics:["general"],syn:["vano"],ant:["útil"],notes:""},
+  {word:"legal",pos:"adj.",level:["B1"],frequency:4,
+    definition_es:"Conforme a la ley.",meaning_zh:"合法的；法律的",
+    examples:["Es un contrato legal."],
+    roots:[{m:"leg",t:"root"},{m:"al",t:"suffix"}],
+    topics:["ley"],syn:["lícito"],ant:["ilegal"],notes:"-al 形容后缀"},
+  {word:"ilegal",pos:"adj.",level:["B1"],frequency:4,
+    definition_es:"Contrario a la ley.",meaning_zh:"非法的",
+    examples:["Tráfico ilegal."],
+    roots:[{m:"i",t:"prefix"},{m:"leg",t:"root"},{m:"al",t:"suffix"}],
+    topics:["ley"],syn:["ilícito"],ant:["legal"],notes:"i- 否定（前 l）"},
+  {word:"regular",pos:"adj.",level:["B1"],frequency:4,
+    definition_es:"Conforme a regla; periódico.",meaning_zh:"规则的；有规律的",
+    examples:["Revisiones regulares son necesarias."],
+    roots:[{m:"regul",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["trabajo"],syn:["periódico"],ant:["irregular"],notes:""},
+  {word:"irregular",pos:"adj.",level:["B1"],frequency:4,
+    definition_es:"No conforme a la regla.",meaning_zh:"不规则的；不合规的",
+    examples:["Un verbo irregular."],
+    roots:[{m:"ir",t:"prefix"},{m:"regul",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["estudio"],syn:[],ant:["regular"],notes:""},
+
+  {word:"visible",pos:"adj.",level:["A2"],frequency:4,
+    definition_es:"Que puede verse.",meaning_zh:"可见的",
+    examples:["Una mejora visible."],
+    roots:[{m:"vis",t:"root"}],
+    topics:["ciencia"],syn:["perceptible"],ant:["invisible"],notes:""},
+  {word:"invisible",pos:"adj.",level:["B1"],frequency:3,
+    definition_es:"Que no puede verse.",meaning_zh:"不可见的；无形的",
+    examples:["Fuerzas invisibles."],
+    roots:[{m:"in",t:"prefix"},{m:"vis",t:"root"}],
+    topics:["ciencia"],syn:[],ant:["visible"],notes:""},
+  {word:"activo",pos:"adj.",level:["A2"],frequency:4,
+    definition_es:"Que obra; en funcionamiento.",meaning_zh:"活跃的；主动的",
+    examples:["Un papel activo."],
+    roots:[{m:"act",t:"root"},{m:"ivo",t:"suffix"}],
+    topics:["trabajo"],syn:["dinámico"],ant:["inactivo"],notes:""},
+  {word:"inactivo",pos:"adj.",level:["B1"],frequency:3,
+    definition_es:"Que no obra; detenido.",meaning_zh:"不活跃的；闲置的",
+    examples:["Volcán inactivo."],
+    roots:[{m:"in",t:"prefix"},{m:"act",t:"root"},{m:"ivo",t:"suffix"}],
+    topics:["ciencia"],syn:["inerte"],ant:["activo"],notes:""},
+
+  // adverbios -mente
+  {word:"claramente",pos:"adv.",level:["B1"],frequency:4,
+    definition_es:"De manera clara.",meaning_zh:"清楚地；显然",
+    examples:["Es claramente una ventaja."],
+    roots:[{m:"clara",t:"root"},{m:"mente",t:"suffix"}],
+    topics:["escritura"],syn:["obviamente"],ant:[],notes:"-mente 副词"},
+  {word:"fácilmente",pos:"adv.",level:["A2"],frequency:4,
+    definition_es:"Con facilidad.",meaning_zh:"容易地",
+    examples:["Se puede resolver fácilmente."],
+    roots:[{m:"fácil",t:"root"},{m:"mente",t:"suffix"}],
+    topics:["estudio"],syn:["cómodamente"],ant:["difícilmente"],notes:""},
+  {word:"probablemente",pos:"adv.",level:["B1"],frequency:4,
+    definition_es:"Con alta probabilidad.",meaning_zh:"很可能；大概",
+    examples:["Probablemente lloverá."],
+    roots:[{m:"probable",t:"root"},{m:"mente",t:"suffix"}],
+    topics:["general"],syn:["quizá"],ant:[],notes:""},
+
+  // estudio/trabajo/viaje
+  {word:"universidad",pos:"n.",level:["A2"],frequency:5,
+    definition_es:"Institución de educación superior.",meaning_zh:"大学",
+    examples:["Estudio en la universidad."],
+    roots:[{m:"univers",t:"root"},{m:"idad",t:"suffix"}],
+    topics:["estudio"],syn:[],ant:[],notes:"-idad 名词后缀"},
+  {word:"estudiante",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Persona que estudia.",meaning_zh:"学生",
+    examples:["El estudiante es aplicado."],
+    roots:[{m:"estud",t:"root"}],
+    topics:["estudio"],syn:["alumno"],ant:[],notes:""},
+  {word:"estudiar",pos:"v.",level:["A1"],frequency:5,
+    definition_es:"Aplicarse al estudio.",meaning_zh:"学习；研究",
+    examples:["Estudio español."],
+    roots:[{m:"estud",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["estudio"],syn:["aprender"],ant:[],notes:""},
+  {word:"lección",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Unidad de enseñanza.",meaning_zh:"课；课程",
+    examples:["La lección empieza a las nueve."],
+    roots:[{m:"lecc",t:"root"},{m:"ión",t:"suffix"}],
+    topics:["estudio"],syn:["clase"],ant:[],notes:""},
+  {word:"examen",pos:"n.",level:["A2"],frequency:5,
+    definition_es:"Prueba de evaluación.",meaning_zh:"考试",
+    examples:["El examen es mañana."],
+    roots:[{m:"exam",t:"root"}],
+    topics:["estudio"],syn:["prueba"],ant:[],notes:""},
+  {word:"investigación",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Indagación sistemática para descubrir hechos.",meaning_zh:"研究；调查",
+    examples:["Investigación científica."],
+    roots:[{m:"investig",t:"root"},{m:"ación",t:"suffix"}],
+    topics:["ciencia","estudio"],syn:["indagación"],ant:[],notes:""},
+
+  {word:"trabajo",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Actividad remunerada; obra.",meaning_zh:"工作；劳动",
+    examples:["Busca trabajo en la ciudad."],
+    roots:[{m:"trabaj",t:"root"}],
+    topics:["trabajo"],syn:["empleo"],ant:[],notes:""},
+  {word:"empresa",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Compañía; entidad económica.",meaning_zh:"公司；企业",
+    examples:["La empresa contrata personal."],
+    roots:[{m:"empres",t:"root"}],
+    topics:["negocios"],syn:["compañía"],ant:[],notes:""},
+  {word:"proyecto",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Plan de trabajo.",meaning_zh:"项目；方案",
+    examples:["Un proyecto internacional."],
+    roots:[{m:"proyect",t:"root"}],
+    topics:["trabajo"],syn:["plan"],ant:[],notes:""},
+  {word:"reunión",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Encuentro de trabajo.",meaning_zh:"会议",
+    examples:["Hay reunión a las tres."],
+    roots:[{m:"re",t:"prefix"},{m:"un",t:"root"},{m:"ión",t:"suffix"}],
+    topics:["trabajo"],syn:["meeting"],ant:[],notes:"re- 再/聚"},
+  {word:"contrato",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Acuerdo jurídico.",meaning_zh:"合同；契约",
+    examples:["Firmamos el contrato."],
+    roots:[{m:"contrat",t:"root"}],
+    topics:["ley","negocios"],syn:["acuerdo"],ant:[],notes:""},
+  {word:"salario",pos:"n.",level:["B1"],frequency:4,
+    definition_es:"Retribución del trabajo.",meaning_zh:"薪水；工资",
+    examples:["El salario es mensual."],
+    roots:[{m:"salari",t:"root"}],
+    topics:["trabajo","economía"],syn:["sueldo"],ant:[],notes:""},
+
+  {word:"reservar",pos:"v.",level:["A2"],frequency:4,
+    definition_es:"Apartar con antelación.",meaning_zh:"预订；预约",
+    examples:["He reservado una mesa."],
+    roots:[{m:"re",t:"prefix"},{m:"serv",t:"root"},{m:"ar",t:"suffix"}],
+    topics:["viaje","vida"],syn:["apartar"],ant:[],notes:"re- 反复/再"},
+  {word:"reserva",pos:"n.",level:["A2"],frequency:4,
+    definition_es:"Acción de reservar.",meaning_zh:"预订；预约",
+    examples:["La reserva está confirmada."],
+    roots:[{m:"re",t:"prefix"},{m:"serv",t:"root"}],
+    topics:["viaje","vida"],syn:["cita"],ant:[],notes:""},
+  {word:"billete",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Título para entrar o viajar.",meaning_zh:"票；车票",
+    examples:["Compra el billete en línea."],
+    roots:[{m:"billet",t:"root"}],
+    topics:["viaje"],syn:["ticket"],ant:[],notes:""},
+  {word:"viaje",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Desplazamiento a un lugar.",meaning_zh:"旅行",
+    examples:["¡Buen viaje!"],
+    roots:[{m:"viaj",t:"root"}],
+    topics:["viaje"],syn:["tour"],ant:[],notes:""},
+  {word:"estación",pos:"n.",level:["A1"],frequency:5,
+    definition_es:"Lugar de parada de trenes.",meaning_zh:"车站；火车站",
+    examples:["Nos vemos en la estación."],
+    roots:[{m:"estac",t:"root"},{m:"ión",t:"suffix"}],
+    topics:["viaje"],syn:["parada"],ant:[],notes:""},
+  {word:"aeropuerto",pos:"n.",level:["A2"],frequency:5,
+    definition_es:"Infraestructura para tráfico aéreo.",meaning_zh:"机场",
+    examples:["El aeropuerto está lejos."],
+    roots:[{m:"aero",t:"root"},{m:"port",t:"root"}],
+    topics:["viaje"],syn:["terminal"],ant:[],notes:"aero(空)+port(运)"}
+];
+
+/** ====== 索引与状态 ====== */
+const ALL_LEVELS_ALL = ["A1","A2","B1","B2","C1","C2"];
+let state = {
+  words: DB[CURRENT_LANG],
+  idx:{ byMorph:new Map(), byWord:new Map() },
+  selected:null,
+  srsQueue:[]
+};
+
+/** ====== 索引构建 ====== */
+function buildIndex(){
+  state.idx.byMorph.clear();
+  state.idx.byWord.clear();
+  for(const w of state.words){
+    state.idx.byWord.set((w.word||"").toLowerCase(), w);
+    (w.roots||[]).forEach(r=>{
+      if(!state.idx.byMorph.has(r.m)) state.idx.byMorph.set(r.m, new Set());
+      state.idx.byMorph.get(r.m).add(w);
+    });
+  }
+}
+
+/** ====== DOM helpers ====== */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+/** ====== 过滤器状态 ====== */
+const LEVEL_FILTER = new Set();
+const POS_FILTER = new Set();
+const TOPIC_FILTER = new Set();
+const MORPH_FILTER = new Set();
+let ONLY_ROOTS=false, REQUIRE_ALL=false, FREQ_MIN=1;
+let QUERY="";
+
+/** ====== 初始化 ====== */
+function chip(text, active=false){ const d=document.createElement('span'); d.className='chip'+(active?' active':''); d.textContent=text; return d; }
+
+function currentAllPOS(){ return [...new Set(state.words.map(w=>w.pos.split(/[.,/ ]+/)[0]).filter(Boolean))]; }
+function currentAllTopics(){ return [...new Set(state.words.flatMap(w=>w.topics||[]))].sort(); }
+function currentAllMorphs(){ return [...new Set(state.words.flatMap(w=>w.roots?.map(r=>r.m)||[]))].sort(); }
+
+function fillChips(){
+  // levels
+  const lvl=$("#levelChips"); lvl.innerHTML='';
+  ALL_LEVELS_ALL.forEach(l=>{ const c=chip(l); c.onclick=()=>{toggleSet(LEVEL_FILTER,l); render();}; lvl.appendChild(c); });
+  // pos
+  const pc=$("#posChips"); pc.innerHTML='';
+  currentAllPOS().forEach(p=>{ const c=chip(p); c.onclick=()=>{toggleSet(POS_FILTER,p); render();}; pc.appendChild(c); });
+  // topics
+  const tc=$("#topicChips"); tc.innerHTML='';
+  currentAllTopics().forEach(t=>{ const c=chip(t); c.onclick=()=>{toggleSet(TOPIC_FILTER,t); render();}; tc.appendChild(c); });
+  // morphs (热门)
+  const mc=$("#morphChips"); mc.innerHTML='';
+  const hot = ["re","ri","pre","anti","auto","dis","in","im","ir","il","tele","micro","macro","multi","mono","inter","tras","trans","bio","geo","foto","graf","fono","logia","port","scriv","scrib","dic","vis","inform","comunic","zione","sione","ción","sión","mente","ario","ismo","ista","ità","idad","ivo","oso","osa","are","ere","ire","ar","er","ir"].filter(m=>currentAllMorphs().includes(m));
+  hot.forEach(m=>{ const c=chip(m); c.onclick=()=>{toggleSet(MORPH_FILTER,m); render();}; mc.appendChild(c); });
+}
+
+function toggleSet(set,key){ set.has(key)? set.delete(key): set.add(key); }
+
+function resetFilters(){
+  LEVEL_FILTER.clear(); POS_FILTER.clear(); TOPIC_FILTER.clear(); MORPH_FILTER.clear();
+  ONLY_ROOTS=false; REQUIRE_ALL=false; FREQ_MIN=1; QUERY='';
+  $("#onlyRoots").checked=false; $("#requireAll").checked=false;
+  $("#freq").value=1; $("#freqVal").textContent='≥1';
+  $("#q").value=''; $("#morphSearch").value='';
+}
+
+/** ====== 检索逻辑 ====== */
+function searchAndFilter(){
+  let arr = state.words.filter(w=>{
+    if((w.frequency||1) < FREQ_MIN) return false;
+    if(LEVEL_FILTER.size && !w.level?.some(l=>LEVEL_FILTER.has(l))) return false;
+    if(POS_FILTER.size && !POS_FILTER.has(w.pos.split(/[.,/ ]+/)[0])) return false;
+    if(TOPIC_FILTER.size && !w.topics?.some(t=>TOPIC_FILTER.has(t))) return false;
+    if(MORPH_FILTER.size){
+      const morphs = (w.roots||[]).filter(r=>ONLY_ROOTS? r.t==='root' : true).map(r=>r.m);
+      if(REQUIRE_ALL){
+        for(const m of MORPH_FILTER) if(!morphs.includes(m)) return false;
+      }else{
+        let ok=false; for(const m of MORPH_FILTER){ if(morphs.includes(m)){ ok=true; break; } }
+        if(!ok) return false;
+      }
+    }
+    if(QUERY){
+      const q = QUERY.toLowerCase();
+      const hay = [
+        w.word, w.meaning_zh,
+        (CURRENT_LANG==='it'? w.definition_it : w.definition_es),
+        w.pos, ...(w.level||[]), ...(w.topics||[]),
+        ...((w.syn||[])), ...((w.ant||[])),
+        ...((w.roots||[]).map(r=>r.m))
+      ].join(' | ').toLowerCase();
+      if(!fuzzyIncludes(hay, q)) return false;
+    }
+    return true;
+  });
+  return arr;
+}
+function fuzzyIncludes(text,q){
+  if(text.includes(q)) return true;
+  const parts=q.split(/\s+/).filter(Boolean);
+  return parts.every(p=>text.includes(p));
+}
+
+/** ====== 渲染结果 ====== */
+const grid=$("#grid");
+function render(){
+  const list = searchAndFilter();
+  $("#total").textContent = state.words.length;
+  $("#count").textContent = list.length;
+  grid.innerHTML='';
+  list.forEach(w=>{
+    const card=document.createElement('div');
+    card.className='word-card';
+    card.innerHTML = `
+      <div class="word-head">
+        <div class="word">${hlMorphemeInWord(w)}</div>
+        <div class="tags">
+          ${(w.level||[]).map(l=>`<span class="badge">${l}</span>`).join('')}
+          <span class="pill">${w.pos}</span>
+          <span class="pill">F${w.frequency||1}</span>
+        </div>
+      </div>
+      <div class="mean">${escapeHtml(w.meaning_zh||'')}</div>
+      <div class="morph">${(w.roots||[]).map(r=>morphTag(r)).join('')}</div>
+    `;
+    card.onclick = ()=>{ selectWord(w.word); };
+    card.ondblclick = ()=>{ addToSrs(w.word); flash(card); };
+    grid.appendChild(card);
+  });
+  if(list.length && !state.selected){ selectWord(list[0].word); }
+  if(state.selected && !list.includes(state.selected)){
+    if(list[0]) selectWord(list[0].word); else clearDetail();
+  }
+  syncActiveChips();
+}
+function flash(el){ el.style.outline='2px solid var(--primary)'; setTimeout(()=>el.style.outline='', 350); }
+function morphTag(r){
+  const meta = MORPHEMES[r.m]||{type:r.t};
+  const cls = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+  const title = `${r.m} · ${meta.type||r.t} · ${(meta.zh||'')}`;
+  return `<span class="${cls}" title="${escapeHtml(title)}">${escapeHtml(r.m)}</span>`;
+}
+function hlMorphemeInWord(w){
+  let html = escapeHtml(w.word||'');
+  const parts = (w.roots||[]).map(r=>r.m).sort((a,b)=>b.length-a.length);
+  for(const m of parts){
+    const idx = html.toLowerCase().indexOf(m.toLowerCase());
+    if(idx>=0){
+      const pre = html.slice(0, idx);
+      const mid = html.slice(idx, idx+m.length);
+      const suf = html.slice(idx+m.length);
+      const t = MORPHEMES[m]?.type || 'root';
+      const spanCls = t==='prefix'?'hlt-pre':(t==='suffix'?'hlt-suf':'hlt');
+      html = `${pre}<span class="${spanCls}">${mid}</span>${suf}`;
+    }
+  }
+  return html;
+}
+function syncActiveChips(){
+  $$("#levelChips .chip").forEach(c=>c.classList.toggle('active', LEVEL_FILTER.has(c.textContent)));
+  $$("#posChips .chip").forEach(c=>c.classList.toggle('active', POS_FILTER.has(c.textContent)));
+  $$("#topicChips .chip").forEach(c=>c.classList.toggle('active', TOPIC_FILTER.has(c.textContent)));
+  $$("#morphChips .chip").forEach(c=>c.classList.toggle('active', MORPH_FILTER.has(c.textContent)));
+}
+
+/** ====== 详情面板 ====== */
+function selectWord(word){
+  const w = state.idx.byWord.get((word||"").toLowerCase());
+  state.selected = w;
+  $("#dWord").innerHTML = hlMorphemeInWord(w);
+  $("#dReading").textContent = '';
+  $("#dMorph").innerHTML = (w.roots||[]).map(r=>{
+    const el=document.createElement('span');
+    el.className = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+    el.textContent = r.m;
+    const meta = MORPHEMES[r.m]||{};
+    el.title = `${r.m} · ${(meta.type||r.t)} · ${(meta.zh||'')}`;
+    el.style.cursor='pointer';
+    el.onclick=()=>{ MORPH_FILTER.add(r.m); render(); };
+    return el.outerHTML;
+  }).join('');
+  $("#dDef").textContent = (CURRENT_LANG==='it'? (w.definition_it||'') : (w.definition_es||''));
+  $("#dMean").textContent = w.meaning_zh || '';
+  $("#dPos").textContent = w.pos || '';
+  $("#dLevel").innerHTML = (w.level||[]).map(l=>`<span class="badge">${l}</span>`).join(' ');
+  $("#dTopics").innerHTML = (w.topics||[]).map(t=>`<span class="pill">${t}</span>`).join(' ');
+  $("#dFreq").innerHTML = 'F'+(w.frequency||1);
+  $("#dExamples").innerHTML = (w.examples||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('') || '<li><small class="dim">暂无例句</small></li>';
+  const sim = similarWords(w.word, 10).filter(s=>s.word!==w.word);
+  $("#dSimilar").innerHTML = sim.map(s=>`<span class="sim-item" title="编辑距离：${s.dist}">${escapeHtml(s.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dSimilar .sim-item").forEach(el=>{ el.onclick=()=>selectWord(el.textContent); });
+  const fam = familyWords(w);
+  $("#dFamily").innerHTML = fam.map(x=>`<span class="fam-item">${escapeHtml(x.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dFamily .fam-item").forEach(el=>{ el.onclick=()=>selectWord(el.textContent); });
+  $("#dNotes").textContent = w.notes||'';
+}
+function clearDetail(){
+  $("#dWord").textContent='选择一个词'; $("#dReading").textContent='';
+  $("#dMorph").innerHTML=''; $("#dDef").textContent=''; $("#dMean").textContent='';
+  $("#dPos").textContent=''; $("#dLevel").innerHTML=''; $("#dTopics").innerHTML=''; $("#dFreq").innerHTML='';
+  $("#dExamples").innerHTML=''; $("#dSimilar").innerHTML=''; $("#dFamily").innerHTML=''; $("#dNotes").textContent='';
+}
+
+/** ====== 发音 ====== */
+$("#speakBtn").onclick = ()=>{
+  if(!state.selected) return;
+  const u = new SpeechSynthesisUtterance(state.selected.word);
+  u.lang = CURRENT_LANG==='it' ? 'it-IT' : 'es-ES';
+  speechSynthesis.speak(u);
+};
+
+/** ====== 形近词（编辑距离） ====== */
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)dp[i][0]=i;
+  for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      const ca=a[i-1].toLowerCase(), cb=b[j-1].toLowerCase();
+      const cost = ca===cb?0:1;
+      dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+  }
+  return dp[m][n];
+}
+function similarWords(word, topN=10){
+  const arr = state.words.map(w=>{
+    const d = levenshtein(word, w.word);
+    const n = Math.max(word.length, w.word.length)||1;
+    const score = 1 - d/n;
+    return {word:w.word, dist:d, score};
+  }).sort((a,b)=>a.dist-b.dist || b.score-a.score);
+  return arr.slice(0, topN);
+}
+function familyWords(w){
+  const keys = (w.roots||[]).map(r=>r.m);
+  const set = new Set();
+  for(const k of keys){
+    const bucket = state.idx.byMorph.get(k);
+    if(!bucket) continue;
+    for(const x of bucket){ if(x.word!==w.word) set.add(x); }
+  }
+  return [...set].slice(0, 24);
+}
+
+/** ====== Debounce/Utils ====== */
+function debounce(fn, delay){ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args),delay); }; }
+function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+/** ====== 导入/导出 ====== */
+$("#importBtn").onclick = ()=> $("#fileInput").click();
+$("#fileInput").onchange = async (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const txt = await file.text();
+  try{
+    const data = JSON.parse(txt);
+    if(!Array.isArray(data)) throw new Error('JSON 须为数组');
+    data.forEach(x=>{
+      if(!x.word) throw new Error('每个条目须包含 word 字段');
+      x.level = x.level || ["B1"];
+      x.roots = x.roots || [];
+      x.frequency = x.frequency || 3;
+    });
+    // 合并到当前语言词库
+    DB[CURRENT_LANG] = mergeWords(DB[CURRENT_LANG], data);
+    state.words = DB[CURRENT_LANG];
+    buildIndex(); $("#total").textContent = state.words.length; fillChips(); render();
+    alert('导入成功，共 '+data.length+' 条；当前词库 '+state.words.length+' 条。');
+  }catch(err){
+    alert('导入失败：'+err.message);
+  }finally{
+    e.target.value='';
+  }
+};
+$("#exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(DB[CURRENT_LANG], null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=(CURRENT_LANG==='it'?'it':'es')+'-wordbank.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+function mergeWords(base, incoming){
+  const map = new Map(base.map(w=>[w.word.toLowerCase(), w]));
+  for(const w of incoming){
+    const k = w.word.toLowerCase();
+    if(map.has(k)){
+      const old = map.get(k);
+      map.set(k, {
+        ...old, ...w,
+        level: uniq([...(old.level||[]), ...(w.level||[])]),
+        topics: uniq([...(old.topics||[]), ...(w.topics||[])]),
+        syn: uniq([...(old.syn||[]), ...(w.syn||[])]),
+        ant: uniq([...(old.ant||[]), ...(w.ant||[])]),
+        roots: uniqMorph([...(old.roots||[]), ...(w.roots||[])]),
+        examples: uniq([...(old.examples||[]), ...(w.examples||[])])
+      });
+    }else{
+      map.set(k, w);
+    }
+  }
+  return [...map.values()];
+}
+function uniq(arr){ return Array.from(new Set((arr||[]).filter(Boolean))); }
+function uniqMorph(arr){
+  const seen=new Set(); const out=[];
+  for(const r of (arr||[])){
+    const k=r.m+'|'+(r.t||'');
+    if(!seen.has(k)){ out.push(r); seen.add(k); }
+  }
+  return out;
+}
+
+/** ====== 场景句生成（按语言） ====== */
+$("#genSceneBtn").onclick = ()=>{
+  const list = searchAndFilter().slice(0,8);
+  if(!list.length){ alert('请先筛选一些单词'); return; }
+  const lines = CURRENT_LANG==='it' ? generateSceneIT(list) : generateSceneES(list);
+  alert((CURRENT_LANG==='it'?'Frasi di scena:':'Frases de escena:')+"\n\n"+lines.join("\n"));
+};
+function pickByTopic(words, topic, fallback){
+  const arr = words.filter(w=>w.topics?.includes(topic));
+  if(arr.length) return arr[Math.floor(Math.random()*arr.length)];
+  return fallback || words[Math.floor(Math.random()*words.length)];
+}
+function W(x){ return x?.word || ""; }
+function generateSceneIT(words){
+  const edu = pickByTopic(words,'studio');
+  const work = pickByTopic(words,'lavoro');
+  const sci = pickByTopic(words,'scienza');
+  const itw = pickByTopic(words,'IT');
+  const viag = pickByTopic(words,'viaggio');
+  return [
+    `Campus: Durante la ${W(edu)} abbiamo ${W(pickByTopic(words,'studio'))||'studiato'} l'${W(sci)||'argomento'} e preparato la ${W(pickByTopic(words,'studio'))||'lezione'}.`,
+    `Ufficio: La ${W(work)||'riunione'} è stata ${W(pickByTopic(words,'lavoro'))||'organizzata'} ${'chiaramente'} e il ${W(pickByTopic(words,'lavoro'))||'progetto'} è ${'visibile'}.`,
+    `Tech: Con la ${W(itw)||'informazione'} e la ${W(pickByTopic(words,'società'))||'comunicazione'}, possiamo ${W(pickByTopic(words,'lavoro'))||'organizzare'} ${'facilmente'}.`,
+    `Viaggio: Ho ${W(pickByTopic(words,'viaggio'))||'prenotato'} la ${W(viag)||'prenotazione'} e preso il ${W(pickByTopic(words,'viaggio'))||'biglietto'}.`
+  ];
+}
+function generateSceneES(words){
+  const edu = pickByTopic(words,'estudio');
+  const work = pickByTopic(words,'trabajo');
+  const sci = pickByTopic(words,'ciencia');
+  const itw = pickByTopic(words,'IT');
+  const trip = pickByTopic(words,'viaje');
+  return [
+    `Campus: En la ${W(edu)} ${W(pickByTopic(words,'estudio'))||'estudiamos'} el tema de ${W(sci)||'investigación'} y preparamos la ${W(pickByTopic(words,'estudio'))||'lección'}.`,
+    `Oficina: La ${W(work)||'reunión'} fue ${'claramente'} ${W(pickByTopic(words,'trabajo'))||'organizada'} y el ${W(pickByTopic(words,'trabajo'))||'proyecto'} es ${'visible'}.`,
+    `Tecnología: Con la ${W(itw)||'información'} y la ${W(pickByTopic(words,'sociedad'))||'comunicación'}, podemos ${W(pickByTopic(words,'trabajo'))||'organizar'} ${'fácilmente'}.`,
+    `Viaje: He ${W(pickByTopic(words,'viaje'))||'reservado'} la ${W(trip)||'reserva'} y compré el ${W(pickByTopic(words,'viaje'))||'billete'}.`
+  ];
+}
+
+/** ====== SRS（简化 SM-2） ====== */
+const SRS_KEY = 'romance_srs_v1';
+function loadSrs(){ try{return JSON.parse(localStorage.getItem(SRS_KEY)||'{}');}catch{return {};} }
+function saveSrs(db){ localStorage.setItem(SRS_KEY, JSON.stringify(db)); }
+function addToSrs(word){
+  const key = CURRENT_LANG+":"+word;
+  const db = loadSrs();
+  if(!db[key]) db[key]={EF:2.5, interval:0, reps:0, due:Date.now()};
+  saveSrs(db);
+}
+function getDueWordsFrom(list){
+  const db=loadSrs(); const now=Date.now(); const arr=[];
+  for(const w of list){ const key=CURRENT_LANG+":"+w.word; const rec=db[key]||{due:0}; if(rec.due<=now) arr.push(w); }
+  return arr;
+}
+$("#startSrsBtn").onclick = ()=>{
+  const list = searchAndFilter();
+  if(!list.length){ alert('当前无可复习单词'); return; }
+  state.srsQueue = getDueWordsFrom(list);
+  if(!state.srsQueue.length){ alert('当前筛选的词都不应复习（尚未到期）。'); return; }
+  $("#srsPanel").style.display='flex'; nextSrs();
+};
+$("#srsClose").onclick = ()=>$("#srsPanel").style.display='none';
+$("#srsShow").onclick = ()=>{ $("#srsA").style.display='block'; };
+$("#srsAgain").onclick = ()=>srsRate(0);
+$("#srsHard").onclick = ()=>srsRate(3);
+$("#srsGood").onclick = ()=>srsRate(4);
+$("#srsEasy").onclick = ()=>srsRate(5);
+let currentSrs=null;
+function nextSrs(){
+  if(!state.srsQueue.length){
+    $("#srsQ").textContent='🎉 今日复习完成'; $("#srsA").style.display='none'; $("#srsInfo").textContent=''; return;
+  }
+  currentSrs = state.srsQueue.shift();
+  const def = (CURRENT_LANG==='it' ? currentSrs.definition_it : currentSrs.definition_es) || '';
+  $("#srsQ").textContent = def+' / '+(currentSrs.meaning_zh||'');
+  $("#srsA").innerHTML = `<b>${hlMorphemeInWord(currentSrs)}</b><div class="mean">${escapeHtml(currentSrs.pos)} · ${(currentSrs.level||[]).join(', ')}</div>`;
+  $("#srsA").style.display='none';
+  $("#srsInfo").textContent = `剩余：${state.srsQueue.length}`;
+}
+function srsRate(q){
+  if(!currentSrs) return;
+  const key = CURRENT_LANG+":"+currentSrs.word;
+  const db = loadSrs();
+  const rec = db[key] || {EF:2.5, interval:0, reps:0, due:Date.now()};
+  if(q<3){
+    rec.reps=0; rec.interval=1; rec.due=Date.now()+1*24*3600*1000;
+  }else{
+    rec.reps+=1;
+    let EF = rec.EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02));
+    if(EF<1.3) EF=1.3;
+    rec.EF=EF;
+    if(rec.reps===1) rec.interval=1;
+    else if(rec.reps===2) rec.interval=3;
+    else rec.interval=Math.round(rec.interval*rec.EF);
+    rec.due = Date.now()+rec.interval*24*3600*1000;
+  }
+  db[key]=rec; saveSrs(db); nextSrs();
+}
+
+/** ====== 事件绑定 ====== */
+$("#q").addEventListener('input', debounce(e=>{ QUERY=e.target.value.trim(); render(); }, 150));
+$("#clearBtn").onclick = ()=>{ $("#q").value=''; QUERY=''; render(); };
+$("#morphSearch").addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const v=e.target.value.trim();
+    if(v){ MORPH_FILTER.add(v.replace(/\s+/g,'').toLowerCase()?v:''); e.target.value=''; render(); }
+  }
+});
+$("#requireAll").onchange = e=>{REQUIRE_ALL=e.target.checked; render();}
+$("#onlyRoots").onchange = e=>{ONLY_ROOTS=e.target.checked; render();}
+$("#freq").oninput = e=>{FREQ_MIN=+e.target.value; $("#freqVal").textContent='≥'+FREQ_MIN; render();}
+$("#resetBtn").onclick = ()=>{ resetFilters(); render(); };
+
+$("#darkBtn").onclick = ()=>{ document.body.classList.toggle('dark'); localStorage.setItem('it_es_dark', document.body.classList.contains('dark')?'1':'0'); }
+if(localStorage.getItem('it_es_dark')==='1') document.body.classList.add('dark');
+
+$("#langSelect").onchange = e=>{
+  CURRENT_LANG = e.target.value;
+  state.words = DB[CURRENT_LANG];
+  buildIndex();
+  resetFilters();
+  fillChips();
+  $("#total").textContent = state.words.length;
+  render();
+};
+
+/** ====== 启动 ====== */
+buildIndex();
+fillChips();
+$("#total").textContent = state.words.length;
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1681 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>词根词缀 · 场景应用｜英语单词记忆（GRE/TOEFL/IELTS）</title>
+<meta name="description" content="基于词根词缀与场景应用的英语单词记忆工具，支持形近词检索、多维检索、SRS 复习，覆盖 GRE/托福/雅思水准。">
+<style>
+:root{
+  --bg:#f8fafc;
+  --fg:#0f172a;
+  --muted:#64748b;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --primary:#2563eb;
+  --accent:#0ea5e9;
+  --chip:#eef2ff;
+  --chip-fg:#4338ca;
+  --good:#16a34a;
+  --warn:#d97706;
+  --bad:#dc2626;
+  --shadow:0 6px 24px rgba(2,6,23,0.08);
+}
+.dark{
+  --bg:#0b1020;
+  --fg:#e6edf3;
+  --muted:#93a4b5;
+  --card:#0f172a;
+  --border:#1f2937;
+  --primary:#60a5fa;
+  --accent:#22d3ee;
+  --chip:#1e293b;
+  --chip-fg:#c7d2fe;
+  --shadow:0 8px 28px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans","Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";
+  background:var(--bg); color:var(--fg);
+}
+a{color:var(--primary);text-decoration:none}
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg,var(--bg),rgba(0,0,0,0));
+  backdrop-filter:saturate(1.2) blur(6px);
+  padding:10px 14px; border-bottom:1px solid var(--border);
+}
+.header-inner{display:flex; align-items:center; gap:12px; max-width:1400px; margin:0 auto}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+.brand .logo{width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,var(--primary),var(--accent)); box-shadow:var(--shadow)}
+.brand small{color:var(--muted); font-weight:600}
+.searchbar{flex:1; display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--border); padding:8px 10px; border-radius:10px; box-shadow:var(--shadow)}
+.searchbar input{flex:1; border:0; outline:none; background:transparent; color:var(--fg); font-size:14px}
+.btn{border:1px solid var(--border); background:var(--card); color:var(--fg); padding:8px 12px; border-radius:10px; cursor:pointer}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border-color:transparent}
+.btn.ghost{background:transparent}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; background:var(--chip); color:var(--chip-fg); font-weight:600; font-size:12px}
+main{max-width:1400px; margin:14px auto; display:grid; grid-template-columns:280px 1fr 360px; gap:14px; padding:0 14px}
+@media (max-width:1100px){main{grid-template-columns:260px 1fr}}
+@media (max-width:980px){main{grid-template-columns:1fr;}}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)
+}
+.sidebar{padding:12px}
+.section-title{display:flex; align-items:center; justify-content:space-between; margin:6px 0 12px}
+.section-title h3{margin:0; font-size:15px}
+.filters{display:grid; gap:14px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer; user-select:none}
+.chip.active{border-color:var(--primary); box-shadow:inset 0 0 0 1px var(--primary)}
+hr.sep{border:0; border-top:1px dashed var(--border); margin:4px 0}
+small.help{color:var(--muted)}
+.input{display:flex; align-items:center; gap:8px; background:var(--bg); border:1px dashed var(--border); padding:8px; border-radius:8px}
+.input input, .input select{flex:1; background:transparent; border:0; outline:0; color:var(--fg)}
+.results{padding:6px 10px 16px}
+.stats{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px}
+.grid{display:grid; grid-template-columns:repeat(2, minmax(220px, 1fr)); gap:10px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.word-card{
+  padding:12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:transform .06s ease;
+}
+.word-card:hover{transform:translateY(-2px)}
+.word-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.word{font-weight:800; font-size:18px; letter-spacing:.2px}
+.tags{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.mean{color:var(--muted); margin-top:4px}
+.morph{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.morph span{padding:2px 6px; border-radius:6px; font-size:12px; border:1px solid var(--border)}
+.morph .pre{background:#e0f2fe; color:#0c4a6e; border-color:transparent}
+.morph .root{background:#fef9c3; color:#713f12; border-color:transparent}
+.morph .suf{background:#fce7f3; color:#831843; border-color:transparent}
+.detail{padding:12px}
+.detail .title{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.detail .title h2{margin:0}
+.detail .actions{display:flex; gap:8px; flex-wrap:wrap}
+.detail section{margin-top:12px}
+.detail .def{font-size:15px}
+.detail .ex{color:var(--muted)}
+.flex{display:flex; gap:10px; flex-wrap:wrap}
+.kv{display:grid; grid-template-columns:100px 1fr; gap:8px; align-items:flex-start}
+ul.clean{list-style:none; padding:0; margin:0}
+ul.clean li{padding:4px 0}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid var(--border)}
+.hlt{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#fff799, #ffe78f)}
+.hlt-pre{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#bde9ff,#9ae6ff)}
+.hlt-suf{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#ffd6ef,#ffbfe7)}
+.sim-list, .family-list{display:flex; flex-wrap:wrap; gap:6px}
+.sim-item, .fam-item{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer}
+.footer-tools{position:sticky; bottom:0; padding:10px; display:flex; gap:8px; flex-wrap:wrap; background:linear-gradient(0deg,var(--bg),rgba(0,0,0,0)); border-top:1px dashed var(--border)}
+.srs{position:fixed; right:20px; bottom:20px; z-index:100; display:flex; gap:8px; flex-wrap:wrap}
+.srs .card{padding:14px; width:360px; max-width:90vw}
+.srs .q{font-weight:700; font-size:18px}
+.srs .btns{display:flex; gap:8px; margin-top:8px}
+.srs .btn.again{background:var(--bad); color:#fff}
+.srs .btn.hard{background:var(--warn); color:#fff}
+.srs .btn.good{background:var(--good); color:#fff}
+.srs .btn.easy{background:var(--primary); color:#fff}
+small.dim{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        词根词缀 · 场景应用
+        <small>GRE / TOEFL / IELTS</small>
+      </div>
+    </div>
+    <div class="searchbar">
+      <span>🔎</span>
+      <input id="q" placeholder="搜索：单词 / 中文释义 / 英文释义 / 词根 / 前缀 / 后缀 / 同义词（支持模糊）" />
+      <button class="btn" id="clearBtn" title="清空">清空</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="darkBtn" title="暗黑模式">🌙/☀️</button>
+      <button class="btn" id="importBtn" title="导入词库(JSON)">导入</button>
+      <button class="btn" id="exportBtn" title="导出当前词库(JSON)">导出</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Sidebar filters -->
+  <aside class="card sidebar" id="sidebar">
+    <div class="section-title">
+      <h3>筛选</h3>
+      <span class="badge">多维检索</span>
+    </div>
+    <div class="filters">
+      <div>
+        <small class="help">考试级别</small>
+        <div class="chips" id="levelChips"></div>
+      </div>
+      <div>
+        <small class="help">词性</small>
+        <div class="chips" id="posChips"></div>
+      </div>
+      <div>
+        <small class="help">主题</small>
+        <div class="chips" id="topicChips"></div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">词根 / 前缀 / 后缀</small>
+        <div class="input"><input id="morphSearch" placeholder="输入如：bene / mal / -ology / pre-"></div>
+        <div class="chips" id="morphChips"></div>
+        <div class="flex">
+          <label class="pill"><input type="checkbox" id="requireAll"> 同时包含所选全部形态</label>
+          <label class="pill"><input type="checkbox" id="onlyRoots"> 仅匹配词根</label>
+        </div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">频率（1-5，越高越常见）</small>
+        <div class="input"><input type="range" id="freq" min="1" max="5" value="1"><span id="freqVal">≥1</span></div>
+      </div>
+      <div class="flex">
+        <button class="btn" id="resetBtn">重置筛选</button>
+        <small class="help">支持组合筛选 + 搜索</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Results -->
+  <section class="card results">
+    <div class="stats">
+      <span class="badge">结果 <b id="count"></b> / <span id="total"></span></span>
+      <span class="pill">形近词：编辑距离</span>
+      <span class="pill">TTS：点击单词右侧🔊</span>
+      <span class="pill">SRS：右下角开始复习</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="footer-tools">
+      <button class="btn primary" id="startSrsBtn">用当前结果开始复习</button>
+      <button class="btn" id="genSceneBtn">用所选词生成场景句</button>
+      <small class="help">提示：双击单词加入复习清单；点击词根芯片可反向检索</small>
+    </div>
+  </section>
+
+  <!-- Detail -->
+  <aside class="card detail" id="detail">
+    <div class="title">
+      <div>
+        <h2 id="dWord">选择一个单词</h2>
+        <div class="morph" id="dMorph"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="speakBtn" title="发音">🔊 发音</button>
+        <button class="btn" id="starBtn" title="加入复习">⭐ 收藏</button>
+      </div>
+    </div>
+    <section>
+      <div class="def" id="dDef"></div>
+      <div class="mean" id="dMean"></div>
+    </section>
+    <section>
+      <div class="kv">
+        <div><small class="help">词性</small></div><div id="dPos"></div>
+        <div><small class="help">考试</small></div><div id="dLevel"></div>
+        <div><small class="help">主题</small></div><div id="dTopics"></div>
+        <div><small class="help">频率</small></div><div id="dFreq"></div>
+      </div>
+    </section>
+    <section>
+      <b>例句</b>
+      <ul class="clean" id="dExamples"></ul>
+    </section>
+    <section>
+      <b>形近词（辅助记忆）</b>
+      <div class="sim-list" id="dSimilar"></div>
+    </section>
+    <section>
+      <b>同根词 / 同前后缀</b>
+      <div class="family-list" id="dFamily"></div>
+    </section>
+    <section>
+      <b>记忆提示</b>
+      <div id="dNotes" class="mean"></div>
+    </section>
+  </aside>
+</main>
+
+<!-- SRS Review Panel -->
+<div class="srs" id="srsPanel" style="display:none">
+  <div class="card">
+    <div class="q" id="srsQ">SRS 复习</div>
+    <div class="a" id="srsA" style="display:none; margin-top:8px"></div>
+    <div class="btns">
+      <button class="btn again" id="srsAgain">Again</button>
+      <button class="btn hard" id="srsHard">Hard</button>
+      <button class="btn good" id="srsGood">Good</button>
+      <button class="btn easy" id="srsEasy">Easy</button>
+      <button class="btn" id="srsShow">显示答案</button>
+      <button class="btn ghost" id="srsClose">关闭</button>
+    </div>
+    <div style="margin-top:6px"><small class="dim" id="srsInfo"></small></div>
+  </div>
+</div>
+
+<script>
+/** ================================
+ *  词根/词缀词典（用于说明与索引）
+ *  ================================ */
+const MORPHEMES = {
+  // prefixes
+  "a":{type:"prefix", zh:"不；无；去", en:"not; without; to"},
+  "ab":{type:"prefix", zh:"离开", en:"away"},
+  "ad":{type:"prefix", zh:"向；去", en:"to; toward"},
+  "ante":{type:"prefix", zh:"前", en:"before"},
+  "anti":{type:"prefix", zh:"反；抗", en:"against"},
+  "bene":{type:"root", zh:"好；善", en:"good; well"},
+  "bio":{type:"root", zh:"生命", en:"life"},
+  "card":{type:"root", zh:"心", en:"heart"},
+  "circum":{type:"prefix", zh:"环绕", en:"around"},
+  "chrono":{type:"root", zh:"时间", en:"time"},
+  "con":{type:"prefix", zh:"一起；共同", en:"together"},
+  "contra":{type:"prefix", zh:"反对", en:"against"},
+  "de":{type:"prefix", zh:"向下；除去", en:"down; away"},
+  "di":{type:"prefix", zh:"分离；离开", en:"apart"},
+  "dis":{type:"prefix", zh:"不；分离", en:"not; apart"},
+  "e":{type:"prefix", zh:"出；外", en:"out"},
+  "ex":{type:"prefix", zh:"出；外", en:"out"},
+  "equi":{type:"root", zh:"相等", en:"equal"},
+  "eu":{type:"prefix", zh:"好；优", en:"good"},
+  "geo":{type:"root", zh:"地球；土地", en:"earth"},
+  "hyper":{type:"prefix", zh:"过度；超", en:"over; excessive"},
+  "hypo":{type:"prefix", zh:"下；不足", en:"under; below"},
+  "il":{type:"prefix", zh:"不；向内", en:"not; in"},
+  "im":{type:"prefix", zh:"不；向内", en:"not; in"},
+  "in":{type:"prefix", zh:"不；在内", en:"not; in"},
+  "inter":{type:"prefix", zh:"在…之间", en:"between"},
+  "intro":{type:"prefix", zh:"向内", en:"into"},
+  "ir":{type:"prefix", zh:"不；向内", en:"not; in"},
+  "mal":{type:"root", zh:"坏；恶", en:"bad"},
+  "mega":{type:"prefix", zh:"大", en:"large"},
+  "micro":{type:"prefix", zh:"微", en:"small"},
+  "mis":{type:"prefix", zh:"错；恶", en:"bad; wrong"},
+  "meta":{type:"prefix", zh:"变；超越", en:"change; beyond"},
+  "mono":{type:"prefix", zh:"单一", en:"one"},
+  "multi":{type:"prefix", zh:"多", en:"many"},
+  "neo":{type:"prefix", zh:"新", en:"new"},
+  "omni":{type:"prefix", zh:"全；总", en:"all"},
+  "peri":{type:"prefix", zh:"周围", en:"around"},
+  "pre":{type:"prefix", zh:"前", en:"before"},
+  "pro":{type:"prefix", zh:"前；向前", en:"forward"},
+  "post":{type:"prefix", zh:"后", en:"after"},
+  "re":{type:"prefix", zh:"再；回", en:"again; back"},
+  "retro":{type:"prefix", zh:"向后", en:"backward"},
+  "sub":{type:"prefix", zh:"下；次级", en:"under"},
+  "super":{type:"prefix", zh:"上；超", en:"over; above"},
+  "tele":{type:"prefix", zh:"远", en:"far"},
+  "trans":{type:"prefix", zh:"横越；转变", en:"across; beyond"},
+  // roots
+  "anim":{type:"root", zh:"生命；精神", en:"life; spirit"},
+  "anthrop":{type:"root", zh:"人", en:"human"},
+  "aqua":{type:"root", zh:"水", en:"water"},
+  "aud":{type:"root", zh:"听", en:"hear"},
+  "cap":{type:"root", zh:"拿；抓", en:"take"},
+  "cardi":{type:"root", zh:"心", en:"heart"},
+  "cred":{type:"root", zh:"信任", en:"believe"},
+  "chron":{type:"root", zh:"时间", en:"time"},
+  "cid":{type:"root", zh:"切；杀", en:"cut; kill"},
+  "cis":{type:"root", zh:"切", en:"cut"},
+  "dict":{type:"root", zh:"说", en:"say"},
+  "doc":{type:"root", zh:"教", en:"teach"},
+  "duc":{type:"root", zh:"引导；带来", en:"lead"},
+  "duct":{type:"root", zh:"引导；管道", en:"lead"},
+  "fac":{type:"root", zh:"做；作", en:"make"},
+  "fact":{type:"root", zh:"做；事实", en:"make; do"},
+  "fic":{type:"root", zh:"做；制作", en:"make"},
+  "fect":{type:"root", zh:"做成；成就", en:"make; do"},
+  "gen":{type:"root", zh:"生；产生", en:"birth; kind"},
+  "graph":{type:"root", zh:"写；画", en:"write"},
+  "gram":{type:"root", zh:"写；图表", en:"write; drawing"},
+  "gress":{type:"root", zh:"步；走", en:"step; go"},
+  "grad":{type:"root", zh:"步；级", en:"step"},
+  "jur":{type:"root", zh:"誓；法", en:"oath; law"},
+  "log":{type:"root", zh:"说；学科", en:"word; study"},
+  "loqu":{type:"root", zh:"说", en:"speak"},
+  "magn":{type:"root", zh:"大", en:"great"},
+  "manu":{type:"root", zh:"手", en:"hand"},
+  "metr":{type:"root", zh:"测量", en:"measure"},
+  "morph":{type:"root", zh:"形", en:"form"},
+  "mort":{type:"root", zh:"死", en:"death"},
+  "nat":{type:"root", zh:"生；出生", en:"born"},
+  "nov":{type:"root", zh:"新", en:"new"},
+  "path":{type:"root", zh:"感情；病", en:"feeling; disease"},
+  "phil":{type:"root", zh:"爱好", en:"love"},
+  "phon":{type:"root", zh:"声音", en:"sound"},
+  "photo":{type:"root", zh:"光", en:"light"},
+  "port":{type:"root", zh:"携带；运", en:"carry"},
+  "sci":{type:"root", zh:"知道", en:"know"},
+  "scrib":{type:"root", zh:"写", en:"write"},
+  "script":{type:"root", zh:"写", en:"write"},
+  "scope":{type:"root", zh:"看；观察", en:"look"},
+  "spect":{type:"root", zh:"看", en:"look"},
+  "spic":{type:"root", zh:"看", en:"look"},
+  "stat":{type:"root", zh:"站立；状态", en:"stand"},
+  "tele(root)":{type:"root", zh:"远", en:"far"},
+  "therm":{type:"root", zh:"热", en:"heat"},
+  "tract":{type:"root", zh:"拉；拖", en:"draw"},
+  "ven":{type:"root", zh:"来", en:"come"},
+  "vent":{type:"root", zh:"来", en:"come"},
+  "ver":{type:"root", zh:"真", en:"true"},
+  "vid":{type:"root", zh:"看见", en:"see"},
+  "vis":{type:"root", zh:"看", en:"see"},
+  "vol":{type:"root", zh:"意愿", en:"will"},
+  "voc":{type:"root", zh:"叫；声", en:"call"},
+  "vok":{type:"root", zh:"叫；声", en:"call"},
+  // suffixes
+  "al":{type:"suffix", zh:"形容词/名词后缀", en:"adj./n. suffix"},
+  "ally":{type:"suffix", zh:"副词后缀", en:"adv. suffix"},
+  "ance":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "ant":{type:"suffix", zh:"形容词/名词后缀", en:"adj./n. suffix"},
+  "ary":{type:"suffix", zh:"形容词/名词后缀", en:"adj./n. suffix"},
+  "ate":{type:"suffix", zh:"动词/形容词后缀", en:"v./adj. suffix"},
+  "ent":{type:"suffix", zh:"形容词/名词后缀", en:"adj./n. suffix"},
+  "ence":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "hood":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "ible":{type:"suffix", zh:"形容词后缀", en:"adj. suffix"},
+  "ic":{type:"suffix", zh:"形容词后缀", en:"adj. suffix"},
+  "ics":{type:"suffix", zh:"学科名词后缀", en:"n. (field) suffix"},
+  "ify":{type:"suffix", zh:"动词后缀", en:"v. suffix"},
+  "ion":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "ish":{type:"suffix", zh:"形容词/动词后缀", en:"adj./v. suffix"},
+  "ism":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "ist":{type:"suffix", zh:"人（…者）", en:"person suffix"},
+  "ity":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "ive":{type:"suffix", zh:"形容词后缀", en:"adj. suffix"},
+  "ize":{type:"suffix", zh:"动词后缀", en:"v. suffix"},
+  "logy":{type:"suffix", zh:"…学；学科", en:"study of"},
+  "meter":{type:"suffix", zh:"计量器", en:"measuring device"},
+  "metry":{type:"suffix", zh:"测量法", en:"measurement"},
+  "ness":{type:"suffix", zh:"名词后缀", en:"n. suffix"},
+  "ous":{type:"suffix", zh:"形容词后缀", en:"adj. suffix"},
+  "phobia":{type:"suffix", zh:"恐惧症", en:"fear"}
+};
+
+/** ================================
+ *  示例词库（GRE/TOEFL/IELTS 水准）
+ *  字段：
+ *  word, pos, level[], frequency(1-5), definition_en, meaning_zh,
+ *  examples[], roots:[{m: morpheme, t: 'prefix'|'root'|'suffix'}],
+ *  topics[], syn[], ant[], notes
+ *  ================================ */
+const WORDS = [
+  // bene/mal/dict/ver/vol/voc/vok/jur
+  {word:"benevolent",pos:"adj.",level:["GRE","IELTS"],frequency:3,
+    definition_en:"well-meaning and kindly",
+    meaning_zh:"仁慈的；善意的",
+    examples:["A benevolent donor funded the scholarship."],
+    roots:[{m:"bene",t:"root"},{m:"vol",t:"root"},{m:"ent",t:"suffix"}],
+    topics:["morality","people"],syn:["kind","charitable"],ant:["malevolent"],notes:"bene(好)+vol(意愿)+-ent(形) → 好心的"},
+  {word:"malevolent",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"having or showing a wish to do evil to others",
+    meaning_zh:"恶意的；怨恨的",
+    examples:["A malevolent glare silenced the room."],
+    roots:[{m:"mal",t:"root"},{m:"vol",t:"root"},{m:"ent",t:"suffix"}],
+    topics:["morality"],syn:["malicious","spiteful"],ant:["benevolent"],notes:"mal(坏)+vol(意愿) → 恶意的"},
+  {word:"malediction",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"a curse; the utterance of a curse",
+    meaning_zh:"诅咒；咒骂",
+    examples:["She muttered a malediction under her breath."],
+    roots:[{m:"mal",t:"root"},{m:"dict",t:"root"},{m:"ion",t:"suffix"}],
+    topics:["emotion"],syn:["curse","imprecation"],ant:["benediction"],notes:"mal(坏)+dict(说) → 说坏话=咒骂"},
+  {word:"benediction",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"a blessing; an expression of good wishes",
+    meaning_zh:"祝福；祈福",
+    examples:["The ceremony ended with a benediction."],
+    roots:[{m:"bene",t:"root"},{m:"dict",t:"root"},{m:"ion",t:"suffix"}],
+    topics:["religion"],syn:["blessing"],ant:["malediction"],notes:"bene(好)+dict(说) → 说好话=祝福"},
+  {word:"verdict",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"a decision on a disputed issue in a civil or criminal case",
+    meaning_zh:"判决；裁定",
+    examples:["The jury returned a guilty verdict."],
+    roots:[{m:"ver",t:"root"},{m:"dict",t:"root"}],
+    topics:["law"],syn:["judgment","decision"],ant:[],notes:"ver(真)+dict(说) → 说出真相=裁决"},
+  {word:"jurisdiction",pos:"n.",level:["TOEFL","IELTS"],frequency:3,
+    definition_en:"the official power to make legal decisions and judgments",
+    meaning_zh:"司法权；管辖权",
+    examples:["This case falls outside our jurisdiction."],
+    roots:[{m:"jur",t:"root"},{m:"dict",t:"root"},{m:"ion",t:"suffix"}],
+    topics:["law"],syn:["authority","power"],ant:[],notes:"jur(法)+dict(说) → 宣示法律=司法权"},
+  {word:"abdicate",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to renounce a throne, right, or power",
+    meaning_zh:"退位；放弃（权力/责任）",
+    examples:["The king decided to abdicate in favor of his son."],
+    roots:[{m:"ab",t:"prefix"},{m:"dict",t:"root"},{m:"ate",t:"suffix"}],
+    topics:["politics"],syn:["resign","relinquish"],ant:["assume"],notes:"ab(离开)+dic(宣告) → 宣布放弃"},
+  {word:"indict",pos:"v.",level:["GRE","TOEFL"],frequency:3,
+    definition_en:"formally accuse of or charge with a serious crime",
+    meaning_zh:"起诉；控告",
+    examples:["He was indicted on multiple counts of fraud."],
+    roots:[{m:"in",t:"prefix"},{m:"dict",t:"root"}],
+    topics:["law"],syn:["charge","accuse"],ant:["exonerate"],notes:"in(向内)+dict(说) → 指控"},
+  {word:"dedicate",pos:"v.",level:["IELTS","TOEFL"],frequency:4,
+    definition_en:"to devote time or effort to a particular task or purpose",
+    meaning_zh:"致力；奉献",
+    examples:["She dedicated her life to education."],
+    roots:[{m:"de",t:"prefix"},{m:"dic",t:"root"},{m:"ate",t:"suffix"}],
+    topics:["people"],syn:["devote","commit"],ant:["abandon"],notes:"de(加强)+dic(宣告) → 庄严宣布奉献"},
+  {word:"advocate",pos:"v./n.",level:["GRE","IELTS"],frequency:4,
+    definition_en:"to publicly support; a person who publicly supports",
+    meaning_zh:"提倡；拥护者",
+    examples:["They advocate for climate action."],
+    roots:[{m:"ad",t:"prefix"},{m:"voc",t:"root"},{m:"ate",t:"suffix"}],
+    topics:["society"],syn:["champion","support"],ant:["oppose"],notes:"ad(向)+voc(呼喊) → 为…发声"},
+  {word:"equivocal",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"open to more than one interpretation; ambiguous",
+    meaning_zh:"模棱两可的；含糊的",
+    examples:["He gave an equivocal answer."],
+    roots:[{m:"equi",t:"root"},{m:"voc",t:"root"},{m:"al",t:"suffix"}],
+    topics:["logic"],syn:["ambiguous"],ant:["unequivocal","clear"],notes:"equi(相等)+voc(声音) → 两边都说得通"},
+  {word:"invoke",pos:"v.",level:["GRE","TOEFL"],frequency:3,
+    definition_en:"to call on (a higher power); to cite as authority",
+    meaning_zh:"调用；援引；祈求",
+    examples:["They invoked a constitutional right."],
+    roots:[{m:"in",t:"prefix"},{m:"vok",t:"root"}],
+    topics:["law","tech"],syn:["cite","appeal to"],ant:[],notes:"in(向内)+vok(呼唤)"},
+  {word:"revoke",pos:"v.",level:["GRE","TOEFL"],frequency:3,
+    definition_en:"to officially cancel",
+    meaning_zh:"撤销；废除",
+    examples:["The license was revoked."],
+    roots:[{m:"re",t:"prefix"},{m:"vok",t:"root"}],
+    topics:["law"],syn:["cancel","rescind"],ant:["grant"],notes:"re(回)+vok(呼唤) → 叫回=撤销"},
+  {word:"provoke",pos:"v.",level:["IELTS","TOEFL"],frequency:4,
+    definition_en:"to stimulate or incite; to anger",
+    meaning_zh:"激起；激怒",
+    examples:["The article provoked a heated debate."],
+    roots:[{m:"pro",t:"prefix"},{m:"vok",t:"root"}],
+    topics:["society"],syn:["stir","incite"],ant:["soothe"],notes:"pro(向前)+vok(呼喊)"},
+
+  // scrib/script
+  {word:"describe",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to give an account of in words",
+    meaning_zh:"描述；描写",
+    examples:["Describe your research methods."],
+    roots:[{m:"de",t:"prefix"},{m:"scrib",t:"root"}],
+    topics:["academic"],syn:["depict","portray"],ant:[],notes:"de(向下)+scrib(写) → 写下来=描述"},
+  {word:"inscribe",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to write or carve on something, especially as a formal or permanent record",
+    meaning_zh:"题写；铭刻",
+    examples:["The ring was inscribed with a date."],
+    roots:[{m:"in",t:"prefix"},{m:"scrib",t:"root"}],
+    topics:["art"],syn:["engrave","etch"],ant:[],notes:"in(内)+scrib(写)"},
+  {word:"prescribe",pos:"v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to recommend or lay down as a rule; to authorize use of medicine",
+    meaning_zh:"规定；开处方",
+    examples:["Doctors prescribe antibiotics cautiously."],
+    roots:[{m:"pre",t:"prefix"},{m:"scrib",t:"root"}],
+    topics:["medicine"],syn:["stipulate","order"],ant:["proscribe"],notes:"pre(预先)+scrib(写)"},
+  {word:"proscribe",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to forbid, especially by law",
+    meaning_zh:"禁止；取缔",
+    examples:["The policy proscribes discrimination."],
+    roots:[{m:"pro",t:"prefix"},{m:"scrib",t:"root"}],
+    topics:["law"],syn:["forbid","ban"],ant:["prescribe(规定)"],notes:"pro(向前/公开)+scrib(写) → 公布禁止"},
+  {word:"transcript",pos:"n.",level:["TOEFL"],frequency:4,
+    definition_en:"a written or printed version of material originally presented in another medium; academic record",
+    meaning_zh:"文字记录；成绩单",
+    examples:["Please submit your academic transcript."],
+    roots:[{m:"trans",t:"prefix"},{m:"script",t:"root"}],
+    topics:["academic"],syn:["record"],ant:[],notes:"trans(跨越)+script(写)"},
+  {word:"circumscribe",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to restrict within limits",
+    meaning_zh:"限制；划界",
+    examples:["Freedom of speech was circumscribed."],
+    roots:[{m:"circum",t:"prefix"},{m:"scrib",t:"root"}],
+    topics:["law","politics"],syn:["limit","confine"],ant:["expand"],notes:"circum(环绕)+scrib(写) → 画圈限制"},
+
+  // graph/gram/photo
+  {word:"photograph",pos:"n./v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"a picture made using a camera; to take a photo",
+    meaning_zh:"照片；拍照",
+    examples:["She loves to photograph urban scenes."],
+    roots:[{m:"photo",t:"root"},{m:"graph",t:"root"}],
+    topics:["art"],syn:["picture"],ant:[],notes:"photo(光)+graph(写) → 用光写字"},
+  {word:"biography",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"an account of someone's life written by someone else",
+    meaning_zh:"传记",
+    examples:["The biography captures her early struggles."],
+    roots:[{m:"bio",t:"root"},{m:"graph",t:"root"},{m:"y",t:"suffix"}],
+    topics:["literature"],syn:["life story"],ant:[],notes:"bio(生命)+graph(写) → 写生平"},
+  {word:"geography",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"the study of Earth's physical features and human activity",
+    meaning_zh:"地理学",
+    examples:["Human geography focuses on people and cultures."],
+    roots:[{m:"geo",t:"root"},{m:"graph",t:"root"},{m:"y",t:"suffix"}],
+    topics:["science"],syn:["earth science"],ant:[],notes:"geo(地)+graph(写)"},
+  {word:"diagram",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"a simplified drawing showing appearance or structure",
+    meaning_zh:"图表；示意图",
+    examples:["The diagram illustrates the process."],
+    roots:[{m:"dia",t:"prefix"},{m:"gram",t:"root"}],
+    topics:["academic"],syn:["chart","figure"],ant:[],notes:"dia(穿过)+gram(画) → 透视图示"},
+  {word:"autograph",pos:"n./v.",level:["IELTS"],frequency:3,
+    definition_en:"a signature, especially of a celebrity; to sign",
+    meaning_zh:"亲笔签名；签名",
+    examples:["Fans asked for his autograph."],
+    roots:[{m:"auto",t:"prefix"},{m:"graph",t:"root"}],
+    topics:["people"],syn:["signature"],ant:[],notes:"auto(自己)+graph(写)"},
+  {word:"telegraph",pos:"n./v.",level:["TOEFL"],frequency:2,
+    definition_en:"a system for transmitting messages over long distances",
+    meaning_zh:"电报；打电报",
+    examples:["The telegraph revolutionized communication."],
+    roots:[{m:"tele",t:"prefix"},{m:"graph",t:"root"}],
+    topics:["history","tech"],syn:["wire"],ant:[],notes:"tele(远)+graph(写)"},
+
+  // phon
+  {word:"cacophony",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"a harsh, discordant mixture of sounds",
+    meaning_zh:"刺耳的噪音",
+    examples:["The market was a cacophony of horns and shouts."],
+    roots:[{m:"caco",t:"prefix"},{m:"phon",t:"root"},{m:"y",t:"suffix"}],
+    topics:["sound"],syn:["din","discord"],ant:["euphony"],notes:"caco(坏)+phon(声)"},
+  {word:"euphony",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"the quality of being pleasing to the ear",
+    meaning_zh:"悦耳之音",
+    examples:["Poets often seek euphony."],
+    roots:[{m:"eu",t:"prefix"},{m:"phon",t:"root"},{m:"y",t:"suffix"}],
+    topics:["sound"],syn:["melody"],ant:["cacophony"],notes:"eu(好)+phon(声)"},
+  {word:"symphony",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"a long, complex musical composition for orchestra",
+    meaning_zh:"交响乐",
+    examples:["They performed Beethoven's Fifth Symphony."],
+    roots:[{m:"sym",t:"prefix"},{m:"phon",t:"root"},{m:"y",t:"suffix"}],
+    topics:["music"],syn:["orchestral work"],ant:[],notes:"sym(共同)+phon(声)"},
+  {word:"microphone",pos:"n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"a device that converts sound into an electrical signal",
+    meaning_zh:"麦克风",
+    examples:["Please speak into the microphone."],
+    roots:[{m:"micro",t:"prefix"},{m:"phon",t:"root"}],
+    topics:["tech"],syn:["mic"],ant:[],notes:"micro(微)+phon(声)"},
+  {word:"megaphone",pos:"n.",level:["IELTS"],frequency:2,
+    definition_en:"a device for amplifying the voice",
+    meaning_zh:"扩音器",
+    examples:["The coach shouted through a megaphone."],
+    roots:[{m:"mega",t:"prefix"},{m:"phon",t:"root"}],
+    topics:["tech"],syn:["loudhailer"],ant:[],notes:"mega(大)+phon(声)"},
+  {word:"phonetics",pos:"n.",level:["TOEFL"],frequency:3,
+    definition_en:"the study of speech sounds",
+    meaning_zh:"语音学",
+    examples:["Phonetics analyzes how sounds are produced."],
+    roots:[{m:"phon",t:"root"},{m:"ic",t:"suffix"},{m:"s",t:"suffix"}],
+    topics:["linguistics"],syn:["speech sounds"],ant:[],notes:"phon(声)+-ics(学科)"},
+
+  // spect/vid/vis
+  {word:"circumspect",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"wary and unwilling to take risks",
+    meaning_zh:"谨慎的；慎重的",
+    examples:["He is circumspect in financial decisions."],
+    roots:[{m:"circum",t:"prefix"},{m:"spect",t:"root"}],
+    topics:["personality"],syn:["cautious"],ant:["reckless"],notes:"circum(周围)+spect(看) → 看四周=谨慎"},
+  {word:"retrospect",pos:"n.",level:["IELTS"],frequency:2,
+    definition_en:"a survey or review of a past course of events",
+    meaning_zh:"回顾；反思",
+    examples:["In retrospect, the choice was obvious."],
+    roots:[{m:"retro",t:"prefix"},{m:"spect",t:"root"}],
+    topics:["thinking"],syn:["review"],ant:[],notes:"retro(向后)+spect(看)"},
+  {word:"conspicuous",pos:"adj.",level:["IELTS"],frequency:3,
+    definition_en:"standing out so as to be clearly visible",
+    meaning_zh:"显眼的；显著的",
+    examples:["Her red coat made her conspicuous."],
+    roots:[{m:"con",t:"prefix"},{m:"spic",t:"root"},{m:"ous",t:"suffix"}],
+    topics:["appearance"],syn:["noticeable"],ant:["inconspicuous"],notes:"con(共同)+spic(看) → 大家都看见"},
+  {word:"evidence",pos:"n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"the available body of facts indicating whether a belief is true",
+    meaning_zh:"证据",
+    examples:["There is strong evidence to support the claim."],
+    roots:[{m:"e",t:"prefix"},{m:"vid",t:"root"},{m:"ence",t:"suffix"}],
+    topics:["academic"],syn:["proof"],ant:[],notes:"e(外)+vid(看见) → 看得见=证据"},
+  {word:"revise",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to reconsider and alter (something) in light of further evidence",
+    meaning_zh:"修订；复习",
+    examples:["Please revise your essay."],
+    roots:[{m:"re",t:"prefix"},{m:"vis",t:"root"}],
+    topics:["academic"],syn:["edit","review"],ant:["stick to"],notes:"re(再)+vis(看)"},
+  {word:"supervise",pos:"v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to oversee (a person or task)",
+    meaning_zh:"监督；指导",
+    examples:["She supervises graduate students."],
+    roots:[{m:"super",t:"prefix"},{m:"vis",t:"root"}],
+    topics:["work"],syn:["oversee"],ant:["neglect"],notes:"super(在上)+vis(看)"},
+  {word:"invisible",pos:"adj.",level:["IELTS"],frequency:3,
+    definition_en:"unable to be seen",
+    meaning_zh:"看不见的；无形的",
+    examples:["Invisible forces shape markets."],
+    roots:[{m:"in",t:"prefix"},{m:"vis",t:"root"},{m:"ible",t:"suffix"}],
+    topics:["science"],syn:["unseen"],ant:["visible"],notes:"in(不)+vis(看)+ible"},
+  {word:"television",pos:"n.",level:["IELTS"],frequency:5,
+    definition_en:"a system for transmitting visual images and sound",
+    meaning_zh:"电视",
+    examples:["Television changed entertainment."],
+    roots:[{m:"tele",t:"prefix"},{m:"vis",t:"root"},{m:"ion",t:"suffix"}],
+    topics:["tech"],syn:["TV"],ant:[],notes:"tele(远)+vis(看)"},
+
+  // mit/miss
+  {word:"transmit",pos:"v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to send or pass on from one place to another",
+    meaning_zh:"传输；传递；传播",
+    examples:["The virus transmits through droplets."],
+    roots:[{m:"trans",t:"prefix"},{m:"mit",t:"root"}],
+    topics:["tech","health"],syn:["send","transfer"],ant:["receive"],notes:"trans(跨越)+mit(送)"},
+  {word:"submit",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to present for consideration; to yield to authority",
+    meaning_zh:"提交；屈从",
+    examples:["Submit your application online."],
+    roots:[{m:"sub",t:"prefix"},{m:"mit",t:"root"}],
+    topics:["work","academic"],syn:["present","yield"],ant:["resist"],notes:"sub(下)+mit(送)"},
+  {word:"admit",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to confess; to allow entry",
+    meaning_zh:"承认；准许进入",
+    examples:["He admitted his mistake."],
+    roots:[{m:"ad",t:"prefix"},{m:"mit",t:"root"}],
+    topics:["law","people"],syn:["confess","allow"],ant:["deny"],notes:"ad(向)+mit(放入/送)"},
+  {word:"dismiss",pos:"v.",level:["TOEFL"],frequency:4,
+    definition_en:"to decide not to consider; to remove from a job",
+    meaning_zh:"不予考虑；解雇",
+    examples:["The judge dismissed the case."],
+    roots:[{m:"dis",t:"prefix"},{m:"miss",t:"root"}],
+    topics:["law","work"],syn:["reject","fire"],ant:["hire","consider"],notes:"dis(离)+miss(送) → 送走=解雇"},
+  {word:"permit",pos:"v./n.",level:["IELTS"],frequency:4,
+    definition_en:"to allow; an official document giving authorization",
+    meaning_zh:"允许；许可证",
+    examples:["Parking is permitted here."],
+    roots:[{m:"per",t:"prefix"},{m:"mit",t:"root"}],
+    topics:["law"],syn:["allow","license"],ant:["forbid"],notes:"per(贯通)+mit(放)"},
+  {word:"emit",pos:"v.",level:["TOEFL"],frequency:4,
+    definition_en:"to give off, release",
+    meaning_zh:"发出；排放",
+    examples:["Factories emit greenhouse gases."],
+    roots:[{m:"e",t:"prefix"},{m:"mit",t:"root"}],
+    topics:["environment"],syn:["release"],ant:["absorb"],notes:"e(向外)+mit(送出)"},
+
+  // port
+  {word:"transport",pos:"v./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to carry from one place to another; transportation",
+    meaning_zh:"运输；运送",
+    examples:["Goods are transported by rail."],
+    roots:[{m:"trans",t:"prefix"},{m:"port",t:"root"}],
+    topics:["logistics"],syn:["carry","ship"],ant:[],notes:"trans(跨越)+port(运)"},
+  {word:"import",pos:"v./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to bring goods or services into a country from abroad",
+    meaning_zh:"进口；输入",
+    examples:["The country imports oil."],
+    roots:[{m:"im",t:"prefix"},{m:"port",t:"root"}],
+    topics:["economy"],syn:["bring in"],ant:["export"],notes:"im(入)+port(运)"},
+  {word:"export",pos:"v./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to send goods to another country for sale",
+    meaning_zh:"出口；输出",
+    examples:["They export coffee beans."],
+    roots:[{m:"ex",t:"prefix"},{m:"port",t:"root"}],
+    topics:["economy"],syn:["send out"],ant:["import"],notes:"ex(出)+port(运)"},
+  {word:"support",pos:"v./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to bear all or part of the weight; to back up",
+    meaning_zh:"支持；支撑",
+    examples:["The data support the hypothesis."],
+    roots:[{m:"sub",t:"prefix"},{m:"port",t:"root"}],
+    topics:["academic","people"],syn:["back","sustain"],ant:["undermine"],notes:"sub(在下)+port(承)"},
+  {word:"deport",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to expel a foreigner from a country",
+    meaning_zh:"驱逐出境；递解",
+    examples:["They were deported for visa violations."],
+    roots:[{m:"de",t:"prefix"},{m:"port",t:"root"}],
+    topics:["law"],syn:["expel"],ant:["admit"],notes:"de(离开)+port(运)"},
+
+  // duc/duct
+  {word:"induce",pos:"v.",level:["GRE","TOEFL"],frequency:3,
+    definition_en:"to bring about; to persuade",
+    meaning_zh:"引起；诱导",
+    examples:["The drug induces sleep."],
+    roots:[{m:"in",t:"prefix"},{m:"duc",t:"root"}],
+    topics:["science","psychology"],syn:["cause","persuade"],ant:["deter"],notes:"in(向内)+duc(引导)"},
+  {word:"reduce",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to make smaller",
+    meaning_zh:"减少；降低",
+    examples:["Reduce waste and save energy."],
+    roots:[{m:"re",t:"prefix"},{m:"duc",t:"root"}],
+    topics:["environment"],syn:["decrease"],ant:["increase"],notes:"re(回/向下)+duc(引)"},
+  {word:"deduce",pos:"v.",level:["GRE","TOEFL"],frequency:3,
+    definition_en:"to derive as a conclusion from something known or assumed",
+    meaning_zh:"推断；推演",
+    examples:["We deduce the rule from data."],
+    roots:[{m:"de",t:"prefix"},{m:"duc",t:"root"}],
+    topics:["logic"],syn:["infer"],ant:["guess"],notes:"de(向下/由上到下)+duc(引) → 推导"},
+  {word:"conduct",pos:"v./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to organize and carry out; behavior",
+    meaning_zh:"实施；行为",
+    examples:["They conducted an experiment."],
+    roots:[{m:"con",t:"prefix"},{m:"duct",t:"root"}],
+    topics:["work","science"],syn:["carry out"],ant:[],notes:"con(共同)+duct(引)"},
+  {word:"abduct",pos:"v.",level:["GRE","TOEFL"],frequency:2,
+    definition_en:"to take away by force; kidnap",
+    meaning_zh:"绑架；拐走",
+    examples:["The child was abducted."],
+    roots:[{m:"ab",t:"prefix"},{m:"duct",t:"root"}],
+    topics:["law"],syn:["kidnap"],ant:["release"],notes:"ab(离开)+duct(带走)"},
+  {word:"aqueduct",pos:"n.",level:["TOEFL"],frequency:2,
+    definition_en:"an artificial channel for conveying water",
+    meaning_zh:"渡槽；导水渠",
+    examples:["The Roman aqueducts were engineering marvels."],
+    roots:[{m:"aqua",t:"root"},{m:"duct",t:"root"}],
+    topics:["engineering","history"],syn:["watercourse"],ant:[],notes:"aqua(水)+duct(引)"},
+
+  // fac/fic/fact/fect
+  {word:"manufacture",pos:"v./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to make goods on a large scale",
+    meaning_zh:"制造；生产",
+    examples:["The factory manufactures components."],
+    roots:[{m:"manu",t:"root"},{m:"fact",t:"root"},{m:"ure",t:"suffix"}],
+    topics:["industry"],syn:["produce"],ant:["consume"],notes:"manu(手)+fact(做) → 手工→工业"},
+  {word:"benefactor",pos:"n.",level:["GRE","IELTS"],frequency:3,
+    definition_en:"a person who gives money or help",
+    meaning_zh:"恩人；捐助者",
+    examples:["A benefactor endowed the library."],
+    roots:[{m:"bene",t:"root"},{m:"fact",t:"root"},{m:"or",t:"suffix"}],
+    topics:["society"],syn:["patron"],ant:["malefactor"],notes:"bene(好)+fact(做) → 做好事的人"},
+  {word:"malefactor",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"a person who commits a crime or does evil",
+    meaning_zh:"坏人；罪犯",
+    examples:["The malefactor was apprehended."],
+    roots:[{m:"mal",t:"root"},{m:"fact",t:"root"},{m:"or",t:"suffix"}],
+    topics:["law"],syn:["criminal"],ant:["benefactor"],notes:"mal(坏)+fact(做)"},
+  {word:"effect",pos:"n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"a change which is a result or consequence of an action",
+    meaning_zh:"效果；影响",
+    examples:["The policy had little effect."],
+    roots:[{m:"e",t:"prefix"},{m:"fect",t:"root"}],
+    topics:["academic"],syn:["impact"],ant:["cause"],notes:"e(出)+fect(做出) → 结果"},
+  {word:"defect",pos:"n./v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"a shortcoming; to desert one's cause or party",
+    meaning_zh:"缺陷；叛逃",
+    examples:["A critical defect was found."],
+    roots:[{m:"de",t:"prefix"},{m:"fect",t:"root"}],
+    topics:["quality"],syn:["flaw"],ant:["perfection"],notes:"de(偏离)+fect(做成)"},
+  {word:"perfect",pos:"adj.",level:["IELTS"],frequency:5,
+    definition_en:"having all required elements; as good as possible",
+    meaning_zh:"完美的",
+    examples:["The timing was perfect."],
+    roots:[{m:"per",t:"prefix"},{m:"fect",t:"root"}],
+    topics:["general"],syn:["flawless"],ant:["imperfect"],notes:"per(贯穿)+fect(做) → 做到极致"},
+
+  // tract
+  {word:"abstract",pos:"adj./n./v.",level:["GRE","TOEFL"],frequency:4,
+    definition_en:"existing in thought; summary; to remove",
+    meaning_zh:"抽象的；摘要；提取",
+    examples:["The paper's abstract is concise."],
+    roots:[{m:"ab",t:"prefix"},{m:"tract",t:"root"}],
+    topics:["academic"],syn:["conceptual","summary"],ant:["concrete"],notes:"ab(离开)+tract(拉) → 拉离具体"},
+  {word:"distract",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to divert attention",
+    meaning_zh:"分心；干扰",
+    examples:["Noise distracts me from work."],
+    roots:[{m:"dis",t:"prefix"},{m:"tract",t:"root"}],
+    topics:["psychology"],syn:["divert"],ant:["focus"],notes:"dis(分离)+tract(拉)"},
+  {word:"contract",pos:"n./v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"a written agreement; to shrink",
+    meaning_zh:"合同；收缩",
+    examples:["The firm won a three-year contract."],
+    roots:[{m:"con",t:"prefix"},{m:"tract",t:"root"}],
+    topics:["law","business"],syn:["agreement"],ant:["expand"],notes:"con(共同)+tract(拉) → 拉到一起=合同"},
+  {word:"extract",pos:"v./n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to remove or take out; an excerpt",
+    meaning_zh:"提取；摘录",
+    examples:["They extracted DNA samples."],
+    roots:[{m:"ex",t:"prefix"},{m:"tract",t:"root"}],
+    topics:["science"],syn:["remove"],ant:["insert"],notes:"ex(出)+tract(拉)"},
+  {word:"attract",pos:"v.",level:["IELTS"],frequency:5,
+    definition_en:"to draw by appeal; to pull toward",
+    meaning_zh:"吸引；引起",
+    examples:["The museum attracts many visitors."],
+    roots:[{m:"ad",t:"prefix"},{m:"tract",t:"root"}],
+    topics:["people"],syn:["appeal"],ant:["repel"],notes:"ad(向)+tract(拉)"},
+  {word:"retract",pos:"v.",level:["GRE"],frequency:3,
+    definition_en:"to draw back; to withdraw",
+    meaning_zh:"缩回；撤回",
+    examples:["The journal retracted the article."],
+    roots:[{m:"re",t:"prefix"},{m:"tract",t:"root"}],
+    topics:["academic"],syn:["withdraw"],ant:["issue"],notes:"re(回)+tract(拉)"},
+
+  // cred
+  {word:"credit",pos:"n./v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"public acknowledgment; financial trust; to ascribe",
+    meaning_zh:"信誉；学分；归功于",
+    examples:["He took credit for the success."],
+    roots:[{m:"cred",t:"root"},{m:"it",t:"suffix"}],
+    topics:["finance","academic"],syn:["trust"],ant:["discredit"],notes:"cred(信)"},
+  {word:"credible",pos:"adj.",level:["IELTS"],frequency:4,
+    definition_en:"able to be believed; convincing",
+    meaning_zh:"可信的",
+    examples:["A credible source is essential."],
+    roots:[{m:"cred",t:"root"},{m:"ible",t:"suffix"}],
+    topics:["academic"],syn:["believable"],ant:["incredible"],notes:"cred(信)+ible"},
+  {word:"incredible",pos:"adj.",level:["IELTS"],frequency:5,
+    definition_en:"impossible to believe; extraordinary",
+    meaning_zh:"难以置信的；惊人的",
+    examples:["The view was incredible."],
+    roots:[{m:"in",t:"prefix"},{m:"cred",t:"root"},{m:"ible",t:"suffix"}],
+    topics:["general"],syn:["unbelievable"],ant:["credible"],notes:"in(不)+cred(信)"},
+  {word:"discredit",pos:"v./n.",level:["GRE"],frequency:3,
+    definition_en:"to harm the good reputation of; loss of reputation",
+    meaning_zh:"使丧失信誉；名誉丧失",
+    examples:["The scandal discredited the committee."],
+    roots:[{m:"dis",t:"prefix"},{m:"cred",t:"root"}],
+    topics:["society"],syn:["defame"],ant:["credit"],notes:"dis(否)+cred(信) → 使不可信"},
+
+  // card/cord
+  {word:"cordial",pos:"adj.",level:["IELTS"],frequency:3,
+    definition_en:"warm and friendly",
+    meaning_zh:"热诚的；友好的",
+    examples:["We had a cordial meeting."],
+    roots:[{m:"cord",t:"root"},{m:"ial",t:"suffix"}],
+    topics:["people"],syn:["friendly"],ant:["hostile"],notes:"cord(心)+ial → 出自内心"},
+  {word:"accord",pos:"n./v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"agreement; to grant",
+    meaning_zh:"一致；授予",
+    examples:["The two sides reached an accord."],
+    roots:[{m:"ad",t:"prefix"},{m:"cord",t:"root"}],
+    topics:["law","diplomacy"],syn:["agreement"],ant:["discord"],notes:"ad(向)+cord(心) → 同心"},
+  {word:"discord",pos:"n.",level:["GRE"],frequency:3,
+    definition_en:"disagreement between people",
+    meaning_zh:"不和；纷争",
+    examples:["Discord within the team grew."],
+    roots:[{m:"dis",t:"prefix"},{m:"cord",t:"root"}],
+    topics:["people"],syn:["conflict"],ant:["accord"],notes:"dis(不)+cord(心)"},
+
+  // path
+  {word:"empathy",pos:"n.",level:["IELTS","TOEFL"],frequency:4,
+    definition_en:"the ability to understand and share another's feelings",
+    meaning_zh:"共情；同理心",
+    examples:["Empathy improves communication."],
+    roots:[{m:"em",t:"prefix"},{m:"path",t:"root"},{m:"y",t:"suffix"}],
+    topics:["psychology"],syn:["compassion"],ant:["apathy"],notes:"em(进入)+path(感情)"},
+  {word:"sympathy",pos:"n.",level:["IELTS","TOEFL"],frequency:4,
+    definition_en:"feelings of pity and sorrow for someone else's misfortune",
+    meaning_zh:"同情；慰问",
+    examples:["My sympathies for your loss."],
+    roots:[{m:"sym",t:"prefix"},{m:"path",t:"root"},{m:"y",t:"suffix"}],
+    topics:["people"],syn:["pity"],ant:[],notes:"sym(共同)+path(感情)"},
+  {word:"apathy",pos:"n.",level:["GRE"],frequency:3,
+    definition_en:"lack of interest, enthusiasm, or concern",
+    meaning_zh:"冷漠；无动于衷",
+    examples:["Political apathy among youth is worrying."],
+    roots:[{m:"a",t:"prefix"},{m:"path",t:"root"},{m:"y",t:"suffix"}],
+    topics:["society"],syn:["indifference"],ant:["empathy"],notes:"a(无)+path(感情)"},
+  {word:"antipathy",pos:"n.",level:["GRE"],frequency:3,
+    definition_en:"a deep-seated feeling of dislike",
+    meaning_zh:"反感；厌恶",
+    examples:["He felt antipathy toward corruption."],
+    roots:[{m:"anti",t:"prefix"},{m:"path",t:"root"},{m:"y",t:"suffix"}],
+    topics:["emotion"],syn:["aversion"],ant:["affinity"],notes:"anti(反)+path(感情)"},
+  {word:"pathology",pos:"n.",level:["TOEFL"],frequency:3,
+    definition_en:"the study of diseases",
+    meaning_zh:"病理学",
+    examples:["Pathology reveals disease mechanisms."],
+    roots:[{m:"path",t:"root"},{m:"logy",t:"suffix"}],
+    topics:["medicine"],syn:["disease study"],ant:[],notes:"path(病)+-logy(学)"},
+  {word:"telepathy",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"supposed communication through means other than the senses",
+    meaning_zh:"心灵感应",
+    examples:["Twins are said to have telepathy."],
+    roots:[{m:"tele",t:"prefix"},{m:"path",t:"root"},{m:"y",t:"suffix"}],
+    topics:["parapsychology"],syn:["mind reading"],ant:[],notes:"tele(远)+path(感应)"},
+
+  // morph
+  {word:"morphology",pos:"n.",level:["TOEFL"],frequency:3,
+    definition_en:"the study of the forms of things; in linguistics, word structure",
+    meaning_zh:"形态学；（语言）词法",
+    examples:["Linguistic morphology studies word formation."],
+    roots:[{m:"morph",t:"root"},{m:"logy",t:"suffix"}],
+    topics:["linguistics","biology"],syn:["form study"],ant:[],notes:"morph(形)+-logy(学)"},
+  {word:"amorphous",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"without a clearly defined shape or form",
+    meaning_zh:"无固定形状的；非晶的",
+    examples:["An amorphous mass of jelly."],
+    roots:[{m:"a",t:"prefix"},{m:"morph",t:"root"},{m:"ous",t:"suffix"}],
+    topics:["science"],syn:["shapeless"],ant:["structured"],notes:"a(无)+morph(形)"},
+  {word:"metamorphosis",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"a change of the form or nature of a thing into a completely different one",
+    meaning_zh:"蜕变；变形",
+    examples:["Caterpillars undergo metamorphosis."],
+    roots:[{m:"meta",t:"prefix"},{m:"morph",t:"root"},{m:"osis",t:"suffix"}],
+    topics:["biology"],syn:["transformation"],ant:["stasis"],notes:"meta(变)+morph(形)"},
+
+  // sci
+  {word:"omniscient",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"knowing everything",
+    meaning_zh:"无所不知的",
+    examples:["The narrator is omniscient."],
+    roots:[{m:"omni",t:"prefix"},{m:"sci",t:"root"},{m:"ent",t:"suffix"}],
+    topics:["literature"],syn:["all-knowing"],ant:[],notes:"omni(全)+sci(知)"},
+  {word:"prescient",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"having or showing knowledge of events before they take place",
+    meaning_zh:"有先见之明的",
+    examples:["A prescient analysis predicted the crisis."],
+    roots:[{m:"pre",t:"prefix"},{m:"sci",t:"root"},{m:"ent",t:"suffix"}],
+    topics:["thinking"],syn:["foresighted"],ant:["short-sighted"],notes:"pre(前)+sci(知)"},
+  {word:"conscience",pos:"n.",level:["IELTS"],frequency:4,
+    definition_en:"an inner feeling as a guide to rightness or wrongness",
+    meaning_zh:"良知；良心",
+    examples:["He acted according to his conscience."],
+    roots:[{m:"con",t:"prefix"},{m:"sci",t:"root"},{m:"ence",t:"suffix"}],
+    topics:["morality"],syn:["moral sense"],ant:[],notes:"con(共同)+sci(知) → 一起知道=良知"},
+  {word:"science",pos:"n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"the intellectual and practical activity encompassing the systematic study of structure and behavior",
+    meaning_zh:"科学",
+    examples:["Science advances through evidence."],
+    roots:[{m:"sci",t:"root"},{m:"ence",t:"suffix"}],
+    topics:["academic"],syn:["systematic study"],ant:[],notes:"sci(知)+-ence(名)"},
+  
+  // chron
+  {word:"chronology",pos:"n.",level:["TOEFL"],frequency:3,
+    definition_en:"the arrangement of events in time",
+    meaning_zh:"年代学；年表",
+    examples:["The chronology of events is unclear."],
+    roots:[{m:"chron",t:"root"},{m:"logy",t:"suffix"}],
+    topics:["history"],syn:["timeline"],ant:[],notes:"chron(时)+-logy"},
+  {word:"synchronize",pos:"v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to cause to occur or operate at the same time or rate",
+    meaning_zh:"同步；校准",
+    examples:["Phones synchronize data automatically."],
+    roots:[{m:"syn",t:"prefix"},{m:"chron",t:"root"},{m:"ize",t:"suffix"}],
+    topics:["tech"],syn:["coordinate"],ant:["desynchronize"],notes:"syn(同)+chron(时)"},
+  {word:"anachronism",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"a thing belonging to a period other than that in which it exists",
+    meaning_zh:"时代错误；不合时宜之物",
+    examples:["A sword in a sci-fi film is an anachronism."],
+    roots:[{m:"ana",t:"prefix"},{m:"chron",t:"root"},{m:"ism",t:"suffix"}],
+    topics:["history"],syn:["misdating"],ant:[],notes:"ana(逆/错)+chron(时)"},
+  {word:"chronic",pos:"adj.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"persisting for a long time or constantly recurring",
+    meaning_zh:"慢性的；长期的",
+    examples:["Chronic stress harms health."],
+    roots:[{m:"chron",t:"root"},{m:"ic",t:"suffix"}],
+    topics:["health"],syn:["persistent"],ant:["acute"],notes:"chron(时)+ic"},
+
+  // bio/geo/therm/tele/scope
+  {word:"biology",pos:"n.",level:["TOEFL"],frequency:5,
+    definition_en:"the study of living organisms",
+    meaning_zh:"生物学",
+    examples:["Biology explores life processes."],
+    roots:[{m:"bio",t:"root"},{m:"logy",t:"suffix"}],
+    topics:["science"],syn:["life science"],ant:[],notes:"bio(生)+-logy"},
+  {word:"geology",pos:"n.",level:["TOEFL"],frequency:4,
+    definition_en:"the science of Earth's physical structure and substance",
+    meaning_zh:"地质学",
+    examples:["Geology examines rock formations."],
+    roots:[{m:"geo",t:"root"},{m:"logy",t:"suffix"}],
+    topics:["science"],syn:["earth science"],ant:[],notes:"geo(地)+-logy"},
+  {word:"geometry",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"the branch of mathematics concerned with properties of space",
+    meaning_zh:"几何学",
+    examples:["Geometry studies shapes and angles."],
+    roots:[{m:"geo",t:"root"},{m:"metr",t:"root"},{m:"y",t:"suffix"}],
+    topics:["math"],syn:["shape math"],ant:[],notes:"geo(地)+metr(测)"},
+  {word:"thermometer",pos:"n.",level:["TOEFL"],frequency:4,
+    definition_en:"an instrument for measuring temperature",
+    meaning_zh:"温度计",
+    examples:["The thermometer reads 20°C."],
+    roots:[{m:"therm",t:"root"},{m:"meter",t:"suffix"}],
+    topics:["science"],syn:["temperature gauge"],ant:[],notes:"therm(热)+meter(计)"},
+  {word:"thermostat",pos:"n.",level:["TOEFL"],frequency:3,
+    definition_en:"a device that automatically regulates temperature",
+    meaning_zh:"恒温器",
+    examples:["Adjust the thermostat to 22°C."],
+    roots:[{m:"therm",t:"root"},{m:"stat",t:"root"}],
+    topics:["tech"],syn:["temperature controller"],ant:[],notes:"therm(热)+stat(稳定)"},
+  {word:"telescope",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"an instrument for making distant objects appear nearer",
+    meaning_zh:"望远镜",
+    examples:["The telescope reveals distant galaxies."],
+    roots:[{m:"tele",t:"prefix"},{m:"scope",t:"root"}],
+    topics:["astronomy"],syn:["optic"],ant:[],notes:"tele(远)+scope(看)"},
+  {word:"microscope",pos:"n.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"an instrument for viewing very small objects",
+    meaning_zh:"显微镜",
+    examples:["Cells are visible under a microscope."],
+    roots:[{m:"micro",t:"prefix"},{m:"scope",t:"root"}],
+    topics:["biology"],syn:["scope"],ant:[],notes:"micro(微)+scope(看)"},
+  {word:"periscope",pos:"n.",level:["TOEFL"],frequency:2,
+    definition_en:"an apparatus for observation from a concealed position",
+    meaning_zh:"潜望镜",
+    examples:["Submarines use periscopes to see above water."],
+    roots:[{m:"peri",t:"prefix"},{m:"scope",t:"root"}],
+    topics:["tech"],syn:["viewer"],ant:[],notes:"peri(周围)+scope(看)"},
+
+  // nov/nat/mort
+  {word:"novice",pos:"n.",level:["IELTS"],frequency:3,
+    definition_en:"a person new to or inexperienced in a field",
+    meaning_zh:"新手；初学者",
+    examples:["A novice programmer needs practice."],
+    roots:[{m:"nov",t:"root"},{m:"ice",t:"suffix"}],
+    topics:["people"],syn:["beginner"],ant:["expert"],notes:"nov(新)"},
+  {word:"innovate",pos:"v.",level:["IELTS","TOEFL"],frequency:4,
+    definition_en:"to make changes by introducing new methods",
+    meaning_zh:"创新；革新",
+    examples:["Firms must innovate to survive."],
+    roots:[{m:"in",t:"prefix"},{m:"nov",t:"root"},{m:"ate",t:"suffix"}],
+    topics:["business","tech"],syn:["create"],ant:["imitate"],notes:"in(使…)+nov(新)"},
+  {word:"renovate",pos:"v.",level:["IELTS"],frequency:3,
+    definition_en:"to restore to a good state; to renew",
+    meaning_zh:"翻新；修复",
+    examples:["They renovated the old house."],
+    roots:[{m:"re",t:"prefix"},{m:"nov",t:"root"},{m:"ate",t:"suffix"}],
+    topics:["construction"],syn:["restore"],ant:["dilate"],notes:"re(再)+nov(新)"},
+  {word:"natal",pos:"adj.",level:["TOEFL"],frequency:2,
+    definition_en:"relating to the place or time of one's birth",
+    meaning_zh:"出生的；产前/产后的",
+    examples:["Prenatal care is crucial."],
+    roots:[{m:"nat",t:"root"},{m:"al",t:"suffix"}],
+    topics:["health"],syn:["birth-related"],ant:[],notes:"nat(生)"},
+  {word:"native",pos:"adj./n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"associated with the country or region of one's birth",
+    meaning_zh:"本土的；土著；母语者",
+    examples:["She's a native speaker of Spanish."],
+    roots:[{m:"nat",t:"root"},{m:"ive",t:"suffix"}],
+    topics:["society"],syn:["indigenous"],ant:["foreign"],notes:"nat(生)"},
+  {word:"innate",pos:"adj.",level:["GRE","IELTS"],frequency:3,
+    definition_en:"inborn; natural",
+    meaning_zh:"天生的；固有的",
+    examples:["An innate talent for music."],
+    roots:[{m:"in",t:"prefix"},{m:"nate",t:"root"}],
+    topics:["psychology"],syn:["inborn"],ant:["acquired"],notes:"in(内)+nat(生)"},
+  {word:"mortal",pos:"adj./n.",level:["IELTS"],frequency:3,
+    definition_en:"subject to death; a human being",
+    meaning_zh:"会死的；凡人",
+    examples:["All mortal beings fear death."],
+    roots:[{m:"mort",t:"root"},{m:"al",t:"suffix"}],
+    topics:["philosophy"],syn:["human"],ant:["immortal"],notes:"mort(死)"},
+  {word:"immortal",pos:"adj.",level:["GRE","IELTS"],frequency:3,
+    definition_en:"living forever; undying",
+    meaning_zh:"不朽的；不死的",
+    examples:["Immortal fame."],
+    roots:[{m:"im",t:"prefix"},{m:"mort",t:"root"},{m:"al",t:"suffix"}],
+    topics:["literature"],syn:["undying"],ant:["mortal"],notes:"im(不)+mort(死)"},
+  {word:"mortuary",pos:"n./adj.",level:["TOEFL"],frequency:2,
+    definition_en:"a funeral home; relating to burial",
+    meaning_zh:"停尸间；丧葬的",
+    examples:["The mortuary is near the hospital."],
+    roots:[{m:"mort",t:"root"},{m:"uary",t:"suffix"}],
+    topics:["health"],syn:["funeral home"],ant:[],notes:"mort(死)+-uary"},
+
+  // ven/vent
+  {word:"intervene",pos:"v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to come between so as to prevent or alter",
+    meaning_zh:"干预；介入",
+    examples:["They intervened to stop the fight."],
+    roots:[{m:"inter",t:"prefix"},{m:"ven",t:"root"}],
+    topics:["society"],syn:["meddle","intercede"],ant:["ignore"],notes:"inter(之间)+ven(来)"},
+  {word:"convene",pos:"v.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"to come or bring together for a meeting",
+    meaning_zh:"召开；聚集",
+    examples:["The committee will convene tomorrow."],
+    roots:[{m:"con",t:"prefix"},{m:"vene",t:"root"}],
+    topics:["work"],syn:["assemble"],ant:["adjourn"],notes:"con(共同)+ven(来)"},
+  {word:"convention",pos:"n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"a formal meeting; a general agreement or practice",
+    meaning_zh:"大会；惯例",
+    examples:["By convention, we use SI units."],
+    roots:[{m:"con",t:"prefix"},{m:"vent",t:"root"},{m:"ion",t:"suffix"}],
+    topics:["work","culture"],syn:["custom","conference"],ant:["innovation"],notes:"con(共)+vent(来)"},
+  {word:"prevent",pos:"v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"to stop something from happening",
+    meaning_zh:"预防；阻止",
+    examples:["Vaccines prevent disease."],
+    roots:[{m:"pre",t:"prefix"},{m:"vent",t:"root"}],
+    topics:["health"],syn:["avoid","stop"],ant:["cause"],notes:"pre(预)+vent(来)"},
+  {word:"event",pos:"n.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"a thing that happens",
+    meaning_zh:"事件；活动",
+    examples:["The event starts at 7 pm."],
+    roots:[{m:"e",t:"prefix"},{m:"vent",t:"root"}],
+    topics:["general"],syn:["occurrence"],ant:[],notes:"e(出)+vent(来)"},
+  {word:"advent",pos:"n.",level:["GRE","TOEFL"],frequency:3,
+    definition_en:"the arrival of a notable person, thing, or event",
+    meaning_zh:"到来；出现",
+    examples:["The advent of AI transformed workflows."],
+    roots:[{m:"ad",t:"prefix"},{m:"vent",t:"root"}],
+    topics:["history","tech"],syn:["arrival"],ant:["departure"],notes:"ad(来)+vent(到)"},
+
+  // gress/grad
+  {word:"progress",pos:"n./v.",level:["TOEFL","IELTS"],frequency:5,
+    definition_en:"forward or onward movement; to advance",
+    meaning_zh:"进步；前进",
+    examples:["Steady progress has been made."],
+    roots:[{m:"pro",t:"prefix"},{m:"gress",t:"root"}],
+    topics:["general"],syn:["advance"],ant:["regress"],notes:"pro(向前)+gress(走)"},
+  {word:"regress",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to return to a former or less developed state",
+    meaning_zh:"退步；逆行",
+    examples:["The market regressed after a rally."],
+    roots:[{m:"re",t:"prefix"},{m:"gress",t:"root"}],
+    topics:["economy"],syn:["relapse"],ant:["progress"],notes:"re(回)+gress(走)"},
+  {word:"digress",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to leave the main subject temporarily in speech or writing",
+    meaning_zh:"离题；跑题",
+    examples:["Let me digress briefly."],
+    roots:[{m:"di",t:"prefix"},{m:"gress",t:"root"}],
+    topics:["writing"],syn:["stray"],ant:["stick"],notes:"di(离开)+gress(走)"},
+  {word:"transgress",pos:"v.",level:["GRE"],frequency:2,
+    definition_en:"to go beyond the bounds of a standard or rule",
+    meaning_zh:"违背；越界",
+    examples:["He transgressed the code of conduct."],
+    roots:[{m:"trans",t:"prefix"},{m:"gress",t:"root"}],
+    topics:["law"],syn:["violate"],ant:["comply"],notes:"trans(越)+gress(走)"},
+  {word:"gradient",pos:"n.",level:["TOEFL"],frequency:3,
+    definition_en:"an incline; a rate of change of a function",
+    meaning_zh:"坡度；（数）梯度",
+    examples:["The gradient is steep."],
+    roots:[{m:"grad",t:"root"},{m:"ient",t:"suffix"}],
+    topics:["math"],syn:["slope"],ant:[],notes:"grad(步、级)"},
+  {word:"gradual",pos:"adj.",level:["IELTS"],frequency:4,
+    definition_en:"taking place slowly",
+    meaning_zh:"渐进的；逐步的",
+    examples:["A gradual increase in temperature."],
+    roots:[{m:"grad",t:"root"},{m:"ual",t:"suffix"}],
+    topics:["science"],syn:["incremental"],ant:["sudden"],notes:"grad(级)+-ual"},
+
+  // anim
+  {word:"equanimity",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"mental calmness and composure",
+    meaning_zh:"平静；沉着",
+    examples:["She handled the crisis with equanimity."],
+    roots:[{m:"equi",t:"root"},{m:"anim",t:"root"},{m:"ity",t:"suffix"}],
+    topics:["psychology"],syn:["calm"],ant:["agitation"],notes:"equi(平等)+anim(心神)"},
+  {word:"magnanimous",pos:"adj.",level:["GRE"],frequency:2,
+    definition_en:"very generous or forgiving, especially toward a rival",
+    meaning_zh:"宽宏大量的",
+    examples:["A magnanimous gesture."],
+    roots:[{m:"magn",t:"root"},{m:"anim",t:"root"},{m:"ous",t:"suffix"}],
+    topics:["morality"],syn:["generous"],ant:["petty"],notes:"magn(大)+anim(心胸)"},
+  {word:"unanimous",pos:"adj.",level:["TOEFL","IELTS"],frequency:4,
+    definition_en:"fully in agreement",
+    meaning_zh:"一致同意的",
+    examples:["The vote was unanimous."],
+    roots:[{m:"uni",t:"prefix"},{m:"anim",t:"root"},{m:"ous",t:"suffix"}],
+    topics:["work"],syn:["agreed"],ant:["divided"],notes:"uni(一)+anim(心)"},
+  {word:"animate",pos:"v./adj.",level:["TOEFL"],frequency:3,
+    definition_en:"to bring to life; alive",
+    meaning_zh:"赋予生命；有生命的",
+    examples:["The illustrations animate the story."],
+    roots:[{m:"anim",t:"root"},{m:"ate",t:"suffix"}],
+    topics:["art"],syn:["enliven"],ant:["inanimate"],notes:"anim(生命)"},
+  {word:"animosity",pos:"n.",level:["GRE"],frequency:2,
+    definition_en:"strong hostility",
+    meaning_zh:"敌意；仇恨",
+    examples:["Long-held animosity faded."],
+    roots:[{m:"anim",t:"root"},{m:"osity",t:"suffix"}],
+    topics:["emotion"],syn:["hostility"],ant:["amity"],notes:"anim(心神)+-osity(名)"},
+];
+
+/** Derived helpers and indices **/
+const ALL_LEVELS = ["GRE","TOEFL","IELTS"];
+const ALL_POS = [...new Set(WORDS.map(w=>w.pos.split(/[.,/ ]+/)[0]).filter(Boolean))];
+const ALL_TOPICS = [...new Set(WORDS.flatMap(w=>w.topics||[]))].sort();
+const ALL_MORPHS = [...new Set(WORDS.flatMap(w=>w.roots?.map(r=>r.m)||[]))].sort();
+
+const LEVEL_FILTER = new Set();
+const POS_FILTER = new Set();
+const TOPIC_FILTER = new Set();
+const MORPH_FILTER = new Set();
+let ONLY_ROOTS=false, REQUIRE_ALL=false, FREQ_MIN=1;
+let QUERY="";
+
+const state = {
+  words:[...WORDS],
+  idx:{
+    byMorph:new Map(), // morpheme -> Set(words)
+    byWord:new Map(),
+  },
+  selected:null,
+  selectedForScene: new Set(), // words user selected in grid
+  srsQueue:[],
+};
+
+function buildIndex(){
+  state.idx.byMorph.clear();
+  state.idx.byWord.clear();
+  for (const w of state.words){
+    state.idx.byWord.set(w.word.toLowerCase(), w);
+    (w.roots||[]).forEach(r=>{
+      if(!state.idx.byMorph.has(r.m)) state.idx.byMorph.set(r.m, new Set());
+      state.idx.byMorph.get(r.m).add(w);
+    });
+  }
+}
+buildIndex();
+
+/** UI setup **/
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+$("#total").textContent = state.words.length;
+
+function chip(text, active=false){
+  const d=document.createElement('span'); d.className='chip'+(active?' active':''); d.textContent=text; return d;
+}
+function fillChips(){
+  // levels
+  const lvl=$("#levelChips"); lvl.innerHTML='';
+  ALL_LEVELS.forEach(l=>{
+    const c=chip(l); c.onclick=()=>{toggleSet(LEVEL_FILTER,l); render();}; lvl.appendChild(c);
+  });
+  // pos
+  const pc=$("#posChips"); pc.innerHTML='';
+  ALL_POS.forEach(p=>{
+    const c=chip(p); c.onclick=()=>{toggleSet(POS_FILTER,p); render();}; pc.appendChild(c);
+  });
+  // topics
+  const tc=$("#topicChips"); tc.innerHTML='';
+  ALL_TOPICS.forEach(t=>{
+    const c=chip(t); c.onclick=()=>{toggleSet(TOPIC_FILTER,t); render();}; tc.appendChild(c);
+  });
+  // morphs (热门)
+  const mc=$("#morphChips"); mc.innerHTML='';
+  const hot = ["bene","mal","dict","voc","vok","scrib","script","graph","gram","phon","spect","spic","vid","vis","mit","miss","port","duc","duct","fac","fact","fic","fect","tract","cred","cord","path","morph","sci","chron","bio","geo","therm","tele","scope","nov","nat","mort","ven","vent","gress","grad","anim"].filter(m=>ALL_MORPHS.includes(m));
+  hot.forEach(m=>{
+    const c=chip(m); c.onclick=()=>{toggleSet(MORPH_FILTER,m); render();}; mc.appendChild(c);
+  });
+}
+fillChips();
+function toggleSet(set, key){ set.has(key)? set.delete(key): set.add(key); }
+
+$("#requireAll").onchange = e=>{REQUIRE_ALL=e.target.checked; render();}
+$("#onlyRoots").onchange = e=>{ONLY_ROOTS=e.target.checked; render();}
+$("#freq").oninput = e=>{FREQ_MIN=+e.target.value; $("#freqVal").textContent='≥'+FREQ_MIN; render();}
+$("#resetBtn").onclick = ()=>{
+  LEVEL_FILTER.clear(); POS_FILTER.clear(); TOPIC_FILTER.clear(); MORPH_FILTER.clear();
+  ONLY_ROOTS=false; REQUIRE_ALL=false; FREQ_MIN=1; QUERY='';
+  $("#onlyRoots").checked=false; $("#requireAll").checked=false;
+  $("#freq").value=1; $("#freqVal").textContent='≥1';
+  $("#q").value=''; $("#morphSearch").value='';
+  render();
+};
+
+$("#q").addEventListener('input', debounce(e=>{ QUERY=e.target.value.trim(); render(); }, 150));
+$("#clearBtn").onclick = ()=>{ $("#q").value=''; QUERY=''; render(); };
+$("#morphSearch").addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const v=e.target.value.trim();
+    if(v) { MORPH_FILTER.add(v.replace(/^-|-$|[^a-z]+/gi,'').toLowerCase()); e.target.value=''; render(); }
+  }
+});
+
+$("#darkBtn").onclick = ()=>{ document.body.classList.toggle('dark'); localStorage.setItem('dark', document.body.classList.contains('dark')?'1':'0'); }
+if(localStorage.getItem('dark')==='1') document.body.classList.add('dark');
+
+/** Core filtering and searching **/
+function searchAndFilter(){
+  let arr = state.words.filter(w=>{
+    if(w.frequency < FREQ_MIN) return false;
+    if(LEVEL_FILTER.size && !w.level?.some(l=>LEVEL_FILTER.has(l))) return false;
+    if(POS_FILTER.size && !POS_FILTER.has(w.pos.split(/[.,/ ]+/)[0])) return false;
+    if(TOPIC_FILTER.size && !w.topics?.some(t=>TOPIC_FILTER.has(t))) return false;
+    if(MORPH_FILTER.size){
+      const morphs = (w.roots||[]).filter(r=>ONLY_ROOTS? r.t==='root': true).map(r=>r.m);
+      if(REQUIRE_ALL){
+        for(const m of MORPH_FILTER){ if(!morphs.includes(m)) return false; }
+      }else{
+        let ok=false; for(const m of MORPH_FILTER){ if(morphs.includes(m)){ok=true;break;} }
+        if(!ok) return false;
+      }
+    }
+    if(QUERY){
+      const q = QUERY.toLowerCase();
+      const hay = [
+        w.word, w.meaning_zh, w.definition_en, w.pos, ...(w.level||[]), ...(w.topics||[]),
+        ...((w.syn||[])), ...((w.ant||[])),
+        ...((w.roots||[]).map(r=>r.m))
+      ].join(' | ').toLowerCase();
+      if(!fuzzyIncludes(hay,q)) return false;
+    }
+    return true;
+  });
+  return arr;
+}
+function fuzzyIncludes(text,q){
+  if(text.includes(q)) return true;
+  // loose: split q by spaces
+  const parts = q.split(/\s+/).filter(Boolean);
+  return parts.every(p=>text.includes(p));
+}
+
+/** Render grid **/
+const grid = $("#grid");
+function render(){
+  const list = searchAndFilter();
+  $("#count").textContent = list.length;
+  grid.innerHTML='';
+  list.forEach(w=>{
+    const card = document.createElement('div');
+    card.className='word-card';
+    card.innerHTML = `
+      <div class="word-head">
+        <div class="word">${hlMorphemeInWord(w)}</div>
+        <div class="tags">
+          ${(w.level||[]).map(l=>`<span class="badge">${l}</span>`).join('')}
+          <span class="pill">${w.pos}</span>
+          <span class="pill">F${w.frequency}</span>
+        </div>
+      </div>
+      <div class="mean">${escapeHtml(w.meaning_zh)}</div>
+      <div class="morph">${(w.roots||[]).map(r=>morphTag(r)).join('')}</div>
+    `;
+    card.onclick = ()=>{ selectWord(w.word); };
+    card.ondblclick = ()=>{ addToSrs(w.word); flash(card); };
+    grid.appendChild(card);
+  });
+  if(list.length && !state.selected){ selectWord(list[0].word); }
+  if(state.selected && !list.includes(state.selected)){
+    if(list[0]) selectWord(list[0].word); else clearDetail();
+  }
+  // update chip active state
+  syncActiveChips();
+}
+function flash(el){
+  el.style.outline='2px solid var(--primary)';
+  setTimeout(()=>el.style.outline='', 350);
+}
+function morphTag(r){
+  const meta = MORPHEMES[r.m]||{type:r.t};
+  const cls = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+  const title = `${r.m} · ${meta.type||r.t} · ${meta.zh||''} ${meta.en?'/ '+meta.en:''}`;
+  return `<span class="${cls}" title="${escapeHtml(title)}">${escapeHtml(r.m)}</span>`;
+}
+function hlMorphemeInWord(w){
+  let text = w.word;
+  // naive highlight: try to wrap first matched prefix/root/suffix
+  const parts = (w.roots||[]).map(r=>r.m).sort((a,b)=>b.length-a.length); // longer first
+  let html = escapeHtml(text);
+  for(const m of parts){
+    const idx = html.toLowerCase().indexOf(m.toLowerCase());
+    if(idx>=0){
+      const pre = html.slice(0, idx);
+      const mid = html.slice(idx, idx+m.length);
+      const suf = html.slice(idx+m.length);
+      const t = MORPHEMES[m]?.type || 'root';
+      const spanCls = t==='prefix'?'hlt-pre':(t==='suffix'?'hlt-suf':'hlt');
+      html = `${pre}<span class="${spanCls}">${mid}</span>${suf}`;
+    }
+  }
+  return html;
+}
+function syncActiveChips(){
+  // levels
+  $$("#levelChips .chip").forEach(c=>{
+    c.classList.toggle('active', LEVEL_FILTER.has(c.textContent));
+  });
+  $$("#posChips .chip").forEach(c=>{
+    c.classList.toggle('active', POS_FILTER.has(c.textContent));
+  });
+  $$("#topicChips .chip").forEach(c=>{
+    c.classList.toggle('active', TOPIC_FILTER.has(c.textContent));
+  });
+  $$("#morphChips .chip").forEach(c=>{
+    c.classList.toggle('active', MORPH_FILTER.has(c.textContent));
+  });
+}
+render();
+
+/** Detail panel **/
+function selectWord(word){
+  const w = state.idx.byWord.get(word.toLowerCase());
+  state.selected = w;
+  $("#dWord").innerHTML = hlMorphemeInWord(w);
+  $("#dMorph").innerHTML = (w.roots||[]).map(r=>{
+    const el = document.createElement('span');
+    el.className = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+    el.textContent = r.m;
+    el.title = `${r.m} · ${(MORPHEMES[r.m]?.type||r.t)} · ${(MORPHEMES[r.m]?.zh||'')}`;
+    el.style.cursor='pointer';
+    el.onclick=()=>{ MORPH_FILTER.add(r.m); render(); };
+    return el.outerHTML;
+  }).join('');
+  $("#dDef").textContent = w.definition_en || '';
+  $("#dMean").textContent = w.meaning_zh || '';
+  $("#dPos").textContent = w.pos || '';
+  $("#dLevel").innerHTML = (w.level||[]).map(l=>`<span class="badge">${l}</span>`).join(' ');
+  $("#dTopics").innerHTML = (w.topics||[]).map(t=>`<span class="pill">${t}</span>`).join(' ');
+  $("#dFreq").innerHTML = 'F'+(w.frequency||1);
+  $("#dExamples").innerHTML = (w.examples||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('') || '<li><small class="dim">暂无例句</small></li>';
+  // similar by shape
+  const sim = similarWords(w.word, 10).filter(s=>s.word!==w.word);
+  $("#dSimilar").innerHTML = sim.map(s=>`<span class="sim-item" title="编辑距离：${s.dist}">${escapeHtml(s.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dSimilar .sim-item").forEach(el=>{
+    el.onclick=()=>selectWord(el.textContent);
+  });
+  // family by morphology
+  const fam = familyWords(w);
+  $("#dFamily").innerHTML = fam.map(x=>`<span class="fam-item">${escapeHtml(x.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dFamily .fam-item").forEach(el=>{
+    el.onclick=()=>selectWord(el.textContent);
+  });
+  $("#dNotes").textContent = w.notes||'';
+}
+function clearDetail(){
+  $("#dWord").textContent='选择一个单词';
+  $("#dMorph").innerHTML='';
+  $("#dDef").textContent=''; $("#dMean").textContent='';
+  $("#dPos").textContent=''; $("#dLevel").innerHTML=''; $("#dTopics").innerHTML=''; $("#dFreq").innerHTML='';
+  $("#dExamples").innerHTML=''; $("#dSimilar").innerHTML=''; $("#dFamily").innerHTML='';
+  $("#dNotes").textContent='';
+}
+$("#speakBtn").onclick = ()=>{
+  if(!state.selected) return;
+  const u = new SpeechSynthesisUtterance(state.selected.word);
+  u.lang = 'en-US'; speechSynthesis.speak(u);
+};
+$("#starBtn").onclick = ()=>{
+  if(!state.selected) return;
+  addToSrs(state.selected.word);
+  alert('已加入复习队列：'+state.selected.word);
+};
+
+/** Shape-similar words (Levenshtein) **/
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)dp[i][0]=i;
+  for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      const cost = a[i-1].toLowerCase()===b[j-1].toLowerCase()?0:1;
+      dp[i][j] = Math.min(
+        dp[i-1][j]+1,
+        dp[i][j-1]+1,
+        dp[i-1][j-1]+cost
+      );
+    }
+  }
+  return dp[m][n];
+}
+function similarWords(word, topN=10){
+  const arr = state.words.map(w=>{
+    const d = levenshtein(word, w.word);
+    const n = Math.max(word.length, w.word.length);
+    const score = 1 - d/n;
+    return {word:w.word, dist:d, score};
+  }).sort((a,b)=>a.dist-b.dist || b.score-a.score);
+  return arr.slice(0, topN);
+}
+function familyWords(w){
+  const keys = (w.roots||[]).map(r=>r.m);
+  const set = new Set();
+  for(const k of keys){
+    const bucket = state.idx.byMorph.get(k);
+    if(!bucket) continue;
+    for(const x of bucket){ if(x.word!==w.word) set.add(x); }
+  }
+  return [...set].slice(0, 24);
+}
+
+/** Debounce **/
+function debounce(fn, delay){ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args),delay); }; }
+
+/** Utils **/
+function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+/** Import / Export **/
+$("#importBtn").onclick = ()=> $("#fileInput").click();
+$("#fileInput").onchange = async (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const txt = await file.text();
+  try{
+    const data = JSON.parse(txt);
+    if(!Array.isArray(data)) throw new Error('JSON 须为数组');
+    // Minimal field check
+    data.forEach(x=>{
+      if(!x.word) throw new Error('每个条目须包含 word 字段');
+      x.level = x.level || ["GRE"];
+      x.roots = x.roots || [];
+      x.frequency = x.frequency || 3;
+    });
+    state.words = mergeWords(state.words, data);
+    buildIndex(); $("#total").textContent = state.words.length; render();
+    alert('导入成功，共 '+data.length+' 条；当前词库 '+state.words.length+' 条。');
+  }catch(err){
+    alert('导入失败：'+err.message);
+  }finally{
+    e.target.value='';
+  }
+};
+$("#exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state.words, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='wordbank.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+function mergeWords(base, incoming){
+  const map = new Map(base.map(w=>[w.word.toLowerCase(), w]));
+  for(const w of incoming){
+    const k = w.word.toLowerCase();
+    if(map.has(k)){
+      // shallow merge, keep arrays unique
+      const old = map.get(k);
+      map.set(k, {
+        ...old, ...w,
+        level: uniq([...(old.level||[]), ...(w.level||[])]),
+        topics: uniq([...(old.topics||[]), ...(w.topics||[])]),
+        syn: uniq([...(old.syn||[]), ...(w.syn||[])]),
+        ant: uniq([...(old.ant||[]), ...(w.ant||[])]),
+        roots: uniqMorph([...(old.roots||[]), ...(w.roots||[])]),
+        examples: uniq([...(old.examples||[]), ...(w.examples||[])])
+      });
+    } else {
+      map.set(k, w);
+    }
+  }
+  return [...map.values()];
+}
+function uniq(arr){ return Array.from(new Set((arr||[]).filter(Boolean))); }
+function uniqMorph(arr){
+  const seen = new Set(); const out=[];
+  for(const r of (arr||[])){
+    const k = r.m+'|'+(r.t||'');
+    if(!seen.has(k)){ out.push(r); seen.add(k); }
+  }
+  return out;
+}
+
+/** Scene sentence generation (模板式) **/
+$("#genSceneBtn").onclick = ()=>{
+  const list = searchAndFilter().slice(0, 6); // take some from current filter
+  if(!list.length){ alert('请先筛选一些单词'); return;}
+  const scene = generateScene(list);
+  alert("场景句：\n\n"+scene.join("\n"));
+};
+function generateScene(words){
+  // choose 3-5 words
+  const pick = (n)=>words.slice(0,n);
+  const W = pick(Math.min(5, Math.max(3, Math.floor(Math.random()*5)+1)));
+  const w = name => W.find(x=>x.topics?.includes(name)) || W[Math.floor(Math.random()*W.length)];
+  const t = (w)=>w.word;
+  const lines = [];
+  lines.push(`Campus: The professor tried to ${t(w('academic'))} the concept, but the ${t(w('psychology'))} freshmen looked ${'invisible'} to his jokes.`);
+  lines.push(`Lab: We ${t(w('science'))}d data and ${t(w('tech'))}d devices to ${t(w('health'))} error rates.`);
+  lines.push(`Debate: He ${t(w('law'))}d the policy; her ${t(w('morality'))} tone ${t(w('people'))} many.`);
+  lines.push(`Business: A ${t(w('work'))} team must ${t(w('work'))} tasks and ${t(w('business'))} steadily towards goals.`);
+  // If shortage of topics, fall back to definitions
+  return lines.map(s=>s.replace(/\s+/g,' ').trim());
+}
+
+/** SRS (simplified SM-2) **/
+const SRS_KEY = 'roots_srs_v1';
+function loadSrs(){ try{ return JSON.parse(localStorage.getItem(SRS_KEY)||'{}'); }catch{ return {}; } }
+function saveSrs(db){ localStorage.setItem(SRS_KEY, JSON.stringify(db)); }
+function addToSrs(word){
+  const db = loadSrs();
+  if(!db[word]) db[word]={EF:2.5, interval:0, reps:0, due:Date.now()};
+  saveSrs(db);
+}
+function getDueWordsFrom(list){
+  const db = loadSrs(); const now=Date.now(); const arr=[];
+  for(const w of list){
+    const rec = db[w.word]||{due:0}; if(rec.due<=now) arr.push(w);
+  }
+  return arr;
+}
+$("#startSrsBtn").onclick = ()=>{
+  const list = searchAndFilter();
+  if(!list.length){ alert('当前无可复习单词'); return; }
+  state.srsQueue = getDueWordsFrom(list);
+  if(!state.srsQueue.length){ alert('当前筛选的词都不应复习（尚未到期）。'); return;}
+  $("#srsPanel").style.display='flex';
+  nextSrs();
+};
+$("#srsClose").onclick = ()=>$("#srsPanel").style.display='none';
+$("#srsShow").onclick = ()=>{
+  $("#srsA").style.display='block';
+};
+$("#srsAgain").onclick = ()=>srsRate(0);
+$("#srsHard").onclick = ()=>srsRate(3);
+$("#srsGood").onclick = ()=>srsRate(4);
+$("#srsEasy").onclick = ()=>srsRate(5);
+
+let currentSrs = null;
+function nextSrs(){
+  if(!state.srsQueue.length){ $("#srsQ").textContent='🎉 今日复习完成'; $("#srsA").style.display='none'; $("#srsInfo").textContent=''; return; }
+  currentSrs = state.srsQueue.shift();
+  // Show definition, hide answer (word)
+  $("#srsQ").textContent = (currentSrs.definition_en||'')+'  / '+(currentSrs.meaning_zh||'');
+  $("#srsA").innerHTML = `<b>${hlMorphemeInWord(currentSrs)}</b><div class="mean">${escapeHtml(currentSrs.pos)} · ${(currentSrs.level||[]).join(', ')}</div>`;
+  $("#srsA").style.display='none';
+  $("#srsInfo").textContent = `剩余：${state.srsQueue.length}`;
+}
+function srsRate(q){
+  if(!currentSrs) return;
+  const word = currentSrs.word;
+  const db = loadSrs();
+  const rec = db[word] || {EF:2.5, interval:0, reps:0, due:Date.now()};
+  if(q<3){
+    rec.reps = 0; rec.interval = 1; rec.due = Date.now() + 1*24*3600*1000;
+  }else{
+    rec.reps += 1;
+    let EF = rec.EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02));
+    if(EF < 1.3) EF = 1.3;
+    rec.EF = EF;
+    if(rec.reps === 1) rec.interval = 1;
+    else if(rec.reps === 2) rec.interval = 3;
+    else rec.interval = Math.round(rec.interval * rec.EF);
+    rec.due = Date.now() + rec.interval*24*3600*1000;
+  }
+  db[word] = rec; saveSrs(db);
+  nextSrs();
+}
+
+/** Detail interactions: select from list **/
+function selectFromResult(word){ selectWord(word); }
+
+/** Load persisted theme **/
+if(localStorage.getItem('dark')==='1'){ document.body.classList.add('dark'); }
+
+/** Initialization done **/
+
+</script>
+</body>
+</html>
