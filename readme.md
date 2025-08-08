@@ -1,26 +1,36 @@
 # GPT5生成的单词记忆DEMO
 
-# 作者自述
+## 作者自述
 
 GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未经设计的Prompt浅做尝试，遂有此项目。一个简单的单词记忆DEMO，点击即用，贯彻我自高中坚持的词根词缀单词记忆法。
 ![英语网页生成](英语网页生成.png)
 ![日语网页生成](日语网页生成.png)
 
-
+在线体验DEMO：
+[https://siupal.github.io/ShuoWen/](https://siupal.github.io/ShuoWen/)
+离线体验：
+将文件保存为 `xx.html`，浏览器打开即可离线使用。
 <details><summary>声明</summary>
 
 所有内容（HTML代码，词库）由发布于北京时间2025-08-08的GPT5生成，数据存储于本地，暂时无持久化存储也不会联网。不对数据来源负责，不对词库词根词缀的准确性负责，无法提供西语意大利语韩语的校正。
 
 </details>
 
+### 快速导航
 
+- 英语 DEMO: [en.html](en.html)
+- 西/意 DEMO: [es_It.html](es_It.html)
+- 日语 DEMO: [jp.html](jp.html)
+- 韩语 DEMO: [ko.html](ko.html)
 
-<h3 style="background-color: #ffff00">以下是GPT在每个文件下的说明</h3>
+## 各页面说明（可展开查看）
+> 说明均为 GPT 生成并轻度整理，点击每一节标题展开/收起。
 
-## en.html
+<details>
+<summary><strong>en.html · 英语 DEMO</strong></summary>
 
 ![英语单词记忆demo](英语网页.png)
-### 使用说明与拓展建议
+### 使用说明与扩展建议
 
 #### 本地使用
 
@@ -43,7 +53,7 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 
 点击“用所选词生成场景句”，会基于当前筛选/选择生成数句学术、校园、讨论、商务等场景句（模板驱动，可继续自行扩展模板）。
 
-#### 复习（SRS）
+#### SRS 复习
 
 点击“用当前结果开始复习”，采用简化 SM-2。支持 Again / Hard / Good / Easy 四档，复习计划存储在本地 LocalStorage。
 
@@ -66,10 +76,14 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 * 更丰富的场景：在 generateScene 函数中增加模板，按 topic 更精细地填词；或加入完形填空/同义替换题型。
 * 更强的词根高亮：为 roots 中的每个 morpheme 增加 surface 字段（词形表面形式），可更精准高亮如 miss/mit、vis/vid 的同源变体。
 
-## jp.html
+</details>
+
+<details>
+<summary><strong>jp.html · 日语 DEMO</strong></summary>
+
 ![日语单词记忆demo](日语网页.png)
 
-### 使用说明与拓展建议
+### 使用说明与扩展建议
 
 #### 本地使用
 
@@ -105,7 +119,7 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 
 #### 导入/导出
 
-点击“导入”选择 JSON 文件；“导出”可导出当前词库。（可查看导入/导出的JSON格式）
+点击“导入”选择 JSON 文件；“导出”导出当前词库。（可查看导入/导出的JSON格式）
 
 #### JSON 格式字段
 
@@ -138,9 +152,14 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 
 按你的学习目标（商务日语/留学/旅游/IT 开发）定制 topic 标签与高频星级。
 
-## ES_IT.html
+</details>
+
+<details>
+<summary><strong>es_It.html · 西/意 DEMO</strong></summary>
+
 ![意语单词记忆demo](意语网页.png)
 ![西语单词记忆demo](西语网页.png)
+
 ### 使用说明与扩展建议
 
 #### 本地使用
@@ -193,18 +212,14 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 - 相似度：在编辑距离上叠加 n-gram/键盘邻近性；或按发音规则（it：c/g+e/i；es：b/v, c/z/s, ll/y）做等价映射。
 - 词库扩展：可导入更大 CEFR 词表或专业词库（商贸/旅游/IT），加入 topic 标签如 `negocios/viaggio/IT/ley/ambiente` 等。
 
-## ko.html
+</details>
+
+<details>
+<summary><strong>ko.html · 韩语 DEMO</strong></summary>
+
 ![韩语单词记忆demo](韩语网页.png)
 
 ### 使用说明与扩展建议
-
-#### 本地使用
-
-* 保存为 ko-learn.html，用浏览器打开即可。发音使用系统 TTS（ko-KR）。
-
-#### 搜索与筛选
-
-### 使用说明
 
 #### 本地使用
 
@@ -214,8 +229,6 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 
 * 顶部搜索支持：词形（한글）、罗马音、中文释义、韩文释义、构词要素（前缀/词根/后缀）、同义词。
 * 左侧可按 TOPIK 级别、词性、主题、频率筛选；“仅匹配词根/词干”专注汉字词构词；“必须全部包含”做交集筛选。
-
-### 详细功能
 
 #### 形近词
 
@@ -260,21 +273,38 @@ GPT5的发布重燃了过去一年消沉的激情，在LMarena上随手写下未
 * 形近词优化：在 Jamo 距离基础上加入发音同化/连音规则等等价映射（ㄱ/ㅋ/ㄲ、ㅅ/ㅆ、ㄹ/ㄴ 等）。
 * 词库扩展：导入更大 TOPIK 真题/教材词表，补充主题标签（経済/社会/IT/環境/文化/政治）。
 
+</details>
 
 ## 闲言碎语
-### 
+
+<details>
+<summary><strong>关于韩语学习的思考</strong></summary>
+
 本人对韩文知之甚少，仅知道这是一种通过单字实现严格注音的表音文字系统。考虑到其大量的汉语借词，或许使用汉语本字作为中文母语者学习的韩文记忆工具会更有效，这似乎是GPT5没有考虑周全的。
 
-### 
+</details>
+
+<details>
+<summary><strong>推荐的词根学习资源</strong></summary>
 
 李平武老师的著作《英语词根与单词的说文解字(新版)》对词根词缀讲解颇深，对于系统化记忆单词很有帮助。
-![英语词根与单词的说文解字(新版)_作者：李平武](说文解字.png)
-另，有一款爱好者开发的词根记忆软件，名为高山词根，仍有下载APk与网页端可找到。搜索引擎检索可找到作者个人站。
 
-###
+![英语词根与单词的说文解字(新版)_作者：李平武](说文解字.png)
+
+另，有一款爱好者开发的词根记忆软件，名为高山词根，仍有下载APK与网页端可找到。搜索引擎检索可找到作者个人站。
+
+</details>
+
+<details>
+<summary><strong>关于AI编程的想法</strong></summary>
 
 关于AI编程（所谓Vibe 编程），争论太多，想理一下自己的想法，开个坑。
 
-###
+</details>
+
+<details>
+<summary><strong>说明</strong></summary>
 
 上面AI写的使用说明还没有校验，我仅仅把GPT5的总结输出调整为了markdown格式。
+
+</details>
