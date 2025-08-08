@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>单词记忆 · 索引</title>
+  <meta name="description" content="在多个单词记忆页面间快速切换的索引主页" />
+  <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --card: #111827;      /* gray-900 */
+      --text: #e5e7eb;      /* gray-200 */
+      --muted: #9ca3af;     /* gray-400 */
+      --primary: #60a5fa;   /* blue-400 */
+      --primary-hover: #93c5fd; /* blue-300 */
+      --ring: rgba(96,165,250,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(96,165,250,.15), transparent 50%),
+                  radial-gradient(1200px 800px at 110% 10%, rgba(34,197,94,.12), transparent 50%),
+                  var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 24px 20px 12px;
+      text-align: center;
+    }
+    header h1 { margin: 0; font-size: clamp(30px, 3vw, 42px); letter-spacing: .5px; }
+    header p { margin: 10px 0 0; color: var(--muted); font-size: clamp(14px, 1.6vw, 18px); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 28px;
+      padding: 28px 36px;
+      max-width: 1440px;
+      margin: 0 auto 40px;
+      align-items: stretch;
+    }
+    @media (min-width: 600px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 920px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1280px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+    a.card {
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 18px;
+      padding: 28px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    a.card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 10px 30px -10px var(--ring);
+    }
+    .card span.tag {
+      display: inline-block;
+      font-size: 15px;
+      color: var(--primary);
+      background: rgba(96,165,250,.10);
+      border: 1px solid rgba(96,165,250,.35);
+      padding: 6px 14px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+    .card h2 { margin: 14px 0 10px; font-size: clamp(22px, 1.9vw, 28px); }
+    .card p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 16px 0 32px; }
+    .hint { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>单词记忆 · 索引</h1>
+    <p>选择一个页面开始复习，或把此页作为 GitHub Pages 的入口。</p>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="en.html">
+      <span class="tag">EN</span>
+      <h2>英语词汇</h2>
+      <p>English vocabulary practice.</p>
+    </a>
+
+    <a class="card" href="es_It.html">
+      <span class="tag">ES · IT</span>
+      <h2>西语 / 意语</h2>
+      <p>Español e Italiano vocabulary.</p>
+    </a>
+
+    <a class="card" href="jp.html">
+      <span class="tag">JP</span>
+      <h2>日语词汇</h2>
+      <p>日本語の単語練習。</p>
+    </a>
+
+    <a class="card" href="ko.html">
+      <span class="tag">KO</span>
+      <h2>韩语词汇</h2>
+      <p>한국어 어휘 연습.</p>
+    </a>
+  </div>
+
+  <div class="hint">提示：若你的仓库启用 GitHub Pages，默认会以此 <code>index.html</code> 为站点首页。</div>
+  <footer>© <span id="year"></span> ShuoWen • All rights reserved.</footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
