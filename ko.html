@@ -1,0 +1,1426 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>韩语学习 · 构词/接辞/词根｜TOPIK 1–6</title>
+<meta name="description" content="基于构词（前缀/词根/后缀）与场景应用的韩语学习工具，支持Jamo编辑距离形近词、多维检索、SRS复习、TTS发音（ko-KR）。">
+<style>
+:root{
+  --bg:#f8fafc; --fg:#0f172a; --muted:#64748b; --card:#ffffff; --border:#e2e8f0;
+  --primary:#10b981; --accent:#06b6d4; --chip:#ecfeff; --chip-fg:#0e7490;
+  --good:#16a34a; --warn:#d97706; --bad:#dc2626; --shadow:0 6px 24px rgba(2,6,23,0.08);
+}
+.dark{
+  --bg:#0b1020; --fg:#e6edf3; --muted:#93a4b5; --card:#0f172a; --border:#1f2937;
+  --primary:#34d399; --accent:#22d3ee; --chip:#0b2530; --chip-fg:#96f2ff; --shadow:0 8px 28px rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans KR","Noto Sans","Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
+a{color:var(--primary);text-decoration:none}
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg,var(--bg),rgba(0,0,0,0));
+  backdrop-filter:saturate(1.2) blur(6px);
+  padding:10px 14px; border-bottom:1px solid var(--border);
+}
+.header-inner{display:flex; align-items:center; gap:12px; max-width:1400px; margin:0 auto}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+.brand .logo{width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,var(--primary),var(--accent)); box-shadow:var(--shadow)}
+.brand small{color:var(--muted); font-weight:600}
+.searchbar{flex:1; display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--border); padding:8px 10px; border-radius:10px; box-shadow:var(--shadow)}
+.searchbar input{flex:1; border:0; outline:none; background:transparent; color:var(--fg); font-size:14px}
+.btn{border:1px solid var(--border); background:var(--card); color:var(--fg); padding:8px 12px; border-radius:10px; cursor:pointer}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border-color:transparent}
+.btn.ghost{background:transparent}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; background:var(--chip); color:var(--chip-fg); font-weight:600; font-size:12px}
+main{max-width:1400px; margin:14px auto; display:grid; grid-template-columns:280px 1fr 360px; gap:14px; padding:0 14px}
+@media (max-width:1100px){main{grid-template-columns:260px 1fr}}
+@media (max-width:980px){main{grid-template-columns:1fr}}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)}
+.sidebar{padding:12px}
+.section-title{display:flex; align-items:center; justify-content:space-between; margin:6px 0 12px}
+.section-title h3{margin:0; font-size:15px}
+.filters{display:grid; gap:14px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer; user-select:none}
+.chip.active{border-color:var(--primary); box-shadow:inset 0 0 0 1px var(--primary)}
+hr.sep{border:0; border-top:1px dashed var(--border); margin:4px 0}
+small.help{color:var(--muted)}
+.input{display:flex; align-items:center; gap:8px; background:var(--bg); border:1px dashed var(--border); padding:8px; border-radius:8px}
+.input input, .input select{flex:1; background:transparent; border:0; outline:0; color:var(--fg)}
+.results{padding:6px 10px 16px}
+.stats{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px}
+.grid{display:grid; grid-template-columns:repeat(2, minmax(220px, 1fr)); gap:10px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.word-card{padding:12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:transform .06s ease}
+.word-card:hover{transform:translateY(-2px)}
+.word-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.word{font-weight:800; font-size:18px; letter-spacing:.2px}
+.tags{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.mean{color:var(--muted); margin-top:4px}
+.morph{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.morph span{padding:2px 6px; border-radius:6px; font-size:12px; border:1px solid var(--border)}
+.morph .pre{background:#e0f2fe; color:#0c4a6e; border-color:transparent}
+.morph .root{background:#fef9c3; color:#713f12; border-color:transparent}
+.morph .suf{background:#fce7f3; color:#831843; border-color:transparent}
+.detail{padding:12px}
+.detail .title{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.detail .title h2{margin:0}
+.detail .actions{display:flex; gap:8px; flex-wrap:wrap}
+.detail section{margin-top:12px}
+.detail .def{font-size:15px}
+.detail .ex{color:var(--muted)}
+.flex{display:flex; gap:10px; flex-wrap:wrap}
+.kv{display:grid; grid-template-columns:100px 1fr; gap:8px; align-items:flex-start}
+ul.clean{list-style:none; padding:0; margin:0}
+ul.clean li{padding:4px 0}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid var(--border)}
+.hlt{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#fff799, #ffe78f)}
+.hlt-pre{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#bde9ff,#9ae6ff)}
+.hlt-suf{padding:0 3px; border-radius:4px; background:linear-gradient(180deg,#ffd6ef,#ffbfe7)}
+.sim-list, .family-list{display:flex; flex-wrap:wrap; gap:6px}
+.sim-item, .fam-item{padding:6px 10px; border:1px solid var(--border); border-radius:999px; cursor:pointer}
+.footer-tools{position:sticky; bottom:0; padding:10px; display:flex; gap:8px; flex-wrap:wrap; background:linear-gradient(0deg,var(--bg),rgba(0,0,0,0)); border-top:1px dashed var(--border)}
+.srs{position:fixed; right:20px; bottom:20px; z-index:100; display:flex; gap:8px; flex-wrap:wrap}
+.srs .card{padding:14px; width:360px; max-width:90vw}
+.srs .q{font-weight:700; font-size:18px}
+.srs .btns{display:flex; gap:8px; margin-top:8px}
+.srs .btn.again{background:var(--bad); color:#fff}
+.srs .btn.hard{background:var(--warn); color:#fff}
+.srs .btn.good{background:var(--good); color:#fff}
+.srs .btn.easy{background:var(--primary); color:#fff}
+small.dim{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        韩语学习 · 构词/接辞/词根
+        <small>TOPIK 1 – 6</small>
+      </div>
+    </div>
+    <div class="searchbar">
+      <span>🔎</span>
+      <input id="q" placeholder="搜索：单词（한글）/ 罗马音 / 中文释义 / 韩文释义 / 构词（前缀/词根/后缀）" />
+      <button class="btn" id="clearBtn" title="清空">清空</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="darkBtn" title="暗黑模式">🌙/☀️</button>
+      <button class="btn" id="importBtn" title="导入词库(JSON)">导入</button>
+      <button class="btn" id="exportBtn" title="导出当前词库(JSON)">导出</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Sidebar filters -->
+  <aside class="card sidebar" id="sidebar">
+    <div class="section-title">
+      <h3>筛选</h3>
+      <span class="badge">多维检索</span>
+    </div>
+    <div class="filters">
+      <div>
+        <small class="help">TOPIK 级别</small>
+        <div class="chips" id="levelChips"></div>
+      </div>
+      <div>
+        <small class="help">词性</small>
+        <div class="chips" id="posChips"></div>
+      </div>
+      <div>
+        <small class="help">主题</small>
+        <div class="chips" id="topicChips"></div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">构词要素（前缀/汉字词根/接尾/派生）</small>
+        <div class="input"><input id="morphSearch" placeholder="如：불 / 비 / 무 / 학 / 화 / 적 / 성 / 력"></div>
+        <div class="chips" id="morphChips"></div>
+        <div class="flex">
+          <label class="pill"><input type="checkbox" id="requireAll"> 同时包含所选全部形态</label>
+          <label class="pill"><input type="checkbox" id="onlyRoots"> 仅匹配词根（汉字词成分/词干）</label>
+        </div>
+      </div>
+      <hr class="sep">
+      <div>
+        <small class="help">频率（1-5，越高越常见）</small>
+        <div class="input"><input type="range" id="freq" min="1" max="5" value="1"><span id="freqVal">≥1</span></div>
+      </div>
+      <div class="flex">
+        <button class="btn" id="resetBtn">重置筛选</button>
+        <small class="help">可组合筛选 + 搜索；点击芯片反向检索</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Results -->
+  <section class="card results">
+    <div class="stats">
+      <span class="badge">结果 <b id="count"></b> / <span id="total"></span></span>
+      <span class="pill">形近词：Hangul Jamo 编辑距离</span>
+      <span class="pill">TTS：点击单词右侧🔊</span>
+      <span class="pill">SRS：右下角开始复习</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="footer-tools">
+      <button class="btn primary" id="startSrsBtn">用当前结果开始复习</button>
+      <button class="btn" id="genSceneBtn">用所选词生成韩语场景句</button>
+      <small class="help">提示：双击单词加入复习清单；点击构词芯片可反向检索</small>
+    </div>
+  </section>
+
+  <!-- Detail -->
+  <aside class="card detail" id="detail">
+    <div class="title">
+      <div>
+        <h2 id="dWord">选择一个词</h2>
+        <div id="dReading" class="mean"></div>
+        <div class="morph" id="dMorph"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="speakBtn" title="发音">🔊 发音</button>
+        <button class="btn" id="starBtn" title="加入复习">⭐ 收藏</button>
+      </div>
+    </div>
+    <section>
+      <div class="def" id="dDef"></div>
+      <div class="mean" id="dMean"></div>
+    </section>
+    <section>
+      <div class="kv">
+        <div><small class="help">词性</small></div><div id="dPos"></div>
+        <div><small class="help">级别</small></div><div id="dLevel"></div>
+        <div><small class="help">主题</small></div><div id="dTopics"></div>
+        <div><small class="help">频率</small></div><div id="dFreq"></div>
+      </div>
+    </section>
+    <section>
+      <b>例句</b>
+      <ul class="clean" id="dExamples"></ul>
+    </section>
+    <section>
+      <b>形近词（Jamo 相近）</b>
+      <div class="sim-list" id="dSimilar"></div>
+    </section>
+    <section>
+      <b>同构词 / 同接辞</b>
+      <div class="family-list" id="dFamily"></div>
+    </section>
+    <section>
+      <b>记忆提示</b>
+      <div id="dNotes" class="mean"></div>
+    </section>
+  </aside>
+</main>
+
+<!-- SRS Review Panel -->
+<div class="srs" id="srsPanel" style="display:none">
+  <div class="card">
+    <div class="q" id="srsQ">SRS 复习</div>
+    <div class="a" id="srsA" style="display:none; margin-top:8px"></div>
+    <div class="btns">
+      <button class="btn again" id="srsAgain">Again</button>
+      <button class="btn hard" id="srsHard">Hard</button>
+      <button class="btn good" id="srsGood">Good</button>
+      <button class="btn easy" id="srsEasy">Easy</button>
+      <button class="btn" id="srsShow">显示答案</button>
+      <button class="btn ghost" id="srsClose">关闭</button>
+    </div>
+    <div style="margin-top:6px"><small class="dim" id="srsInfo"></small></div>
+  </div>
+</div>
+
+<script>
+/** ==========================================
+ *  构词要素（接头/接尾/常见汉字词词根）
+ *  ========================================== */
+const MORPHEMES = {
+  // prefixes 接头
+  "불":{type:"prefix", zh:"不；否定（前 b/p）", ko:"불-"},
+  "비":{type:"prefix", zh:"非；不", ko:"비-"},
+  "무":{type:"prefix", zh:"无；没有", ko:"무-"},
+  "재":{type:"prefix", zh:"再；重新", ko:"재-"},
+  "초":{type:"prefix", zh:"超；过度", ko:"초-"},
+  "친":{type:"prefix", zh:"亲；友好", ko:"친-"},
+  "반":{type:"prefix", zh:"反；对立", ko:"반-"},
+  "과":{type:"prefix", zh:"过；过度", ko:"과-"},
+  "저":{type:"prefix", zh:"低；降低", ko:"저-"},
+  "미":{type:"prefix", zh:"未；尚未", ko:"미-"},
+  // suffixes 接尾
+  "적":{type:"suffix", zh:"…的（形名化）", ko:"-적"},
+  "적으로":{type:"suffix", zh:"…地（副词）", ko:"-적으로"},
+  "성":{type:"suffix", zh:"…性；性质/可能", ko:"-성"},
+  "화":{type:"suffix", zh:"…化；使…化", ko:"-화"},
+  "력":{type:"suffix", zh:"…力；能力/影响", ko:"-력"},
+  "률":{type:"suffix", zh:"…率（율/률）", ko:"-율/-률"},
+  "자":{type:"suffix", zh:"…者（人）", ko:"-자"},
+  "가":{type:"suffix", zh:"…家/…者", ko:"-가"},
+  "주의":{type:"suffix", zh:"…主义", ko:"-주의"},
+  "론":{type:"suffix", zh:"…论", ko:"-론"},
+  "법":{type:"suffix", zh:"…法/方法/法规", ko:"-법"},
+  "감":{type:"suffix", zh:"…感", ko:"-감"},
+  "스럽다":{type:"suffix", zh:"…似的/…感的", ko:"-스럽다"},
+  "하다":{type:"suffix", zh:"动词化（…하다）", ko:"-하다"},
+  "되다":{type:"suffix", zh:"被动/变化（…되다）", ko:"-되다"},
+  // common hanja roots 常见词根
+  "학":{type:"root", zh:"学；学习", ko:"學"},
+  "교":{type:"root", zh:"校；教学/学校", ko:"校"},
+  "생":{type:"root", zh:"生；学生/生命", ko:"生"},
+  "국":{type:"root", zh:"国；国家", ko:"國"},
+  "어":{type:"root", zh:"语；语言", ko:"語"},
+  "문":{type:"root", zh:"文；文章/文化/问题", ko:"文/問"},
+  "사":{type:"root", zh:"社/事；社会/事务", ko:"社/事"},
+  "회":{type:"root", zh:"会；社会/公司", ko:"會"},
+  "경":{type:"root", zh:"经/境；经济/环境", ko:"經/境"},
+  "제":{type:"root", zh:"济/制；经济/制度", ko:"濟/制"},
+  "정":{type:"root", zh:"情/政/正；信息/政治/准确", ko:"情/政/正"},
+  "보":{type:"root", zh:"报；信息/报告", ko:"報"},
+  "통":{type:"root", zh:"通；通信/通行", ko:"通"},
+  "신":{type:"root", zh:"信；通信/信任", ko:"信"},
+  "기":{type:"root", zh:"技/机；技术/机器", ko:"技/機"},
+  "술":{type:"root", zh:"术；技术/艺术", ko:"術"},
+  "연":{type:"root", zh:"研/联；研究/联系", ko:"研/聯"},
+  "구":{type:"root", zh:"究/求；研究/要求", ko:"究/求"},
+  "발":{type:"root", zh:"发；发展/发表", ko:"發"},
+  "전(root)":{type:"root", zh:"展；发展/展开", ko:"展"},
+  "개":{type:"root", zh:"改/开；改善/开发", ko:"改/開"},
+  "선":{type:"root", zh:"善/选；改善/选择", ko:"善/選"},
+  "효":{type:"root", zh:"效；效率/效果", ko:"效"},
+  "과":{type:"root", zh:"果/科；效果/学科", ko:"果/科"},
+  "안":{type:"root", zh:"安；安全/安心", ko:"安"},
+  "위":{type:"root", zh:"危；危险", ko:"危"},
+  "험":{type:"root", zh:"险；危险", ko:"險"},
+  "해":{type:"root", zh:"解；解决/理解", ko:"解"},
+  "결":{type:"root", zh:"决/结；决定/解决", ko:"決/結"},
+  "정(root)":{type:"root", zh:"定；决定/稳定", ko:"定"},
+  "확":{type:"root", zh:"确；准确/明确", ko:"確"},
+  "명":{type:"root", zh:"明；明白/明确", ko:"明"},
+  "적(root)":{type:"root", zh:"适；适当/最适", ko:"適"},
+  "단":{type:"root", zh:"单；单纯", ko:"單"},
+  "순":{type:"root", zh:"纯；单纯", ko:"純"},
+  "복":{type:"root", zh:"复；复杂/重复", ko:"複"},
+  "잡":{type:"root", zh:"杂；复杂/杂", ko:"雜"},
+  "예":{type:"root", zh:"预；预定/预约", ko:"豫"},
+  "약":{type:"root", zh:"约；约定/约束", ko:"約"},
+  "연(root)":{type:"root", zh:"连；连续/联络", ko:"連"},
+  "락":{type:"root", zh:"络；联络/网络", ko:"絡"},
+  "참":{type:"root", zh:"参；参加/参考", ko:"參"},
+  "가(root)":{type:"root", zh:"加；参加/增加", ko:"加"},
+  "찬":{type:"root", zh:"赞；赞成", ko:"贊"},
+  "반(root)":{type:"root", zh:"反；反对/相反", ko:"反"},
+  "대":{type:"root", zh:"对；对策/对立", ko:"對"},
+  "책":{type:"root", zh:"策；对策/政策", ko:"策"},
+  "역":{type:"root", zh:"逆；逆/反效果", ko:"逆"},
+  "속":{type:"root", zh:"续；连续/持续", ko:"續"},
+  "동":{type:"root", zh:"同；同意/相同", ko:"同"},
+  "의":{type:"root", zh:"意/义；意义/主意", ko:"意/義"},
+  "완":{type:"root", zh:"完；完成", ko:"完"},
+  "자(root)":{type:"root", zh:"自；自动/自我", ko:"自"},
+  "동(root)":{type:"root", zh:"动；移动/行动", ko:"動"},
+  "현":{type:"root", zh:"现；现代/现在", ko:"現"},
+  "대(root2)":{type:"root", zh:"代；现代/世代", ko:"代"},
+  "세":{type:"root", zh:"世；世界", ko:"世"},
+  "계":{type:"root", zh:"界；世界/边界", ko:"界"},
+  "산":{type:"root", zh:"产；生产/产业", ko:"産"},
+  "업":{type:"root", zh:"业；产业/职业", ko:"業"},
+  "도":{type:"root", zh:"都；都市/首都", ko:"都"},
+  "시":{type:"root", zh:"市；城市/市场", ko:"市"},
+  "최":{type:"root", zh:"最；最/最佳", ko:"最"},
+  "표":{type:"root", zh:"表；发表/表现", ko:"表"},
+  "현(root2)":{type:"root", zh:"现；表现/出现", ko:"現"},
+  "설":{type:"root", zh:"说；说明/演说", ko:"說"},
+  "득":{type:"root", zh:"得；获得/说服", ko:"得"}
+};
+
+/** ==========================================
+ *  TOPIK 示例词库（可导入扩展）
+ *  字段：
+ *  word(한글), reading(同), romaja, pos, level[], frequency(1-5),
+ *  definition_ko, meaning_zh,
+ *  examples[], roots:[{m, t: 'prefix'|'root'|'suffix'}],
+ *  topics[], syn[], ant[], notes
+ *  ========================================== */
+const WORDS = [
+  // 基础与校园
+  {word:"학생",reading:"학생",romaja:"haksaeng",pos:"명사",level:["TOPIK1"],frequency:5,
+    definition_ko:"학교에서 공부하는 사람.",meaning_zh:"学生",
+    examples:["저는 대학생입니다."],
+    roots:[{m:"학",t:"root"},{m:"생",t:"root"}],
+    topics:["教育","日常"],syn:["생도"],ant:[],notes:"學(学)+生(生) → 学生"},
+  {word:"선생님",reading:"선생님",romaja:"seonsaengnim",pos:"명사",level:["TOPIK1"],frequency:5,
+    definition_ko:"가르치는 일을 하는 사람에 대한 존칭.",meaning_zh:"老师（尊称）",
+    examples:["선생님께 질문해도 될까요?"],
+    roots:[{m:"선",t:"root"},{m:"생",t:"root"},{m:"님",t:"suffix"}],
+    topics:["教育","人"],syn:["교사"],ant:[],notes:"先生+님（尊称）"},
+  {word:"학교",reading:"학교",romaja:"hakgyo",pos:"명사",level:["TOPIK1"],frequency:5,
+    definition_ko:"교육을 실시하는 기관.",meaning_zh:"学校",
+    examples:["학교는 8시에 시작해요."],
+    roots:[{m:"학",t:"root"},{m:"교",t:"root"}],
+    topics:["教育","地点"],syn:[],ant:[],notes:"学+校"},
+  {word:"한국어",reading:"한국어",romaja:"hangugeo",pos:"명사",level:["TOPIK1"],frequency:5,
+    definition_ko:"한국의 언어.",meaning_zh:"韩语",
+    examples:["한국어를 공부하고 있어요."],
+    roots:[{m:"국",t:"root"},{m:"어",t:"root"}],
+    topics:["语言","教育"],syn:["국어"],ant:[],notes:"國+語"},
+  {word:"영어",reading:"영어",romaja:"yeongeo",pos:"명사",level:["TOPIK1"],frequency:5,
+    definition_ko:"영국과 미국 등의 언어.",meaning_zh:"英语",
+    examples:["영어 수업이 재미있어요."],
+    roots:[{m:"어",t:"root"}],
+    topics:["语言","教育"],syn:["영문"],ant:[],notes:""},
+  {word:"강의",reading:"강의",romaja:"gangui",pos:"명사",level:["TOPIK2"],frequency:4,
+    definition_ko:"학문이나 기술을 가르치는 일.",meaning_zh:"讲课；讲座",
+    examples:["오늘 강의는 온라인으로 진행됩니다."],
+    roots:[{m:"강",t:"root"},{m:"의",t:"root"}],
+    topics:["教育"],syn:["수업"],ant:[],notes:""},
+  {word:"시험",reading:"시험",romaja:"siheom",pos:"名사",level:["TOPIK1"],frequency:5,
+    definition_ko:"학업 성취를 평가하는 일.",meaning_zh:"考试",
+    examples:["내일 시험을 봐요."],
+    roots:[{m:"시",t:"root"},{m:"험",t:"root"}],
+    topics:["教育"],syn:["테스트"],ant:[],notes:""},
+  {word:"합격",reading:"합격",romaja:"hapgyeok",pos:"名사",level:["TOPIK2"],frequency:4,
+    definition_ko:"시험이나 심사를 통과함.",meaning_zh:"合格；通过",
+    examples:["그는 장학금에 합격했다."],
+    roots:[{m:"합",t:"root"},{m:"격",t:"root"}],
+    topics:["教育"],syn:["통과"],ant:["불합격"],notes:"合+格"},
+  {word:"불합격",reading:"불합격",romaja:"bulhapgyeok",pos:"名사",level:["TOPIK2"],frequency:3,
+    definition_ko:"시험이나 심사를 통과하지 못함.",meaning_zh:"不合格",
+    examples:["한 문제 차이로 불합격했다."],
+    roots:[{m:"불",t:"prefix"},{m:"합",t:"root"},{m:"격",t:"root"}],
+    topics:["教育"],syn:["탈락"],ant:["合격"],notes:"불- 否定 + 合格"},
+
+  // 学术/研究/IT
+  {word:"연구",reading:"연구",romaja:"yeongu",pos:"名사/동사(~하다)",level:["TOPIK2","TOPIK3"],frequency:5,
+    definition_ko:"어떤 것을 깊이 있게 조사함.",meaning_zh:"研究",
+    examples:["신소재를 연구하고 있다."],
+    roots:[{m:"연",t:"root"},{m:"구",t:"root"}],
+    topics:["学术"],syn:["조사"],ant:[],notes:"研+究；연구하다/연구자"},
+  {word:"연구자",reading:"연구자",romaja:"yeonguja",pos:"名사",level:["TOPIK3"],frequency:4,
+    definition_ko:"연구를 직업으로 하는 사람.",meaning_zh:"研究者",
+    examples:["그는 AI 연구자이다."],
+    roots:[{m:"연",t:"root"},{m:"구",t:"root"},{m:"자",t:"suffix"}],
+    topics:["学术","人"],syn:["학자"],ant:[],notes:"-자：…者"},
+  {word:"과학",reading:"과학",romaja:"gwahak",pos:"名사",level:["TOPIK2"],frequency:5,
+    definition_ko:"자연과 사회 현상을 체계적으로 탐구하는 학문.",meaning_zh:"科学",
+    examples:["과학적 사고가 필요하다."],
+    roots:[{m:"과",t:"root"},{m:"학",t:"root"}],
+    topics:["学术"],syn:[],ant:[],notes:"科+學"},
+  {word:"기술",reading:"기술",romaja:"gisul",pos:"名사",level:["TOPIK2"],frequency:5,
+    definition_ko:"어떤 목적을 이루기 위한 지식과 방법.",meaning_zh:"技术",
+    examples:["신기술을 도입하다."],
+    roots:[{m:"기",t:"root"},{m:"술",t:"root"}],
+    topics:["科技","职场"],syn:["테크놀로지"],ant:[],notes:"技+術"},
+  {word:"정보",reading:"정보",romaja:"jeongbo",pos:"名사",level:["TOPIK2"],frequency:5,
+    definition_ko:"뜻을 전달하는 자료나 지식.",meaning_zh:"信息",
+    examples:["정확한 정보를 공유하다."],
+    roots:[{m:"정",t:"root"},{m:"보",t:"root"}],
+    topics:["IT","社会"],syn:["데이터"],ant:[],notes:"情+報"},
+  {word:"통신",reading:"통신",romaja:"tongsin",pos:"名사",level:["TOPIK3"],frequency:4,
+    definition_ko:"정보를 먼 곳으로 주고받음.",meaning_zh:"通信",
+    examples:["무선 통신 기술이 발달했다."],
+    roots:[{m:"통",t:"root"},{m:"신",t:"root"}],
+    topics:["IT","历史"],syn:["커뮤니케이션"],ant:[],notes:"通+信"},
+  {word:"정보화",reading:"정보화",romaja:"jeongbohwa",pos:"名사/동사(~되다/~하다)",level:["TOPIK4"],frequency:3,
+    definition_ko:"사회나 조직이 정보 중심으로 바뀜.",meaning_zh:"信息化",
+    examples:["행정의 정보화가 진행된다."],
+    roots:[{m:"정",t:"root"},{m:"보",t:"root"},{m:"화",t:"suffix"}],
+    topics:["IT","社会"],syn:[],ant:[],notes:"-화：…化/使…化"},
+  {word:"자동화",reading:"자동화",romaja:"jadonghwa",pos:"名사/동사(~되다)",level:["TOPIK4"],frequency:4,
+    definition_ko:"사람의 조작 없이 기계가 스스로 움직이도록 함.",meaning_zh:"自动化",
+    examples:["생산 라인이 자동화되었다."],
+    roots:[{m:"자",t:"root"},{m:"동",t:"root"},{m:"화",t:"suffix"}],
+    topics:["科技","产业"],syn:["오토메이션"],ant:[],notes:"自+動+化"},
+
+  // 词缀 -적 / -성 / -화 / -력 系
+  {word:"효과적",reading:"효과적",romaja:"hyogwajeok",pos:"형용사/명사(~인)",level:["TOPIK3"],frequency:4,
+    definition_ko:"효과가 있는.",meaning_zh:"有效的",
+    examples:["효과적인 방법을 찾다."],
+    roots:[{m:"효",t:"root"},{m:"과",t:"root"},{m:"적",t:"suffix"}],
+    topics:["学术","工作"],syn:["유효한"],ant:["비효율적"],notes:"效+果 + -的"},
+  {word:"사회적",reading:"사회적",romaja:"sahoejeok",pos:"형용사/명사",level:["TOPIK3"],frequency:5,
+    definition_ko:"사회에 관련된.",meaning_zh:"社会的",
+    examples:["사회적 책임을 다하다."],
+    roots:[{m:"사",t:"root"},{m:"회",t:"root"},{m:"적",t:"suffix"}],
+    topics:["社会"],syn:[],ant:[],notes:"社+會 + -的"},
+  {word:"경제적",reading:"경제적",romaja:"gyeongjejeok",pos:"형용사/명사",level:["TOPIK3"],frequency:5,
+    definition_ko:"경제와 관련되거나 경제에 이로운.",meaning_zh:"经济的；经济上有利的",
+    examples:["경제적 부담을 줄이다."],
+    roots:[{m:"경",t:"root"},{m:"제",t:"root"},{m:"적",t:"suffix"}],
+    topics:["经济"],syn:["합리적"],ant:["비경제적"],notes:"經+濟 + -的"},
+  {word:"과학적",reading:"과학적",romaja:"gwahakjeok",pos:"형용사/명사",level:["TOPIK3"],frequency:4,
+    definition_ko:"과학에 맞는.",meaning_zh:"科学的",
+    examples:["과학적 근거를 제시하다."],
+    roots:[{m:"과",t:"root"},{m:"학",t:"root"},{m:"적",t:"suffix"}],
+    topics:["学术"],syn:["합리적"],ant:["비과학적"],notes:""},
+  {word:"논리적",reading:"논리적",romaja:"nollijeok",pos:"형용사/명사",level:["TOPIK3"],frequency:4,
+    definition_ko:"논리에 맞는.",meaning_zh:"逻辑的",
+    examples:["논리적인 전개가 필요하다."],
+    roots:[{m:"논",t:"root"},{m:"리",t:"root"},{m:"적",t:"suffix"}],
+    topics:["学术"],syn:["합리적"],ant:["비논리적"],notes:"論+理 + -的"},
+  {word:"구체적",reading:"구체적",romaja:"guchejeok",pos:"형용사/명사",level:["TOPIK3"],frequency:4,
+    definition_ko:"실제의 사물처럼 뚜렷한 모양을 가진.",meaning_zh:"具体的",
+    examples:["구체적인 예를 들어라."],
+    roots:[{m:"구",t:"root"},{m:"체",t:"root"},{m:"적",t:"suffix"}],
+    topics:["学术","写作"],syn:["명확한"],ant:["추상적"],notes:""},
+  {word:"추상적",reading:"추상적",romaja:"chusangjeok",pos:"형용사/명사",level:["TOPIK3"],frequency:3,
+    definition_ko:"구체성이 없는.",meaning_zh:"抽象的",
+    examples:["설명이 너무 추상적이다."],
+    roots:[{m:"추",t:"root"},{m:"상",t:"root"},{m:"적",t:"suffix"}],
+    topics:["学术"],syn:[],ant:["구체적"],notes:""},
+  {word:"전략적",reading:"전략적",romaja:"jeonlyakjeok",pos:"형용사/명사",level:["TOPIK4"],frequency:3,
+    definition_ko:"전략에 따른.",meaning_zh:"战略的",
+    examples:["전략적 파트너십을 구축하다."],
+    roots:[{m:"전",t:"root"},{m:"략",t:"root"},{m:"적",t:"suffix"}],
+    topics:["商业","管理"],syn:[],ant:[],notes:""},
+  {word:"정치적",reading:"정치적",romaja:"jeongchijeok",pos:"형용사/명사",level:["TOPIK4"],frequency:3,
+    definition_ko:"정치에 관한.",meaning_zh:"政治的",
+    examples:["정치적 중립을 지키다."],
+    roots:[{m:"정",t:"root"},{m:"치",t:"root"},{m:"적",t:"suffix"}],
+    topics:["社会","政治"],syn:[],ant:[],notes:""},
+  {word:"효율성",reading:"효율성",romaja:"hyoyulseong",pos:"名사",level:["TOPIK4"],frequency:4,
+    definition_ko:"들인 것에 비해 얻는 효과의 정도.",meaning_zh:"效率；效率性",
+    examples:["업무 효율성을 높이다."],
+    roots:[{m:"효",t:"root"},{m:"율",t:"root"},{m:"성",t:"suffix"}],
+    topics:["职场","学术"],syn:["생산성"],ant:["비효율"],notes:"效+率 + -性"},
+  {word:"안정성",reading:"안정성",romaja:"anjeongseong",pos:"名사",level:["TOPIK4"],frequency:4,
+    definition_ko:"안정되어 있는 성질.",meaning_zh:"稳定性",
+    examples:["시스템의 안정성을 검증하다."],
+    roots:[{m:"안",t:"root"},{m:"정(root)",t:"root"},{m:"성",t:"suffix"}],
+    topics:["科技"],syn:["안정도"],ant:["불안정"],notes:""},
+  {word:"가능성",reading:"가능성",romaja:"ganeungseong",pos:"名사",level:["TOPIK3"],frequency:5,
+    definition_ko:"일이 일어날 수 있는 정도.",meaning_zh:"可能性",
+    examples:["성공할 가능성이 높다."],
+    roots:[{m:"가",t:"root"},{m:"능",t:"root"},{m:"성",t:"suffix"}],
+    topics:["通用"],syn:["확률"],ant:[],notes:""},
+  {word:"필요성",reading:"필요성",romaja:"pillyoseong",pos:"名사",level:["TOPIK3"],frequency:5,
+    definition_ko:"없으면 안 되는 성질.",meaning_zh:"必要性",
+    examples:["교육의 필요성을 강조하다."],
+    roots:[{m:"필",t:"root"},{m:"요",t:"root"},{m:"성",t:"suffix"}],
+    topics:["教育","通用"],syn:[],ant:[],notes:""},
+  {word:"다양성",reading:"다양성",romaja:"dayangseong",pos:"名사",level:["TOPIK3"],frequency:4,
+    definition_ko:"다양한 정도.",meaning_zh:"多样性",
+    examples:["문화 다양성을 존중하다."],
+    roots:[{m:"다",t:"root"},{m:"양",t:"root"},{m:"성",t:"suffix"}],
+    topics:["文化","社会"],syn:[],ant:[],notes:"多+樣 + -性"},
+  {word:"일관성",reading:"일관성",romaja:"ilgwanseong",pos:"名사",level:["TOPIK4"],frequency:3,
+    definition_ko:"처음부터 끝까지 서로 어긋나지 않는 성질.",meaning_zh:"一致性",
+    examples:["정책의 일관성을 유지하다."],
+    roots:[{m:"일",t:"root"},{m:"관",t:"root"},{m:"성",t:"suffix"}],
+    topics:["写作","政策"],syn:["통일성"],ant:["모순"],notes:"一+貫 + -性"},
+
+  // 否定/对立接头
+  {word:"불법",reading:"불법",romaja:"bulbeop",pos:"名사/형용사(~적)",level:["TOPIK3"],frequency:4,
+    definition_ko:"법에 어긋남.",meaning_zh:"非法",
+    examples:["불법 복제는 처벌받는다."],
+    roots:[{m:"불",t:"prefix"},{m:"법",t:"suffix"}],
+    topics:["法律"],syn:["위법"],ant:["합법"],notes:"불- + 法"},
+  {word:"비공식",reading:"비공식",romaja:"bigongsik",pos:"名사/형용사(~적)",level:["TOPIK3"],frequency:3,
+    definition_ko:"공식적이지 않음.",meaning_zh:"非正式；非官方",
+    examples:["비공식 회담이 열렸다."],
+    roots:[{m:"비",t:"prefix"},{m:"공",t:"root"},{m:"식",t:"root"}],
+    topics:["政治","国际"],syn:["비정식"],ant:["공식"],notes:"非+公+式"},
+  {word:"무관심",reading:"무관심",romaja:"mugwansim",pos:"名사/형용사(~하다)",level:["TOPIK3"],frequency:3,
+    definition_ko:"관심이 없음.",meaning_zh:"无关心；冷漠",
+    examples:["청년에 대한 무관심이 문제다."],
+    roots:[{m:"무",t:"prefix"},{m:"관",t:"root"},{m:"심",t:"root"}],
+    topics:["社会","心理"],syn:["냉담"],ant:["관심"],notes:"無+關+心"},
+  {word:"무의미",reading:"무의미",romaja:"muuimi",pos:"名사/形容(~하다)",level:["TOPIK3"],frequency:3,
+    definition_ko:"의미가 없음.",meaning_zh:"无意义",
+    examples:["논쟁은 무의미하다."],
+    roots:[{m:"무",t:"prefix"},{m:"의",t:"root"},{m:"미",t:"root"}],
+    topics:["写作"],syn:["소용없음"],ant:["의미"],notes:"無+意+味"},
+  {word:"비효율적",reading:"비효율적",romaja:"bihyoyuljeok",pos:"형용사/명사",level:["TOPIK4"],frequency:3,
+    definition_ko:"효율이 낮은.",meaning_zh:"低效的；低效率的",
+    examples:["비효율적인 절차를 개선하다."],
+    roots:[{m:"비",t:"prefix"},{m:"효",t:"root"},{m:"율",t:"root"},{m:"적",t:"suffix"}],
+    topics:["管理"],syn:["낭비적"],ant:["효과적"],notes:"非+效+率 + 的"},
+  {word:"비정상",reading:"비정상",romaja:"bijeongsang",pos:"名사/형용사",level:["TOPIK4"],frequency:3,
+    definition_ko:"정상적이지 않음.",meaning_zh:"不正常；异常",
+    examples:["비정상 거래를 단속하다."],
+    roots:[{m:"비",t:"prefix"},{m:"정",t:"root"},{m:"상",t:"root"}],
+    topics:["法律","社会"],syn:["이상"],ant:["정상"],notes:""},
+
+  {word:"친환경",reading:"친환경",romaja:"chinhwan-gyeong",pos:"名사/형용사",level:["TOPIK4"],frequency:4,
+    definition_ko:"환경에 이로운.",meaning_zh:"环保；环境友好",
+    examples:["친환경 제품을 사용하다."],
+    roots:[{m:"친",t:"prefix"},{m:"환",t:"root"},{m:"경",t:"root"}],
+    topics:["环境"],syn:["에코"],ant:["반환경"],notes:"親+環+境"},
+  {word:"반사회적",reading:"반사회적",romaja:"bansahoijeok",pos:"형용사/명사",level:["TOPIK5"],frequency:2,
+    definition_ko:"사회에 반하는.",meaning_zh:"反社会的",
+    examples:["반사회적 행동을 제재하다."],
+    roots:[{m:"반(root)",t:"root"},{m:"사",t:"root"},{m:"회",t:"root"},{m:"적",t:"suffix"}],
+    topics:["社会"],syn:[],ant:["사회적"],notes:"反+社+會 + 的"},
+
+  // -화 派生
+  {word:"세계화",reading:"세계화",romaja:"segyehwa",pos:"名사/동사(~되다)",level:["TOPIK4"],frequency:4,
+    definition_ko:"세계적으로 통합되어 감.",meaning_zh:"全球化",
+    examples:["경제의 세계화가 진행되었다."],
+    roots:[{m:"세",t:"root"},{m:"계",t:"root"},{m:"화",t:"suffix"}],
+    topics:["国际","经济"],syn:[],ant:[],notes:"世+界+化"},
+  {word:"현대화",reading:"현대화",romaja:"hyeondae-hwa",pos:"名사/동사",level:["TOPIK4"],frequency:3,
+    definition_ko:"근대적으로 바뀜.",meaning_zh:"现代化",
+    examples:["도시 현대화 정책."],
+    roots:[{m:"현",t:"root"},{m:"대(root2)",t:"root"},{m:"화",t:"suffix"}],
+    topics:["社会","城市"],syn:[],ant:[],notes:"現+代+化"},
+  {word:"산업화",reading:"산업화",romaja:"saneop-hwa",pos:"名사/동사",level:["TOPIK4"],frequency:3,
+    definition_ko:"산업 중심으로 발전함.",meaning_zh:"工业化；产业化",
+    examples:["급속한 산업화의 부작용."],
+    roots:[{m:"산",t:"root"},{m:"업",t:"root"},{m:"화",t:"suffix"}],
+    topics:["经济"],syn:[],ant:[],notes:"産+業+化"},
+  {word:"도시화",reading:"도시화",romaja:"dosihwa",pos:"名사/동사",level:["TOPIK4"],frequency:3,
+    definition_ko:"도시가 확대·발전하는 현상.",meaning_zh:"城市化",
+    examples:["도시화로 녹지가 줄었다."],
+    roots:[{m:"도",t:"root"},{m:"시",t:"root"},{m:"화",t:"suffix"}],
+    topics:["城市","环境"],syn:[],ant:[],notes:"都+市+化"},
+  {word:"최적화",reading:"최적화",romaja:"choijeok-hwa",pos:"名사/동사(~하다/~되다)",level:["TOPIK5"],frequency:3,
+    definition_ko:"가장 알맞게 함.",meaning_zh:"优化",
+    examples:["코드를 최적화하다."],
+    roots:[{m:"최",t:"root"},{m:"적(root)",t:"root"},{m:"화",t:"suffix"}],
+    topics:["IT","工程"],syn:["옵티마이즈"],ant:[],notes:"最+適+化"},
+
+  // 质量/安全/问题/解决
+  {word:"안전",reading:"안전",romaja:"anjeon",pos:"名사/형용사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"위험이 없음.",meaning_zh:"安全",
+    examples:["안전 규정을 지키다."],
+    roots:[{m:"안",t:"root"},{m:"전(root)",t:"root"}],
+    topics:["通用"],syn:["무사"],ant:["위험"],notes:"安+全"},
+  {word:"위험",reading:"위험",romaja:"wiheom",pos:"名사/형용사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"해를 입을 가능성이 있음.",meaning_zh:"危险",
+    examples:["위험 지역에 들어가지 마세요."],
+    roots:[{m:"위",t:"root"},{m:"험",t:"root"}],
+    topics:["通用"],syn:["위태"],ant:["안전"],notes:"危+險"},
+  {word:"문제",reading:"문제",romaja:"munje",pos:"名사",level:["TOPIK1"],frequency:5,
+    definition_ko:"해결해야 할 일.",meaning_zh:"问题",
+    examples:["중요한 문제를 다루다."],
+    roots:[{m:"문",t:"root"},{m:"제",t:"root"}],
+    topics:["通用"],syn:["과제"],ant:[],notes:"問+題"},
+  {word:"해결",reading:"해결",romaja:"haegyeol",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"문제를 풀어 없앰.",meaning_zh:"解决",
+    examples:["문제를 해결하다."],
+    roots:[{m:"해",t:"root"},{m:"결",t:"root"}],
+    topics:["通用"],syn:["처리"],ant:["방치"],notes:"解+決"},
+  {word:"정확",reading:"정확",romaja:"jeonghwak",pos:"名사/형용사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"틀림이 없음.",meaning_zh:"准确",
+    examples:["정확한 데이터를 입력하다."],
+    roots:[{m:"정",t:"root"},{m:"확",t:"root"}],
+    topics:["学术","IT"],syn:["정밀"],ant:["부정확"],notes:"正+確"},
+  {word:"명확",reading:"명확",romaja:"myeonghwak",pos:"名사/형용사(~하다)",level:["TOPIK3"],frequency:4,
+    definition_ko:"분명하고 확실함.",meaning_zh:"明确",
+    examples:["목표를 명확히 하다."],
+    roots:[{m:"명",t:"root"},{m:"확",t:"root"}],
+    topics:["写作","职场"],syn:["분명"],ant:["모호"],notes:"明+確"},
+  {word:"적절",reading:"적절",romaja:"jeokjeol",pos:"名사/형용사(~하다)",level:["TOPIK3"],frequency:4,
+    definition_ko:"알맞음.",meaning_zh:"恰当；适切",
+    examples:["적절한 표현을 선택하다."],
+    roots:[{m:"적(root)",t:"root"},{m:"절",t:"root"}],
+    topics:["写作","交流"],syn:["타당"],ant:["부적절"],notes:"適+切"},
+  {word:"단순",reading:"단순",romaja:"dansun",pos:"名사/형용사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"복잡하지 않음.",meaning_zh:"单纯；简单",
+    examples:["단순한 실수를 줄이다."],
+    roots:[{m:"단",t:"root"},{m:"순",t:"root"}],
+    topics:["通用"],syn:["간단"],ant:["복잡"],notes:"單+純"},
+  {word:"복잡",reading:"복잡",romaja:"bokjap",pos:"名사/형용사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"얽히고 설켜 간단하지 않음.",meaning_zh:"复杂",
+    examples:["복잡한 문제를 분해하다."],
+    roots:[{m:"복",t:"root"},{m:"잡",t:"root"}],
+    topics:["学术"],syn:["난해"],ant:["단순"],notes:"複+雜"},
+
+  // 业务/沟通
+  {word:"설명",reading:"설명",romaja:"seolmyeong",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"이해할 수 있도록 풀어 말함.",meaning_zh:"说明；解释",
+    examples:["절차를 설명하다."],
+    roots:[{m:"설",t:"root"},{m:"명",t:"root"}],
+    topics:["交流","职场"],syn:["해설"],ant:[],notes:"說+明"},
+  {word:"비교",reading:"비교",romaja:"bigyo",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"둘 이상의 차이를 견주어 봄.",meaning_zh:"比较",
+    examples:["가격을 비교하다."],
+    roots:[{m:"비",t:"root"},{m:"교",t:"root"}],
+    topics:["学术","职场"],syn:[],ant:[],notes:"比+較"},
+  {word:"선택",reading:"선택",romaja:"seontaek",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"많은 것 중 하나를 고름.",meaning_zh:"选择",
+    examples:["최적의 방안을 선택하다."],
+    roots:[{m:"선",t:"root"},{m:"택",t:"root"}],
+    topics:["通用"],syn:["고르기"],ant:[],notes:"選+擇"},
+  {word:"결정",reading:"결정",romaja:"gyeoljeong",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"어떤 일을 하기로 정함.",meaning_zh:"决定",
+    examples:["방향을 결정하다."],
+    roots:[{m:"결",t:"root"},{m:"정(root)",t:"root"}],
+    topics:["职场"],syn:["결단"],ant:["보류"],notes:"決+定"},
+  {word:"개선",reading:"개선",romaja:"gaeseon",pos:"名사/동사(~하다/~되다)",level:["TOPIK3"],frequency:5,
+    definition_ko:"더 좋게 바꿈.",meaning_zh:"改善",
+    examples:["품질을 개선하다."],
+    roots:[{m:"개",t:"root"},{m:"선",t:"root"}],
+    topics:["职场","质量"],syn:["개량"],ant:["악화"],notes:"改+善"},
+  {word:"발전",reading:"발전",romaja:"baljeon",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"더 높은 단계로 나아감.",meaning_zh:"发展",
+    examples:["도시가 발전하다."],
+    roots:[{m:"발",t:"root"},{m:"전(root)",t:"root"}],
+    topics:["社会","经济"],syn:["진전"],ant:["정체"],notes:"發+展"},
+  {word:"협력",reading:"협력",romaja:"hyeomnyeok",pos:"名사/동사(~하다)",level:["TOPIK3"],frequency:4,
+    definition_ko:"힘을 합해 도움.",meaning_zh:"合作；协力",
+    examples:["상호 협력을 강화하다."],
+    roots:[{m:"협",t:"root"},{m:"력",t:"suffix"}],
+    topics:["职场"],syn:["협업"],ant:["대립"],notes:"協+力"},
+  {word:"발표",reading:"발표",romaja:"balpyo",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"세상에 드러내어 알림.",meaning_zh:"发表；发布",
+    examples:["연구 결과를 발표하다."],
+    roots:[{m:"발",t:"root"},{m:"표",t:"root"}],
+    topics:["学术","媒体"],syn:["공표"],ant:[],notes:"發+表"},
+  {word:"관리",reading:"관리",romaja:"gwanri",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"보살피고 통제함.",meaning_zh:"管理",
+    examples:["프로젝트를 관리하다."],
+    roots:[{m:"관",t:"root"},{m:"리",t:"root"}],
+    topics:["职场"],syn:["운영"],ant:[],notes:"管+理"},
+  {word:"지원",reading:"지원",romaja:"jiwon",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"도와줌.",meaning_zh:"支援；支持",
+    examples:["정부가 중소기업을 지원하다."],
+    roots:[{m:"지",t:"root"},{m:"원",t:"root"}],
+    topics:["职场","政策"],syn:["후원"],ant:[],notes:"支+援"},
+  {word:"진행",reading:"진행",romaja:"jinhaeng",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"앞으로 나아감; 일을 해 나감.",meaning_zh:"进行；推进",
+    examples:["회의를 진행하다."],
+    roots:[{m:"진",t:"root"},{m:"행",t:"root"}],
+    topics:["职场"],syn:["추진"],ant:["중단"],notes:"進+行"},
+
+  // 参与/立场
+  {word:"예약",reading:"예약",romaja:"yeyak",pos:"名사/동사(~하다)",level:["TOPIK1"],frequency:5,
+    definition_ko:"미리 약속함.",meaning_zh:"预约；预订",
+    examples:["식당 예약을 하다."],
+    roots:[{m:"예",t:"root"},{m:"약",t:"root"}],
+    topics:["旅行","日常"],syn:["부킹"],ant:[],notes:"豫+約"},
+  {word:"연락",reading:"연락",romaja:"yeollak",pos:"名사/동사(~하다)",level:["TOPIK1"],frequency:5,
+    definition_ko:"서로 소식을 전함.",meaning_zh:"联络；联系",
+    examples:["메일로 연락하겠습니다."],
+    roots:[{m:"연(root)",t:"root"},{m:"락",t:"root"}],
+    topics:["交流"],syn:["소통"],ant:[],notes:"連+絡"},
+  {word:"참가",reading:"참가",romaja:"chamga",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"모임이나 행사에 들어가 함께함.",meaning_zh:"参加",
+    examples:["회의에 참가하다."],
+    roots:[{m:"참",t:"root"},{m:"가(root)",t:"root"}],
+    topics:["职场","校园"],syn:["참여"],ant:["불참"],notes:"參+加"},
+  {word:"참가자",reading:"참가자",romaja:"chamgaja",pos:"名사",level:["TOPIK2"],frequency:4,
+    definition_ko:"참가하는 사람.",meaning_zh:"参加者",
+    examples:["참가자가 백 명을 넘었다."],
+    roots:[{m:"참",t:"root"},{m:"가(root)",t:"root"},{m:"자",t:"suffix"}],
+    topics:["职场","校园"],syn:[],ant:[],notes:"-자：人"},
+  {word:"찬성",reading:"찬성",romaja:"chanseong",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"의견을 받아들임.",meaning_zh:"赞成",
+    examples:["제안에 찬성이다."],
+    roots:[{m:"찬",t:"root"},{m:"성",t:"root"}],
+    topics:["交流","政治"],syn:["동의"],ant:["반대"],notes:"贊+成"},
+  {word:"반대",reading:"반대",romaja:"bandae",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"의견이 맞지 않음.",meaning_zh:"反对",
+    examples:["그 안에 반대한다."],
+    roots:[{m:"반(root)",t:"root"},{m:"대",t:"root"}],
+    topics:["交流","政治"],syn:["이의"],ant:["찬성"],notes:"反+對"},
+  {word:"주의",reading:"주의",romaja:"juui",pos:"名사",level:["TOPIK2"],frequency:5,
+    definition_ko:"조심함；또는 어떤 사상·주의(主義).",meaning_zh:"注意；主义",
+    examples:["안전에 주의하세요."],
+    roots:[{m:"주",t:"root"},{m:"의",t:"suffix"}],
+    topics:["通用"],syn:["경계"],ant:[],notes:"注意/主義（语境区分）"},
+
+  // 经验/态度
+  {word:"경험",reading:"경험",romaja:"gyeongheom",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"직접 겪음.",meaning_zh:"经验",
+    examples:["해외 경험이 도움이 된다."],
+    roots:[{m:"경",t:"root"},{m:"험",t:"root"}],
+    topics:["职场","教育"],syn:[],ant:[],notes:"經+驗"},
+  {word:"배려",reading:"배려",romaja:"baeryeo",pos:"명사/동사(~하다)",level:["TOPIK3"],frequency:3,
+    definition_ko:"남을 생각하여 마음을 씀.",meaning_zh:"关照；体贴；配慮",
+    examples:["상대에 대한 배려가 필요하다."],
+    roots:[{m:"배",t:"root"},{m:"려",t:"root"}],
+    topics:["礼貌","交流"],syn:["배운"],ant:[],notes:""},
+  {word:"적절하다",reading:"적절하다",romaja:"jeokjeolhada",pos:"형용사",level:["TOPIK3"],frequency:4,
+    definition_ko:"알맞다.",meaning_zh:"适切的；恰当的",
+    examples:["적절하게 표현하다."],
+    roots:[{m:"적(root)",t:"root"},{m:"절",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["写作","交流"],syn:["타당하다"],ant:["부적절하다"],notes:""},
+  {word:"명확하다",reading:"명확하다",romaja:"myeonghwakhada",pos:"형용사",level:["TOPIK3"],frequency:4,
+    definition_ko:"분명하고 확실하다.",meaning_zh:"明确的",
+    examples:["목표를 명확하게 하다."],
+    roots:[{m:"명",t:"root"},{m:"확",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["写作","职场"],syn:["분명하다"],ant:["모호하다"],notes:""},
+  {word:"정확하다",reading:"정확하다",romaja:"jeonghwakhada",pos:"형용사",level:["TOPIK2"],frequency:5,
+    definition_ko:"틀림이 없다.",meaning_zh:"准确的",
+    examples:["정확하게 입력하세요."],
+    roots:[{m:"정",t:"root"},{m:"확",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["学术","IT"],syn:["정밀하다"],ant:["부정확하다"],notes:""},
+
+  // 再/未/误/同/连/逆/对策
+  {word:"재사용",reading:"재사용",romaja:"jaesayong",pos:"名사/동사(~하다)",level:["TOPIK3"],frequency:3,
+    definition_ko:"다시 사용함.",meaning_zh:"再使用；复用",
+    examples:["자원을 재사용하다."],
+    roots:[{m:"재",t:"prefix"},{m:"사",t:"root"},{m:"용",t:"root"}],
+    topics:["环境","经济"],syn:["재활용(유사)"],ant:[],notes:"再+使用"},
+  {word:"재생",reading:"재생",romaja:"jaesaeng",pos:"名사/동사(~하다)",level:["TOPIK3"],frequency:4,
+    definition_ko:"다시 살아남；(미디어) 다시 재생함.",meaning_zh:"再生；播放",
+    examples:["영상을 재생하다."],
+    roots:[{m:"재",t:"prefix"},{m:"생",t:"root"}],
+    topics:["IT","环境"],syn:["복원"],ant:[],notes:"再+生"},
+  {word:"미완성",reading:"미완성",romaja:"miwanseong",pos:"名사/형용사",level:["TOPIK4"],frequency:3,
+    definition_ko:"아직 완성되지 않음.",meaning_zh:"未完成",
+    examples:["계획은 미완성 단계다."],
+    roots:[{m:"미",t:"prefix"},{m:"완",t:"root"},{m:"성",t:"root"}],
+    topics:["职场"],syn:[],ant:["완성"],notes:"未+完成"},
+  {word:"오해",reading:"오해",romaja:"ohae",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"잘못 이해함.",meaning_zh:"误解",
+    examples:["발언이 오해를 불렀다."],
+    roots:[{m:"오",t:"root"},{m:"해",t:"root"}],
+    topics:["交流"],syn:["착각"],ant:["이해"],notes:"誤+解"},
+  {word:"동의",reading:"동의",romaja:"dongui",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"같은 의견임.",meaning_zh:"同意",
+    examples:["약관에 동의합니다."],
+    roots:[{m:"동",t:"root"},{m:"의",t:"root"}],
+    topics:["法律","职场"],syn:["찬성"],ant:["반대"],notes:"同+意"},
+  {word:"연속",reading:"연속",romaja:"yeonsok",pos:"名사/동사(~하다)",level:["TOPIK3"],frequency:3,
+    definition_ko:"끊이지 않고 계속됨.",meaning_zh:"连续",
+    examples:["삼일 연속으로 비가 왔다."],
+    roots:[{m:"연(root)",t:"root"},{m:"속",t:"root"}],
+    topics:["通用"],syn:["계속"],ant:["단절"],notes:"連+續"},
+  {word:"역효과",reading:"역효과",romaja:"yeokhyogwa",pos:"名사",level:["TOPIK4"],frequency:3,
+    definition_ko:"기대와 반대의 결과.",meaning_zh:"反效果；适得其反",
+    examples:["과도한 통제는 역효과다."],
+    roots:[{m:"역",t:"root"},{m:"효",t:"root"},{m:"과",t:"root"}],
+    topics:["心理","通用"],syn:[],ant:[],notes:"逆+效果"},
+  {word:"대책",reading:"대책",romaja:"daechaek",pos:"名사",level:["TOPIK3"],frequency:5,
+    definition_ko:"문제에 대하여 세우는 방법.",meaning_zh:"对策；措施",
+    examples:["지진 대책을 강화하다."],
+    roots:[{m:"대",t:"root"},{m:"책",t:"root"}],
+    topics:["社会","安全"],syn:["대안"],ant:[],notes:"對+策"},
+
+  // 影响力/表达力
+  {word:"영향력",reading:"영향력",romaja:"yeonghyangnyeok",pos:"名사",level:["TOPIK4"],frequency:4,
+    definition_ko:"다른 것에 미치는 힘.",meaning_zh:"影响力",
+    examples:["SNS의 영향력이 크다."],
+    roots:[{m:"영",t:"root"},{m:"향",t:"root"},{m:"력",t:"suffix"}],
+    topics:["社会","媒体"],syn:[],ant:[],notes:"影+響 + 力"},
+  {word:"설득력",reading:"설득력",romaja:"seoldeungnyeok",pos:"名사",level:["TOPIK4"],frequency:3,
+    definition_ko:"상대를 납득시키는 힘.",meaning_zh:"说服力",
+    examples:["논리의 설득력이 있다."],
+    roots:[{m:"설",t:"root"},{m:"득",t:"root"},{m:"력",t:"suffix"}],
+    topics:["交流"],syn:[],ant:[],notes:"說+得 + 力"},
+  {word:"집중력",reading:"집중력",romaja:"jipjungnyeok",pos:"名사",level:["TOPIK3"],frequency:4,
+    definition_ko:"주의를 한곳에 모으는 능력.",meaning_zh:"专注力",
+    examples:["집중력을 높이고 싶다."],
+    roots:[{m:"집",t:"root"},{m:"중",t:"root"},{m:"력",t:"suffix"}],
+    topics:["学习","心理"],syn:[],ant:[],notes:"集中+力"},
+  {word:"표현력",reading:"표현력",romaja:"pyo-hyeonnyeok",pos:"名사",level:["TOPIK4"],frequency:3,
+    definition_ko:"생각이나 감정을 나타내는 능력.",meaning_zh:"表现力；表达力",
+    examples:["그 작가는 표현력이 풍부하다."],
+    roots:[{m:"표",t:"root"},{m:"현(root2)",t:"root"},{m:"력",t:"suffix"}],
+    topics:["语言","艺术"],syn:[],ant:[],notes:"表+現 + 力"},
+
+  // 职场高频
+  {word:"회사",reading:"회사",romaja:"hoesa",pos:"名사",level:["TOPIK1"],frequency:5,
+    definition_ko:"이윤을 목적으로 하는 조직.",meaning_zh:"公司",
+    examples:["큰 회사에서 일해요."],
+    roots:[{m:"회",t:"root"},{m:"사",t:"root"}],
+    topics:["职场","经济"],syn:["기업"],ant:[],notes:"會+社"},
+  {word:"직원",reading:"직원",romaja:"jigwon",pos:"名사",level:["TOPIK1"],frequency:5,
+    definition_ko:"회사 등에서 일하는 사람.",meaning_zh:"职员；员工",
+    examples:["신입 직원을 채용하다."],
+    roots:[{m:"직",t:"root"},{m:"원",t:"root"}],
+    topics:["职场"],syn:["사원"],ant:[],notes:""},
+  {word:"계약",reading:"계약",romaja:"gyeyak",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"당사자 간의 약속.",meaning_zh:"合同；契约",
+    examples:["계약을 체결하다."],
+    roots:[{m:"계",t:"root"},{m:"약",t:"root"}],
+    topics:["法律","商业"],syn:["합의"],ant:[],notes:"契+約"},
+  {word:"거래",reading:"거래",romaja:"georae",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"물품이나 돈을 주고받는 일.",meaning_zh:"交易",
+    examples:["해외 기업과 거래하다."],
+    roots:[{m:"거",t:"root"},{m:"래",t:"root"}],
+    topics:["商业"],syn:["딜"],ant:[],notes:""},
+  {word:"보고서",reading:"보고서",romaja:"bogoseo",pos:"名사",level:["TOPIK2"],frequency:4,
+    definition_ko:"상황이나 결과를 적은 문서.",meaning_zh:"报告（文档）",
+    examples:["진행 보고서를 제출하다."],
+    roots:[{m:"보",t:"root"},{m:"고",t:"root"},{m:"서",t:"root"}],
+    topics:["职场"],syn:["리포트"],ant:[],notes:""},
+  {word:"회의",reading:"회의",romaja:"hoeui",pos:"名사",level:["TOPIK1"],frequency:5,
+    definition_ko:"여러 사람이 모여 의논함.",meaning_zh:"会议",
+    examples:["오후에 회의가 있다."],
+    roots:[{m:"회",t:"root"},{m:"의",t:"root"}],
+    topics:["职场"],syn:["미팅"],ant:[],notes:""},
+  {word:"면접",reading:"면접",romaja:"myeonjeop",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"대면하여 질문과 응답을 함.",meaning_zh:"面试",
+    examples:["내일 면접이 있다."],
+    roots:[{m:"면",t:"root"},{m:"접",t:"root"}],
+    topics:["职场"],syn:["인터뷰"],ant:[],notes:""},
+  {word:"제출",reading:"제출",romaja:"jechul",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"서류 등을 내는 일.",meaning_zh:"提交",
+    examples:["보고서를 제출하다."],
+    roots:[{m:"제",t:"root"},{m:"출",t:"root"}],
+    topics:["职场","学术"],syn:["제시"],ant:[],notes:""},
+  {word:"판매",reading:"판매",romaja:"panmae",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:4,
+    definition_ko:"물건을 파는 일.",meaning_zh:"销售；贩卖",
+    examples:["온라인 판매가 늘었다."],
+    roots:[{m:"판",t:"root"},{m:"매",t:"root"}],
+    topics:["商业"],syn:["세일즈"],ant:[],notes:""},
+  {word:"홍보",reading:"홍보",romaja:"hongbo",pos:"名사/동사(~하다)",level:["TOPIK3"],frequency:3,
+    definition_ko:"널리 알림.",meaning_zh:"宣传；推广",
+    examples:["신제품을 홍보하다."],
+    roots:[{m:"홍",t:"root"},{m:"보",t:"root"}],
+    topics:["商业","媒体"],syn:["프로모션"],ant:[],notes:""},
+
+  // -적으로（副词化）
+  {word:"전략적으로",reading:"전략적으로",romaja:"jeonlyakjeogeuro",pos:"부사",level:["TOPIK4"],frequency:3,
+    definition_ko:"전략에 따라.",meaning_zh:"战略性地",
+    examples:["전략적으로 자원을 배분하다."],
+    roots:[{m:"전",t:"root"},{m:"략",t:"root"},{m:"적으로",t:"suffix"}],
+    topics:["管理"],syn:[],ant:[],notes:"-적으로：副词化"},
+  {word:"구체적으로",reading:"구체적으로",romaja:"guchejeogeuro",pos:"부사",level:["TOPIK3"],frequency:4,
+    definition_ko:"구체적으로.",meaning_zh:"具体地",
+    examples:["구체적으로 설명해 주세요."],
+    roots:[{m:"구",t:"root"},{m:"체",t:"root"},{m:"적으로",t:"suffix"}],
+    topics:["写作"],syn:[],ant:["추상적으로"],notes:""},
+  {word:"효율적으로",reading:"효율적으로",romaja:"hyoyuljeogeuro",pos:"부사",level:["TOPIK4"],frequency:3,
+    definition_ko:"효율적으로.",meaning_zh:"高效地",
+    examples:["업무를 효율적으로 처리하다."],
+    roots:[{m:"효",t:"root"},{m:"율",t:"root"},{m:"적으로",t:"suffix"}],
+    topics:["职场"],syn:["효과적으로"],ant:["비효율적으로"],notes:""},
+
+  // 语言技能（动词）
+  {word:"공부하다",reading:"공부하다",romaja:"gongbuhada",pos:"동사",level:["TOPIK1"],frequency:5,
+    definition_ko:"학문이나 기술을 배우다.",meaning_zh:"学习",
+    examples:["매일 두 시간 공부해요."],
+    roots:[{m:"공",t:"root"},{m:"부",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["教育","日常"],syn:["학습하다"],ant:[],notes:""},
+  {word:"설명하다",reading:"설명하다",romaja:"seolmyeonghada",pos:"동사",level:["TOPIK2"],frequency:5,
+    definition_ko:"알기 쉽게 말하다.",meaning_zh:"说明",
+    examples:["다시 한번 설명해 주세요."],
+    roots:[{m:"설",t:"root"},{m:"명",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["交流"],syn:["해설하다"],ant:[],notes:""},
+  {word:"비교하다",reading:"비교하다",romaja:"bigyohada",pos:"동사",level:["TOPIK2"],frequency:4,
+    definition_ko:"서로 견주다.",meaning_zh:"比较",
+    examples:["옵션들을 비교했다."],
+    roots:[{m:"비",t:"root"},{m:"교",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["学术","职场"],syn:["대조하다"],ant:[],notes:""},
+  {word:"선택하다",reading:"선택하다",romaja:"seontaekhada",pos:"동사",level:["TOPIK2"],frequency:4,
+    definition_ko:"여러 개 중에서 고르다.",meaning_zh:"选择",
+    examples:["최선을 선택하다."],
+    roots:[{m:"선",t:"root"},{m:"택",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["通用"],syn:["고르다"],ant:[],notes:""},
+  {word:"결정하다",reading:"결정하다",romaja:"gyeoljeonghada",pos:"동사",level:["TOPIK2"],frequency:5,
+    definition_ko:"결심하여 정하다.",meaning_zh:"决定",
+    examples:["목표를 결정했다."],
+    roots:[{m:"결",t:"root"},{m:"정(root)",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["职场"],syn:["결단하다"],ant:["망설이다"],notes:""},
+  {word:"개선하다",reading:"개선하다",romaja:"gaeseonhada",pos:"동사",level:["TOPIK3"],frequency:5,
+    definition_ko:"더 좋게 하다.",meaning_zh:"改善",
+    examples:["프로세스를 개선하다."],
+    roots:[{m:"개",t:"root"},{m:"선",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["质量","管理"],syn:["개량하다"],ant:["악화하다"],notes:""},
+  {word:"발전하다",reading:"발전하다",romaja:"baljeonhada",pos:"동사",level:["TOPIK2"],frequency:5,
+    definition_ko:"더 높은 단계로 나아가다.",meaning_zh:"发展",
+    examples:["산업이 발전했다."],
+    roots:[{m:"발",t:"root"},{m:"전(root)",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["社会","经济"],syn:["진보하다"],ant:["퇴보하다"],notes:""},
+  {word:"협력하다",reading:"협력하다",romaja:"hyeomnyeokhada",pos:"동사",level:["TOPIK3"],frequency:4,
+    definition_ko:"힘을 합치다.",meaning_zh:"协力；合作",
+    examples:["파트너와 협력하다."],
+    roots:[{m:"협",t:"root"},{m:"력",t:"suffix"},{m:"하다",t:"suffix"}],
+    topics:["职场"],syn:["협업하다"],ant:["대립하다"],notes:""},
+  {word:"활용하다",reading:"활용하다",romaja:"hwalyonghada",pos:"동사",level:["TOPIK3"],frequency:4,
+    definition_ko:"잘 이용하다.",meaning_zh:"活用；利用",
+    examples:["데이터를 적극 활용하다."],
+    roots:[{m:"활",t:"root"},{m:"용",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["IT","职场"],syn:["이용하다"],ant:[],notes:""},
+  {word:"지원하다",reading:"지원하다",romaja:"jiwonhada",pos:"동사",level:["TOPIK2"],frequency:5,
+    definition_ko:"도움이나 힘을 주다; 신청하다.",meaning_zh:"支持；申请",
+    examples:["정부에 지원하다."],
+    roots:[{m:"지",t:"root"},{m:"원",t:"root"},{m:"하다",t:"suffix"}],
+    topics:["职场","政策"],syn:["후원하다"],ant:[],notes:""},
+
+  // 新旧/整体/用户/作家
+  {word:"신제품",reading:"신제품",romaja:"sinjepum",pos:"名사",level:["TOPIK2"],frequency:4,
+    definition_ko:"새로 만든 제품.",meaning_zh:"新产品",
+    examples:["신제품을 발표하다."],
+    roots:[{m:"신",t:"root"},{m:"제",t:"root"},{m:"품",t:"root"}],
+    topics:["商业"],syn:["뉴아이템"],ant:["구형"],notes:"新+製+品"},
+  {word:"구형",reading:"구형",romaja:"guhyeong",pos:"名사/형용사",level:["TOPIK2"],frequency:3,
+    definition_ko:"옛 형식.",meaning_zh:"旧款；旧型",
+    examples:["구형 기기를 교체하다."],
+    roots:[{m:"구",t:"root"},{m:"형",t:"root"}],
+    topics:["IT","商业"],syn:[],ant:["신형"],notes:"旧+型"},
+  {word:"전체",reading:"전체",romaja:"jeonche",pos:"名사",level:["TOPIK2"],frequency:5,
+    definition_ko:"모든 부분을 합한 것.",meaning_zh:"整体；全部",
+    examples:["전체 흐름을 파악하다."],
+    roots:[{m:"전(root)",t:"root"},{m:"체",t:"root"}],
+    topics:["通用"],syn:["전부"],ant:["일부"],notes:"全+體"},
+  {word:"학습",reading:"학습",romaja:"hakssup",pos:"名사/동사(~하다)",level:["TOPIK2"],frequency:5,
+    definition_ko:"배워 익힘.",meaning_zh:"学习；学得",
+    examples:["기계 학습을 연구하다."],
+    roots:[{m:"학",t:"root"},{m:"습",t:"root"}],
+    topics:["教育","IT"],syn:["공부"],ant:[],notes:"學+習"},
+  {word:"사용",reading:"사용",romaja:"sayong",pos:"名사/동사(~하다)",level:["TOPIK1"],frequency:5,
+    definition_ko:"쓰는 것.",meaning_zh:"使用",
+    examples:["데이터를 사용하다."],
+    roots:[{m:"사",t:"root"},{m:"용",t:"root"}],
+    topics:["IT","职场"],syn:["이용"],ant:[],notes:"使+用"},
+  {word:"사용자",reading:"사용자",romaja:"sayongja",pos:"名사",level:["TOPIK2"],frequency:4,
+    definition_ko:"사용하는 사람.",meaning_zh:"使用者；用户",
+    examples:["사용자 요구를 조사하다."],
+    roots:[{m:"사",t:"root"},{m:"용",t:"root"},{m:"자",t:"suffix"}],
+    topics:["IT","商业"],syn:["유저"],ant:[],notes:""},
+  {word:"이용",reading:"이용",romaja:"iyong",pos:"名사/동사(~하다)",level:["TOPIK1"],frequency:5,
+    definition_ko:"쓸모 있게 씀.",meaning_zh:"利用",
+    examples:["도서관을 이용하다."],
+    roots:[{m:"이",t:"root"},{m:"용",t:"root"}],
+    topics:["日常","IT"],syn:["활용"],ant:[],notes:"利用"},
+  {word:"이용자",reading:"이용자",romaja:"iyongja",pos:"名사",level:["TOPIK2"],frequency:4,
+    definition_ko:"이용하는 사람.",meaning_zh:"用户；使用者",
+    examples:["이용자 수가 증가했다."],
+    roots:[{m:"이",t:"root"},{m:"용",t:"root"},{m:"자",t:"suffix"}],
+    topics:["IT","商业"],syn:["유저"],ant:[],notes:""},
+  {word:"작가",reading:"작가",romaja:"jagga",pos:"名사",level:["TOPIK2"],frequency:3,
+    definition_ko:"작품을 만든 사람.",meaning_zh:"作家；作者",
+    examples:["작가를 인터뷰하다."],
+    roots:[{m:"작",t:"root"},{m:"가",t:"suffix"}],
+    topics:["文化"],syn:["저자"],ant:[],notes:"作+家"}
+];
+
+/** ====== 索引与状态 ====== */
+const ALL_LEVELS = ["TOPIK1","TOPIK2","TOPIK3","TOPIK4","TOPIK5","TOPIK6"];
+const ALL_POS = [...new Set(WORDS.map(w=>w.pos.split(/[.,/ ]+/)[0]).filter(Boolean))];
+const ALL_TOPICS = [...new Set(WORDS.flatMap(w=>w.topics||[]))].sort();
+const ALL_MORPHS = [...new Set(WORDS.flatMap(w=>w.roots?.map(r=>r.m)||[]))].sort();
+
+const LEVEL_FILTER = new Set();
+const POS_FILTER = new Set();
+const TOPIC_FILTER = new Set();
+const MORPH_FILTER = new Set();
+let ONLY_ROOTS=false, REQUIRE_ALL=false, FREQ_MIN=1;
+let QUERY="";
+
+const state = {
+  words:[...WORDS],
+  idx:{ byMorph:new Map(), byWord:new Map() },
+  selected:null,
+  srsQueue:[]
+};
+
+function buildIndex(){
+  state.idx.byMorph.clear();
+  state.idx.byWord.clear();
+  for(const w of state.words){
+    state.idx.byWord.set((w.word||"").toLowerCase(), w);
+    (w.roots||[]).forEach(r=>{
+      if(!state.idx.byMorph.has(r.m)) state.idx.byMorph.set(r.m, new Set());
+      state.idx.byMorph.get(r.m).add(w);
+    });
+  }
+}
+buildIndex();
+
+/** ====== DOM helpers ====== */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+$("#total").textContent = state.words.length;
+
+function chip(text, active=false){ const d=document.createElement('span'); d.className='chip'+(active?' active':''); d.textContent=text; return d; }
+function fillChips(){
+  // levels
+  const lvl=$("#levelChips"); lvl.innerHTML='';
+  ALL_LEVELS.forEach(l=>{ const c=chip(l); c.onclick=()=>{toggleSet(LEVEL_FILTER,l); render();}; lvl.appendChild(c); });
+  // pos
+  const pc=$("#posChips"); pc.innerHTML='';
+  ALL_POS.forEach(p=>{ const c=chip(p); c.onclick=()=>{toggleSet(POS_FILTER,p); render();}; pc.appendChild(c); });
+  // topics
+  const tc=$("#topicChips"); tc.innerHTML='';
+  ALL_TOPICS.forEach(t=>{ const c=chip(t); c.onclick=()=>{toggleSet(TOPIC_FILTER,t); render();}; tc.appendChild(c); });
+
+  // morphs 热门
+  const mc=$("#morphChips"); mc.innerHTML='';
+  const hot = ["불","비","무","재","초","친","반","과","저","미","학","교","생","국","어","사","회","경","제","정","보","통","신","기","술","연","구","발","전(root)","개","선","효","과","율","안","위","험","문","제","해","결","확","명","적(root)","단","순","복","잡","예","약","연(root)","락","참","가(root)","찬","반(root)","대","책","역","속","동","의","완","자(root)","동(root)","현","대(root2)","세","계","산","업","도","시","최","표","현(root2)","설","득","적","적으로","성","화","력","률","자","가","주의","론","법","감","하다","되다"].filter(m=>ALL_MORPHS.includes(m));
+  hot.forEach(m=>{ const c=chip(m); c.onclick=()=>{toggleSet(MORPH_FILTER,m); render();}; mc.appendChild(c); });
+}
+fillChips();
+function toggleSet(set,key){ set.has(key)? set.delete(key): set.add(key); }
+
+/** ====== 控件事件 ====== */
+$("#requireAll").onchange = e=>{REQUIRE_ALL=e.target.checked; render();}
+$("#onlyRoots").onchange = e=>{ONLY_ROOTS=e.target.checked; render();}
+$("#freq").oninput = e=>{FREQ_MIN=+e.target.value; $("#freqVal").textContent='≥'+FREQ_MIN; render();}
+$("#resetBtn").onclick = ()=>{
+  LEVEL_FILTER.clear(); POS_FILTER.clear(); TOPIC_FILTER.clear(); MORPH_FILTER.clear();
+  ONLY_ROOTS=false; REQUIRE_ALL=false; FREQ_MIN=1; QUERY='';
+  $("#onlyRoots").checked=false; $("#requireAll").checked=false;
+  $("#freq").value=1; $("#freqVal").textContent='≥1';
+  $("#q").value=''; $("#morphSearch").value='';
+  render();
+};
+$("#q").addEventListener('input', debounce(e=>{ QUERY=e.target.value.trim(); render(); }, 150));
+$("#clearBtn").onclick = ()=>{ $("#q").value=''; QUERY=''; render(); };
+$("#morphSearch").addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const v=e.target.value.trim();
+    if(v){ MORPH_FILTER.add(v.replace(/\s+/g,'').toLowerCase()?v:''); e.target.value=''; render(); }
+  }
+});
+$("#darkBtn").onclick = ()=>{ document.body.classList.toggle('dark'); localStorage.setItem('ko_dark', document.body.classList.contains('dark')?'1':'0'); }
+if(localStorage.getItem('ko_dark')==='1') document.body.classList.add('dark');
+
+/** ====== 检索逻辑 ====== */
+function searchAndFilter(){
+  let arr = state.words.filter(w=>{
+    if((w.frequency||1) < FREQ_MIN) return false;
+    if(LEVEL_FILTER.size && !w.level?.some(l=>LEVEL_FILTER.has(l))) return false;
+    if(POS_FILTER.size && !POS_FILTER.has(w.pos.split(/[.,/ ]+/)[0])) return false;
+    if(TOPIC_FILTER.size && !w.topics?.some(t=>TOPIC_FILTER.has(t))) return false;
+    if(MORPH_FILTER.size){
+      const morphs = (w.roots||[]).filter(r=>ONLY_ROOTS? r.t==='root' : true).map(r=>r.m);
+      if(REQUIRE_ALL){
+        for(const m of MORPH_FILTER) if(!morphs.includes(m)) return false;
+      }else{
+        let ok=false; for(const m of MORPH_FILTER){ if(morphs.includes(m)){ ok=true; break; } }
+        if(!ok) return false;
+      }
+    }
+    if(QUERY){
+      const q = QUERY.toLowerCase();
+      const hay = [
+        w.word, w.reading, w.romaja, w.meaning_zh,
+        w.definition_ko, w.pos, ...(w.level||[]), ...(w.topics||[]),
+        ...((w.syn||[])), ...((w.ant||[])), ...((w.roots||[]).map(r=>r.m))
+      ].join(' | ').toLowerCase();
+      if(!fuzzyIncludes(hay, q)) return false;
+    }
+    return true;
+  });
+  return arr;
+}
+function fuzzyIncludes(text,q){
+  if(text.includes(q)) return true;
+  const parts=q.split(/\s+/).filter(Boolean);
+  return parts.every(p=>text.includes(p));
+}
+
+/** ====== 渲染结果网格 ====== */
+const grid=$("#grid");
+function render(){
+  const list = searchAndFilter();
+  $("#count").textContent = list.length;
+  grid.innerHTML='';
+  list.forEach(w=>{
+    const card=document.createElement('div');
+    card.className='word-card';
+    card.innerHTML = `
+      <div class="word-head">
+        <div class="word">${hlMorphemeInWord(w)}</div>
+        <div class="tags">
+          ${(w.level||[]).map(l=>`<span class="badge">${l}</span>`).join('')}
+          <span class="pill">${w.pos}</span>
+          <span class="pill">F${w.frequency||1}</span>
+        </div>
+      </div>
+      <div class="mean">${escapeHtml(w.romaja||'')} · ${escapeHtml(w.meaning_zh||'')}</div>
+      <div class="morph">${(w.roots||[]).map(r=>morphTag(r)).join('')}</div>
+    `;
+    card.onclick = ()=>{ selectWord(w.word); };
+    card.ondblclick = ()=>{ addToSrs(w.word); flash(card); };
+    grid.appendChild(card);
+  });
+  if(list.length && !state.selected){ selectWord(list[0].word); }
+  if(state.selected && !list.includes(state.selected)){
+    if(list[0]) selectWord(list[0].word); else clearDetail();
+  }
+  syncActiveChips();
+}
+function flash(el){ el.style.outline='2px solid var(--primary)'; setTimeout(()=>el.style.outline='', 350); }
+function morphTag(r){
+  const meta = MORPHEMES[r.m]||{type:r.t};
+  const cls = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+  const title = `${r.m} · ${meta.type||r.t} · ${(meta.zh||'')}${meta.ko?(' / '+meta.ko):''}`;
+  return `<span class="${cls}" title="${escapeHtml(title)}">${escapeHtml(r.m)}</span>`;
+}
+function hlMorphemeInWord(w){
+  let html = escapeHtml(w.word||'');
+  const parts = (w.roots||[]).map(r=>r.m).sort((a,b)=>b.length-a.length);
+  for(const m of parts){
+    const idx = html.toLowerCase().indexOf(m.toLowerCase());
+    if(idx>=0){
+      const pre = html.slice(0, idx);
+      const mid = html.slice(idx, idx+m.length);
+      const suf = html.slice(idx+m.length);
+      const t = MORPHEMES[m]?.type || 'root';
+      const spanCls = t==='prefix'?'hlt-pre':(t==='suffix'?'hlt-suf':'hlt');
+      html = `${pre}<span class="${spanCls}">${mid}</span>${suf}`;
+    }
+  }
+  return html;
+}
+function syncActiveChips(){
+  $$("#levelChips .chip").forEach(c=>c.classList.toggle('active', LEVEL_FILTER.has(c.textContent)));
+  $$("#posChips .chip").forEach(c=>c.classList.toggle('active', POS_FILTER.has(c.textContent)));
+  $$("#topicChips .chip").forEach(c=>c.classList.toggle('active', TOPIC_FILTER.has(c.textContent)));
+  $$("#morphChips .chip").forEach(c=>c.classList.toggle('active', MORPH_FILTER.has(c.textContent)));
+}
+render();
+
+/** ====== 详情面板 ====== */
+function selectWord(word){
+  const w = state.idx.byWord.get((word||"").toLowerCase());
+  state.selected = w;
+  $("#dWord").innerHTML = hlMorphemeInWord(w);
+  $("#dReading").textContent = `${w.reading||''}${w.romaja?(' · '+w.romaja):''}`;
+  $("#dMorph").innerHTML = (w.roots||[]).map(r=>{
+    const el=document.createElement('span');
+    el.className = r.t==='prefix'?'pre':(r.t==='suffix'?'suf':'root');
+    el.textContent = r.m;
+    const meta = MORPHEMES[r.m]||{};
+    el.title = `${r.m} · ${(meta.type||r.t)} · ${(meta.zh||'')}${meta.ko?(' / '+meta.ko):''}`;
+    el.style.cursor='pointer';
+    el.onclick=()=>{ MORPH_FILTER.add(r.m); render(); };
+    return el.outerHTML;
+  }).join('');
+  $("#dDef").textContent = w.definition_ko || '';
+  $("#dMean").textContent = w.meaning_zh || '';
+  $("#dPos").textContent = w.pos || '';
+  $("#dLevel").innerHTML = (w.level||[]).map(l=>`<span class="badge">${l}</span>`).join(' ');
+  $("#dTopics").innerHTML = (w.topics||[]).map(t=>`<span class="pill">${t}</span>`).join(' ');
+  $("#dFreq").innerHTML = 'F'+(w.frequency||1);
+  $("#dExamples").innerHTML = (w.examples||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('') || '<li><small class="dim">暂无例句</small></li>';
+  const sim = similarJamoWords(w, 10).filter(s=>s.word!==w.word);
+  $("#dSimilar").innerHTML = sim.map(s=>`<span class="sim-item" title="거리：${s.dist}">${escapeHtml(s.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dSimilar .sim-item").forEach(el=>{ el.onclick=()=>selectWord(el.textContent); });
+  const fam = familyWords(w);
+  $("#dFamily").innerHTML = fam.map(x=>`<span class="fam-item">${escapeHtml(x.word)}</span>`).join('') || '<small class="dim">无</small>';
+  $$("#dFamily .fam-item").forEach(el=>{ el.onclick=()=>selectWord(el.textContent); });
+  $("#dNotes").textContent = w.notes||'';
+}
+function clearDetail(){
+  $("#dWord").textContent='选择一个词'; $("#dReading").textContent='';
+  $("#dMorph").innerHTML=''; $("#dDef").textContent=''; $("#dMean").textContent='';
+  $("#dPos").textContent=''; $("#dLevel").innerHTML=''; $("#dTopics").innerHTML=''; $("#dFreq").innerHTML='';
+  $("#dExamples").innerHTML=''; $("#dSimilar").innerHTML=''; $("#dFamily").innerHTML=''; $("#dNotes").textContent='';
+}
+$("#speakBtn").onclick = ()=>{
+  if(!state.selected) return;
+  const u = new SpeechSynthesisUtterance(state.selected.word);
+  u.lang = 'ko-KR'; speechSynthesis.speak(u);
+};
+$("#starBtn").onclick = ()=>{
+  if(!state.selected) return;
+  addToSrs(state.selected.word);
+  alert('已加入复习队列：'+state.selected.word);
+};
+
+/** ====== Hangul Jamo 形近词（编辑距离） ====== */
+function hangulToJamo(str){
+  let out = '';
+  for(const ch of (str||'')){
+    const code = ch.charCodeAt(0);
+    if(code >= 0xAC00 && code <= 0xD7A3){
+      const SIndex = code - 0xAC00;
+      const LIndex = Math.floor(SIndex / 588);
+      const VIndex = Math.floor((SIndex % 588) / 28);
+      const TIndex = SIndex % 28;
+      out += String.fromCharCode(0x1100 + LIndex); // choseong
+      out += String.fromCharCode(0x1161 + VIndex); // jungseong
+      if(TIndex) out += String.fromCharCode(0x11A7 + TIndex); // jongseong
+    }else{
+      out += ch.toLowerCase();
+    }
+  }
+  return out;
+}
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)dp[i][0]=i;
+  for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      const cost = a[i-1]===b[j-1]?0:1;
+      dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+  }
+  return dp[m][n];
+}
+function baseKey(w){
+  const h = w.reading || w.word || '';
+  return hangulToJamo(h);
+}
+function similarJamoWords(w, topN=10){
+  const target = baseKey(w);
+  const arr = state.words.map(x=>{
+    const r = baseKey(x);
+    const d = levenshtein(target, r);
+    const n = Math.max(target.length, r.length)||1;
+    const score = 1 - d/n;
+    return {word:x.word, dist:d, score};
+  }).sort((a,b)=>a.dist-b.dist || b.score-a.score);
+  return arr.slice(0, topN);
+}
+function familyWords(w){
+  const keys = (w.roots||[]).map(r=>r.m);
+  const set = new Set();
+  for(const k of keys){
+    const bucket = state.idx.byMorph.get(k);
+    if(!bucket) continue;
+    for(const x of bucket){ if(x.word!==w.word) set.add(x); }
+  }
+  return [...set].slice(0,24);
+}
+
+/** ====== Debounce/Utils ====== */
+function debounce(fn, delay){ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args),delay); }; }
+function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+/** ====== 导入/导出 ====== */
+$("#importBtn").onclick = ()=> $("#fileInput").click();
+$("#fileInput").onchange = async (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const txt = await file.text();
+  try{
+    const data = JSON.parse(txt);
+    if(!Array.isArray(data)) throw new Error('JSON 须为数组');
+    data.forEach(x=>{
+      if(!x.word) throw new Error('每个条目须包含 word 字段');
+      x.level = x.level || ["TOPIK3"];
+      x.roots = x.roots || [];
+      x.frequency = x.frequency || 3;
+    });
+    state.words = mergeWords(state.words, data);
+    buildIndex(); $("#total").textContent = state.words.length; fillChips(); render();
+    alert('导入成功，共 '+data.length+' 条；当前词库 '+state.words.length+' 条。');
+  }catch(err){
+    alert('导入失败：'+err.message);
+  }finally{
+    e.target.value='';
+  }
+};
+$("#exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state.words, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='ko-wordbank.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+function mergeWords(base, incoming){
+  const map = new Map(base.map(w=>[w.word.toLowerCase(), w]));
+  for(const w of incoming){
+    const k = w.word.toLowerCase();
+    if(map.has(k)){
+      const old = map.get(k);
+      map.set(k, {
+        ...old, ...w,
+        level: uniq([...(old.level||[]), ...(w.level||[])]),
+        topics: uniq([...(old.topics||[]), ...(w.topics||[])]),
+        syn: uniq([...(old.syn||[]), ...(w.syn||[])]),
+        ant: uniq([...(old.ant||[]), ...(w.ant||[])]),
+        roots: uniqMorph([...(old.roots||[]), ...(w.roots||[])]),
+        examples: uniq([...(old.examples||[]), ...(w.examples||[])])
+      });
+    }else{
+      map.set(k, w);
+    }
+  }
+  return [...map.values()];
+}
+function uniq(arr){ return Array.from(new Set((arr||[]).filter(Boolean))); }
+function uniqMorph(arr){
+  const seen=new Set(); const out=[];
+  for(const r of (arr||[])){
+    const k=r.m+'|'+(r.t||'');
+    if(!seen.has(k)){ out.push(r); seen.add(k); }
+  }
+  return out;
+}
+
+/** ====== 场景句生成（模板） ====== */
+$("#genSceneBtn").onclick = ()=>{
+  const list = searchAndFilter().slice(0,10);
+  if(!list.length){ alert('请先筛选一些单词'); return; }
+  const scene = generateScene(list);
+  alert("상황 문장:\n\n"+scene.join("\n"));
+};
+function pickByTopic(words, topic, fallback){
+  const arr = words.filter(w=>w.topics?.includes(topic));
+  if(arr.length) return arr[Math.floor(Math.random()*arr.length)];
+  return fallback || words[Math.floor(Math.random()*words.length)];
+}
+function W(w){ return w?.word || ""; }
+function generateScene(words){
+  const edu1 = pickByTopic(words,'教育');
+  const edu2 = pickByTopic(words,'学术', edu1);
+  const job1 = pickByTopic(words,'职场');
+  const job2 = pickByTopic(words,'商业', job1);
+  const soc1 = pickByTopic(words,'社会');
+  const it1  = pickByTopic(words,'IT');
+  const env1 = pickByTopic(words,'环境');
+  const lines = [];
+  lines.push(`캠퍼스: ${W(edu1)}에서 ${W(pickByTopic(words,'教育'))||'공부'}를 하고, 결과를 ${W(pickByTopic(words,'学术'))||'발표'}했다.`);
+  lines.push(`연구실: ${W(pickByTopic(words,'学术'))||'연구'} 자료를 ${W(pickByTopic(words,'IT'))||'분석'}해 ${W(pickByTopic(words,'学术'))||'정확'}성을 높였다.`);
+  lines.push(`회의실: 팀은 ${W(job1)||'회의'}에서 ${W(job2)||'전략적'}으로 업무를 ${W(pickByTopic(words,'职场'))||'진행'}했다.`);
+  lines.push(`사회: ${W(soc1)||'사회적'} 문제에 대해 ${W(pickByTopic(words,'社会'))||'대책'}을 마련하고, ${W(env1)||'친환경'} 방안을 ${W(pickByTopic(words,'职场'))||'결정'}했다.`);
+  lines.push(`IT: ${W(it1)||'정보'}를 ${W(pickByTopic(words,'IT'))||'효율적'}으로 ${W(pickByTopic(words,'IT'))||'활용'}했다.`);
+  return lines.map(s=>s.replace(/\s+/g,' ').trim());
+}
+
+/** ====== SRS（简化 SM-2） ====== */
+const SRS_KEY='ko_srs_v1';
+function loadSrs(){ try{return JSON.parse(localStorage.getItem(SRS_KEY)||'{}');}catch{return {};} }
+function saveSrs(db){ localStorage.setItem(SRS_KEY, JSON.stringify(db)); }
+function addToSrs(word){
+  const db = loadSrs();
+  if(!db[word]) db[word]={EF:2.5, interval:0, reps:0, due:Date.now()};
+  saveSrs(db);
+}
+function getDueWordsFrom(list){
+  const db=loadSrs(); const now=Date.now(); const arr=[];
+  for(const w of list){ const rec=db[w.word]||{due:0}; if(rec.due<=now) arr.push(w); }
+  return arr;
+}
+$("#startSrsBtn").onclick = ()=>{
+  const list = searchAndFilter();
+  if(!list.length){ alert('当前无可复习单词'); return; }
+  state.srsQueue = getDueWordsFrom(list);
+  if(!state.srsQueue.length){ alert('当前筛选的词都不应复习（尚未到期）。'); return; }
+  $("#srsPanel").style.display='flex'; nextSrs();
+};
+$("#srsClose").onclick = ()=>$("#srsPanel").style.display='none';
+$("#srsShow").onclick = ()=>{ $("#srsA").style.display='block'; };
+$("#srsAgain").onclick = ()=>srsRate(0);
+$("#srsHard").onclick = ()=>srsRate(3);
+$("#srsGood").onclick = ()=>srsRate(4);
+$("#srsEasy").onclick = ()=>srsRate(5);
+let currentSrs=null;
+function nextSrs(){
+  if(!state.srsQueue.length){
+    $("#srsQ").textContent='🎉 今日复习完成'; $("#srsA").style.display='none'; $("#srsInfo").textContent=''; return;
+  }
+  currentSrs = state.srsQueue.shift();
+  $("#srsQ").textContent = (currentSrs.definition_ko||'')+' / '+(currentSrs.meaning_zh||'');
+  $("#srsA").innerHTML = `<b>${hlMorphemeInWord(currentSrs)}</b><div class="mean">${escapeHtml(currentSrs.reading||'')} · ${escapeHtml(currentSrs.pos)} · ${(currentSrs.level||[]).join(', ')}</div>`;
+  $("#srsA").style.display='none';
+  $("#srsInfo").textContent = `剩余：${state.srsQueue.length}`;
+}
+function srsRate(q){
+  if(!currentSrs) return;
+  const word=currentSrs.word;
+  const db = loadSrs();
+  const rec = db[word] || {EF:2.5, interval:0, reps:0, due:Date.now()};
+  if(q<3){
+    rec.reps=0; rec.interval=1; rec.due=Date.now()+1*24*3600*1000;
+  }else{
+    rec.reps+=1;
+    let EF = rec.EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02));
+    if(EF<1.3) EF=1.3;
+    rec.EF=EF;
+    if(rec.reps===1) rec.interval=1;
+    else if(rec.reps===2) rec.interval=3;
+    else rec.interval=Math.round(rec.interval*rec.EF);
+    rec.due = Date.now()+rec.interval*24*3600*1000;
+  }
+  db[word]=rec; saveSrs(db); nextSrs();
+}
+</script>
+</body>
+</html>
